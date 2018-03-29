@@ -39,6 +39,10 @@ public final class JsonUtils{
 
 	}
 
+	public static JsonAdapter getAdapter(){
+		return JSON_ADAPTER;
+	}
+
 	public static String toJson(Object obj) {
 		return JSON_ADAPTER.toJson(obj);
 	}

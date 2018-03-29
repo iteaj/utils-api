@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+
+	 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<description>aop支持模块</description>
+
+	<!-- spring-aop自动代理支持 -->
+	<aop:aspectj-autoproxy />
+
+	<!-- aop 通知器, start用来标明是否开启aop-extend功能 -->
+	<bean id="proxyExtend" class="com.iteaj.util.module.aop.AopProxyExtend"
+          p:start="${aop.extend.start}" />
+
+	<!-- 动作工厂 -->
+	<!-- 常用方法(dao、business、controller)执行时间 -->
+	<bean id="actionFactory" class="com.iteaj.util.module.aop.factory.time.CommonWeaveActionFactory"
+        p:start="${aop.action.time.start}">
+
+		<property name="dao" value="${aop.weave.dao.start}" /> <!-- 是否开启Dao层织入 -->
+		<property name="business" value="${aop.weave.business.start}" /> <!-- 是否开启业务层织入 -->
+		<property name="controller" value="${aop.weave.controller.start}" /> <!-- 是否开启控制层织入 -->
+		<property name="record" value="${aop.action.time.record}" />
+	</bean>
+
+	<!-- 异常监控方法 -->
+	<bean id="exceptionActionFactory" class="com.iteaj.util.module.aop.factory.ExceptionWeaveActionFactory"
+        p:start="${aop.action.exception.start}">
+
+		<property name="dao" value="${aop.weave.dao.start}" /> <!-- 是否开启Dao层织入 -->
+		<property name="business" value="${aop.weave.business.start}" /> <!-- 是否开启业务层织入 -->
+		<property name="controller" value="${aop.weave.controller.start}" /> <!-- 是否开启控制层织入 -->
+		<property name="record" value="${aop.action.exception.record}" />
+	</bean>
+
+	<!-- 动作输出 -->
+	<!-- 邮件输出 -->
+	<bean id="alarmOutput" class="com.iteaj.util.module.aop.output.EmailAlarmOutput"
+          p:start="${aop.output.email.start}">
+
+		<property name="timeout" value="${email.config.timeout}" /> <!-- 超时时间 -->
+		<property name="email" value="${email.config.to}" /> <!-- 发送给谁(邮件帐号) -->
+		<property name="errorAlarm" value="${email.config.alarm.error}" /> <!-- 异常时,是否发送 -->
+		<property name="timeoutAlarm" value="${email.config.alarm.timeout}" /> <!-- 超时后,是否发送 -->
+	</bean>
+
+	<!-- 日志输出 -->
+	<bean id="actionOutput" class="com.iteaj.util.module.aop.output.Slf4JActionOutput"
+        p:start="${aop.output.log.start}">
+
+	</bean>
+</beans>

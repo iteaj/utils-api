@@ -1,8 +1,8 @@
-package com.iteaj.util.support.json.jackson;
+package com.iteaj.util.json.jackson;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.iteaj.util.support.json.JsonWrapper;
-import com.iteaj.util.support.json.NodeWrapper;
+import com.iteaj.util.json.JsonWrapper;
+import com.iteaj.util.json.NodeWrapper;
 
 /**
  * create time: 2018/3/29
@@ -28,6 +28,11 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
 
     @Override
     public Object getVal() {
+        return null;
+    }
+
+    @Override
+    public JsonWrapper asChild(String key, Object val) {
         return null;
     }
 

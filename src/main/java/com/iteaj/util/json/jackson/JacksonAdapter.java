@@ -1,4 +1,4 @@
-package com.iteaj.util.support.json.jackson;
+package com.iteaj.util.json.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.iteaj.util.support.json.JsonAdapter;
-import com.iteaj.util.support.json.JsonWrapper;
+import com.iteaj.util.json.JsonAdapter;
+import com.iteaj.util.json.JsonWrapper;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;

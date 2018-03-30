@@ -1,4 +1,4 @@
-package com.iteaj.util.support.json;
+package com.iteaj.util.json;
 
 /**
  * create time: 2018/3/29

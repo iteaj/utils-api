@@ -1,7 +1,7 @@
 package com.iteaj.util.module.authorization.http;
 
 import com.iteaj.util.module.authorization.*;
-import com.iteaj.util.support.http.HttpAdapter;
+import com.iteaj.util.http.HttpAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

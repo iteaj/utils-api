@@ -1,4 +1,4 @@
-package com.iteaj.util.support.json;
+package com.iteaj.util.json;
 
 import java.text.DateFormat;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.iteaj.util;
 
-import com.iteaj.util.support.json.JsonAdapter;
-import com.iteaj.util.support.json.JsonFactory;
+import com.iteaj.util.json.JsonAdapter;
+import com.iteaj.util.json.JsonFactory;
 
 import java.text.DateFormat;
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.iteaj.util.support.json;
+package com.iteaj.util.json;
 
-import com.iteaj.util.support.json.fastjson.FastJsonAdapter;
-import com.iteaj.util.support.json.jackson.JacksonAdapter;
+import com.iteaj.util.json.fastjson.FastJsonAdapter;
+import com.iteaj.util.json.jackson.JacksonAdapter;
 
 /**
  * create time: 2018/3/29

@@ -1,7 +1,10 @@
-package com.iteaj.util.support.json;
+package com.iteaj.util.support.json.fastjson;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.iteaj.util.support.json.JsonAdapter;
+import com.iteaj.util.support.json.JsonWrapper;
+import org.apache.commons.lang.StringUtils;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.Map;
  * @author iteaj
  * @since 1.7
  */
-public class FastJsonAdapter implements JsonAdapter<JSONObject> {
+public class FastJsonAdapter implements JsonAdapter<JSON> {
 
     @Override
     public String toJson(Object obj) {
@@ -47,18 +50,20 @@ public class FastJsonAdapter implements JsonAdapter<JSONObject> {
     }
 
     @Override
-    public JSONObject getOrigin() {
+    public JSON getOriginal() {
         return new JSONObject();
     }
 
     @Override
-    public JsonAdapter put(String key, Object arg) {
-
-        return null;
+    public JsonWrapper build() {
+        return new FastjsonWrapper();
     }
 
     @Override
-    public <T> T get(String key) {
-        return null;
+    public JsonWrapper build(String key, Object val) {
+        if(StringUtils.isEmpty(key))
+            throw new IllegalArgumentException("不能构建Json 因为key为空");
+
+        return build().put(key, val);
     }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.iteaj.util.JsonUtils;
 import com.iteaj.util.module.authorization.MapStorageContext;
 import com.iteaj.util.support.http.HttpAdapter;
+import com.iteaj.util.support.json.JsonFactory;
 import com.iteaj.util.support.json.JsonWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -51,16 +52,16 @@ public class WechatTemplateMessage {
             WechatAccessToken.BasicToken invoke = wechatAccessToken.invoke(new MapStorageContext());
             if(!invoke.success()) throw new IllegalStateException("获取微信AccessToken失败："+invoke.getErrmsg());
 
-            JsonWrapper json = JsonUtils.getAdapter().build();
+            JsonWrapper json = JsonFactory.create();
             if(StringUtils.isNotBlank(url))json.put("url", url);
             if(StringUtils.isNotBlank(appid) && StringUtils.isNotBlank(pagepath)){
-                JsonWrapper build = JsonUtils.getAdapter().build();
+                JsonWrapper build = JsonFactory.create();
                 build.put("appid", appid)
                         .put("pagepath", pagepath)
                         .put("miniprogram", miniprogram);
             }
 
-            JsonWrapper data = JsonUtils.getAdapter().build();
+            JsonWrapper data = JsonFactory.create();
             for(Item item : items){
                 data.put(item.key, item);
             }

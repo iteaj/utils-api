@@ -73,7 +73,6 @@
 
         <!-- Json -->
         <dependency>
-            <scope>provided</scope>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.32</version>
@@ -81,6 +80,7 @@
 
         <dependency>
             <scope>provided</scope>
+
             <version>2.9.3</version>
             <artifactId>jackson-databind</artifactId>
             <groupId>com.fasterxml.jackson.core</groupId>

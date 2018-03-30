@@ -58,9 +58,9 @@ public interface JsonAdapter<R> {
     /**
      * json转成map
      * @param json
-     * @param mapType   eg: HashMap.class
-     * @param keyType   eg: String.class
-     * @param valueType eg: OrderBy.class
+     * @param mapType   e.g: HashMap.class
+     * @param keyType   e.g: String.class
+     * @param valueType e.g: OrderBy.class
      * @param <K>
      * @param <V>
      * @return
@@ -73,7 +73,7 @@ public interface JsonAdapter<R> {
      * eg.. {@code FastJson的JSONObject} {@code Jackson的ObjectMapper}
      * @return
      */
-    R getOrigin();
+    R getOriginal();
 
     /**
      * 构建一个json对象

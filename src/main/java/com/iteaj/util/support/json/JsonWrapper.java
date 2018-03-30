@@ -7,13 +7,15 @@ package com.iteaj.util.support.json;
  * @version 1.0
  * @since 1.7
  */
-public interface JsonWrapper {
+public interface JsonWrapper<T> {
 
     /**
-     * 返回一个适配器
+     * 返回存储Json数据的真正对象
+     * @see com.fasterxml.jackson.databind.JsonNode
+     * @see com.alibaba.fastjson.JSON
      * @return
      */
-    JsonAdapter getAdapter();
+    Class<T> original();
 
     /**
      * 返回json里面指定key的json
@@ -31,11 +33,11 @@ public interface JsonWrapper {
     JsonWrapper put(String key, Object val);
 
     /**
-     * 往json里面新增一个Json节点
-     * @param nodeWrapper
+     * 往json里面新增一个节点
+     * @param node
      * @return
      */
-    JsonWrapper put(NodeWrapper nodeWrapper);
+    JsonWrapper put(NodeWrapper node);
 
     /**
      * 返回一个json字符串

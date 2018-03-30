@@ -1,9 +1,7 @@
 package com.iteaj.util;
 
-import com.iteaj.util.support.json.FastJsonAdapter;
-import com.iteaj.util.support.json.jackson.JacksonAdapter;
 import com.iteaj.util.support.json.JsonAdapter;
-import com.iteaj.util.support.json.SimpleJson;
+import com.iteaj.util.support.json.JsonFactory;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -11,37 +9,7 @@ import java.util.Map;
 
 public final class JsonUtils{
 
-	private static JsonAdapter JSON_ADAPTER;
-
-	static {
-
-		instance();
-	}
-
-	private static void instance(){
-		try {
-
-			JSON_ADAPTER = new FastJsonAdapter();
-			return;
-		} catch (Exception e){
-
-		}
-
-		try {
-
-			JSON_ADAPTER = new JacksonAdapter();
-			return;
-		} catch (Exception e) {
-
-		}
-
-		JSON_ADAPTER = new SimpleJson();
-
-	}
-
-	public static JsonAdapter getAdapter(){
-		return JSON_ADAPTER;
-	}
+	private static JsonAdapter JSON_ADAPTER = JsonFactory.jsonAdapter();
 
 	public static String toJson(Object obj) {
 		return JSON_ADAPTER.toJson(obj);

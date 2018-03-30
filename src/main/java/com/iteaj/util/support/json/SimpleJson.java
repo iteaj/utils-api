@@ -43,7 +43,17 @@ public class SimpleJson implements JsonAdapter<Void> {
     }
 
     @Override
-    public Void getOrigin() {
+    public Void getOriginal() {
         throw new UnsupportedOperationException("不支持此操作");
+    }
+
+    @Override
+    public JsonWrapper build() {
+        return null;
+    }
+
+    @Override
+    public JsonWrapper build(String key, Object val) {
+        return null;
     }
 }

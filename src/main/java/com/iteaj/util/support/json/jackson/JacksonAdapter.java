@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.iteaj.util.support.json.JsonAdapter;
 import com.iteaj.util.support.json.JsonWrapper;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -23,7 +24,7 @@ import java.util.Map;
  */
 public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
 
-    private static ObjectMapper objectMapper;
+    protected static ObjectMapper objectMapper;
 
     static {
         objectMapper = new ObjectMapper();
@@ -129,7 +130,7 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
     }
 
     @Override
-    public ObjectMapper getOrigin() {
+    public ObjectMapper getOriginal() {
         return objectMapper;
     }
 
@@ -140,6 +141,9 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
 
     @Override
     public JsonWrapper build(String key, Object val) {
+        if(StringUtils.isEmpty(key))
+            throw new IllegalArgumentException("不能构建Json 因为key为空");
+
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.putPOJO(key, val);
         return new JacksonWrapper(objectNode);

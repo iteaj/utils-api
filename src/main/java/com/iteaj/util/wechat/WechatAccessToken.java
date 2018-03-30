@@ -6,6 +6,8 @@ import com.iteaj.util.module.authorization.type.TypeEnum;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
+import java.nio.charset.Charset;
+
 /**
  * <p>微信授权获取access_token</p>
  * Create Date By 2017-03-07
@@ -168,8 +170,8 @@ public class WechatAccessToken extends SyncAuthorizeType<WechatAccessToken.Basic
         }
 
         private BasicToken getBasicToken() throws Exception {
-            String url = accessGateway + "?grant_type=" + grantType + "&appid=" + appId + "&secret=" + secret;
-            String result = http.get(url);
+            String url = accessGateway + "?grant_type=$$&appid=$$&secret=$$";
+            String result = http.get(url, Charset.forName("utf-8"), grantType, appId, secret);
 
             if (StringUtils.isBlank(result)) {
                 throw new IllegalStateException("获取access_token失败,授权别名：" + getTypeAlias());

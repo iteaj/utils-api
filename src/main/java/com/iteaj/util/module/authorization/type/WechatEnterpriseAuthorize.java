@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -284,7 +285,7 @@ public class WechatEnterpriseAuthorize extends
         public void doPhase(PhaseChain chain, SessionStorageContext context) throws Exception {
             StringBuilder sb = new StringBuilder(accessGateway).append("?")
                     .append("corpid=").append(corpId).append("&corpsecret=").append(corpSecret);
-            String result = http.get(sb.toString());
+            String result = http.get(sb.toString(), Charset.forName("utf-8"));
 
             if(StringUtils.isBlank(result)) {
                 logger.error(ERROR_INFO,getTypeAlias(), phaseAlias(), result);
@@ -327,7 +328,7 @@ public class WechatEnterpriseAuthorize extends
             StringBuilder sb = new StringBuilder(userInfoGateway).append("?")
                     .append("access_token=").append(token.get("access_token"))
                     .append("&code=").append(context.getParam("code"));
-            String result = http.get(sb.toString());
+            String result = http.get(sb.toString(), Charset.forName("utf-8"));
 
             //获取用户信息失败
             if(StringUtils.isBlank(result)){
@@ -367,10 +368,10 @@ public class WechatEnterpriseAuthorize extends
             WechatEnterpriseResult.UserInfo userInfo =
                     (WechatEnterpriseResult.UserInfo)context.getParam("user");
 
-//            byte[] bytes = httpSupport.doPost(userDetailGateway + "?access_token="+token.get("access_token")
-//                    , null, new StringEntity("{\"user_ticket\":\""+userInfo.getUser_ticket()+"\"}"));
-            String result = http.get("");
+            byte[] bytes = http.post(userDetailGateway
+                    , ("{\"user_ticket\":\""+userInfo.getUser_ticket()+"\"}").getBytes(), (String) token.get("access_token"));
 
+            String result = new String(bytes, "utf-8");
             //获取用户详情失败
             if(StringUtils.isBlank(result)){
                 logger.error(ERROR_INFO, getTypeAlias(), phaseAlias(), result);

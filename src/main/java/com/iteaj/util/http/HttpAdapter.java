@@ -30,7 +30,7 @@ public interface HttpAdapter {
      * @return
      * @throws UtilsException
      */
-    String get(String url, Charset charset) throws UtilsException;
+    String get(String url, String charset) throws UtilsException;
 
     /**
      *  发送Get请求 并通过占位符解析url

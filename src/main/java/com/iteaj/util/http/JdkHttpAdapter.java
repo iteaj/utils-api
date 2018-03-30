@@ -31,7 +31,7 @@ public class JdkHttpAdapter implements HttpAdapter {
     }
 
     @Override
-    public String get(String url, Charset charset) throws UtilsException {
+    public String get(String url, String charset) throws UtilsException {
         return null;
     }
 

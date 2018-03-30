@@ -74,11 +74,8 @@ public class WechatTemplateMessage {
                 logger.debug("类别：微信接口 - 动作：发送模版消息 - 描述：发送报文 {} - token：{}"
                         , json.toJsonString(), invoke.getAccess_token());
 
-//            byte[] bytes = HttpClient4Util.getInstance().doPost(this.gateway + "?access_token="
-//                            + invoke.getAccess_token(), null
-//                    , new StringEntity(jsonObject.toJSONString(), Charset.forName("utf-8")));
-
-            byte[] bytes = http.post();
+            byte[] bytes = http.post(this.gateway+"?access_token="
+                    +invoke.getAccess_token(), json.toJsonString().getBytes());
 
 
             return JsonUtils.toBean(new String(bytes, "utf-8"), Response.class);

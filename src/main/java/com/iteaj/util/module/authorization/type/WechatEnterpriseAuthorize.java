@@ -2,6 +2,7 @@ package com.iteaj.util.module.authorization.type;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.iteaj.util.http.param.UrlBuilder;
 import com.iteaj.util.module.authorization.*;
 import com.iteaj.util.module.authorization.http.AsyncAuthorizationAbstract;
 import com.iteaj.util.module.authorization.http.AuthorizePhaseAbstract;
@@ -285,7 +286,8 @@ public class WechatEnterpriseAuthorize extends
         public void doPhase(PhaseChain chain, SessionStorageContext context) throws Exception {
             StringBuilder sb = new StringBuilder(accessGateway).append("?")
                     .append("corpid=").append(corpId).append("&corpsecret=").append(corpSecret);
-            String result = http.get(sb.toString(), Charset.forName("utf-8"));
+
+            String result = http.get(UrlBuilder.build(sb.toString()));
 
             if(StringUtils.isBlank(result)) {
                 logger.error(ERROR_INFO,getTypeAlias(), phaseAlias(), result);
@@ -328,7 +330,7 @@ public class WechatEnterpriseAuthorize extends
             StringBuilder sb = new StringBuilder(userInfoGateway).append("?")
                     .append("access_token=").append(token.get("access_token"))
                     .append("&code=").append(context.getParam("code"));
-            String result = http.get(sb.toString(), Charset.forName("utf-8"));
+            String result = http.get(UrlBuilder.build(sb.toString()));
 
             //获取用户信息失败
             if(StringUtils.isBlank(result)){

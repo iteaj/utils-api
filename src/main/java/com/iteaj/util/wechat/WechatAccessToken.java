@@ -1,6 +1,7 @@
 package com.iteaj.util.wechat;
 
 import com.alibaba.fastjson.JSON;
+import com.iteaj.util.http.param.UrlBuilder;
 import com.iteaj.util.module.authorization.*;
 import com.iteaj.util.module.authorization.type.TypeEnum;
 import org.apache.commons.lang.StringUtils;
@@ -170,8 +171,9 @@ public class WechatAccessToken extends SyncAuthorizeType<WechatAccessToken.Basic
         }
 
         private BasicToken getBasicToken() throws Exception {
-            String url = accessGateway + "?grant_type=$$&appid=$$&secret=$$";
-            String result = http.get(url, Charset.forName("utf-8"), grantType, appId, secret);
+
+            UrlBuilder builder = UrlBuilder.build(accessGateway).addParam("grant_type", grantType);
+            String result = http.get(builder.addParam("appid", appId).addParam("secret", secret));
 
             if (StringUtils.isBlank(result)) {
                 throw new IllegalStateException("获取access_token失败,授权别名：" + getTypeAlias());

@@ -52,23 +52,23 @@ public class WechatTemplateMessage {
             WechatAccessToken.BasicToken invoke = wechatAccessToken.invoke(new MapStorageContext());
             if(!invoke.success()) throw new IllegalStateException("获取微信AccessToken失败："+invoke.getErrmsg());
 
-            JsonWrapper json = JsonFactory.create();
-            if(StringUtils.isNotBlank(url))json.put("url", url);
+            JsonWrapper json = JsonFactory.createJson();
+            if(StringUtils.isNotBlank(url))json.addNode("url", url);
             if(StringUtils.isNotBlank(appid) && StringUtils.isNotBlank(pagepath)){
-                JsonWrapper build = JsonFactory.create();
-                build.put("appid", appid)
-                        .put("pagepath", pagepath)
-                        .put("miniprogram", miniprogram);
+                JsonWrapper build = JsonFactory.createJson();
+                build.addNode("appid", appid)
+                        .addNode("pagepath", pagepath)
+                        .addNode("miniprogram", miniprogram);
             }
 
-            JsonWrapper data = JsonFactory.create();
+            JsonWrapper data = JsonFactory.createJson();
             for(Item item : items){
-                data.put(item.key, item);
+                data.addNode(item.key, item);
             }
 
-            json.put("data", data);
-            json.put("touser", openId);
-            json.put("template_id", templateId);
+            json.addNode("data", data);
+            json.addNode("touser", openId);
+            json.addNode("template_id", templateId);
 
             if(logger.isDebugEnabled())
                 logger.debug("类别：微信接口 - 动作：发送模版消息 - 描述：发送报文 {} - token：{}"

@@ -1,6 +1,7 @@
 package com.iteaj.util.json.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.iteaj.util.json.JsonAdapter;
 import com.iteaj.util.json.JsonWrapper;
+import com.iteaj.util.json.NodeWrapper;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
@@ -136,17 +138,16 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
 
     @Override
     public JsonWrapper build() {
-        return new JacksonWrapper(objectMapper.createObjectNode());
+        return new JacksonWrapper();
     }
 
     @Override
-    public JsonWrapper build(String key, Object val) {
-        if(StringUtils.isEmpty(key))
-            throw new IllegalArgumentException("不能构建Json 因为key为空");
+    public NodeWrapper build(String name, Object val) {
+        return new JacksonNode(name, getNodeFactory().pojoNode(val));
+    }
 
-        ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.putPOJO(key, val);
-        return new JacksonWrapper(objectNode);
+    public static JsonNodeFactory getNodeFactory() {
+        return objectMapper.getNodeFactory();
     }
 
     public static TypeFactory getTypeFactory(ObjectMapper objectMapper){

@@ -2,9 +2,13 @@ package com.iteaj.util.json.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.iteaj.util.json.JsonFactory;
 import com.iteaj.util.json.JsonWrapper;
 import com.iteaj.util.json.NodeWrapper;
+
+import java.util.Map;
 
 /**
  * create time: 2018/3/29
@@ -13,37 +17,33 @@ import com.iteaj.util.json.NodeWrapper;
  * @version 1.0
  * @since 1.7
  */
-public class JacksonWrapper implements JsonWrapper<JsonNode> {
+public class JacksonWrapper extends ObjectNode implements JsonWrapper<JsonNode> {
 
-    private JsonNode jsonNode;
+    protected JacksonWrapper() {
+        super(JacksonAdapter.getNodeFactory());
+    }
 
-    public JacksonWrapper(JsonNode jsonNode) {
-        this.jsonNode = jsonNode;
+    protected JacksonWrapper(JsonNodeFactory nc) {
+        super(nc);
+    }
+
+    protected JacksonWrapper(JsonNodeFactory nc, Map<String, JsonNode> kids) {
+        super(nc, kids);
     }
 
     @Override
-    public NodeWrapper get(String key) {
-        JsonNode jsonNode = this.jsonNode.get(key);
-        return new JacksonNode(key, jsonNode);
-    }
-
-    @Override
-    public JsonWrapper put(String key, Object val) {
-        ObjectNode jsonNode = (ObjectNode) this.jsonNode;
-        if(val instanceof JsonWrapper) {
-            jsonNode.putPOJO(key
-                    , ((JsonWrapper) val).original());
+    public JsonWrapper addNode(String key, Object val) {
+        if(val instanceof JacksonNode) {
+            ObjectNode node = this.putObject(key);
+            node.put(((JacksonNode) val).getKey()
+                    , ((JacksonNode) val).getVal());
+        } else if(val instanceof JacksonWrapper) {
+            this.put(key, (ObjectNode)val);
+        } else {
+            this.putPOJO(key, val);
         }
-        else {
 
-//            jsonNode.putPOJO(key, jsonNode.);
-        }
         return this;
-    }
-
-    @Override
-    public JsonWrapper put(NodeWrapper node) {
-        return this.put(node.getKey(), node.getVal());
     }
 
     @Override
@@ -52,9 +52,16 @@ public class JacksonWrapper implements JsonWrapper<JsonNode> {
     }
 
     @Override
+    public NodeWrapper getNode(String key) {
+        JsonNode node = this.get(key);
+        if(null == node) return null;
+        return new JacksonNode(key, node);
+    }
+
+    @Override
     public String toJsonString() {
         try {
-            return JacksonAdapter.objectMapper.writeValueAsString(jsonNode);
+            return JacksonAdapter.objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return null;

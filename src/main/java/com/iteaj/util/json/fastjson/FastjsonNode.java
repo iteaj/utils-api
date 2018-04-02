@@ -2,6 +2,9 @@ package com.iteaj.util.json.fastjson;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.iteaj.util.CommonUtils;
+import com.iteaj.util.UtilsException;
+import com.iteaj.util.UtilsType;
 import com.iteaj.util.json.JsonWrapper;
 import com.iteaj.util.json.NodeWrapper;
 
@@ -12,12 +15,12 @@ import com.iteaj.util.json.NodeWrapper;
  * @version 1.0
  * @since 1.7
  */
-public class FastjsonNode implements NodeWrapper<JSON> {
+public class FastjsonNode implements NodeWrapper<JSONObject> {
 
     private String key;
     private Object value;
 
-    public FastjsonNode(String key, Object val) {
+    protected FastjsonNode(String key, Object val) {
         this.key = key;
         this.value = val;
     }
@@ -33,46 +36,51 @@ public class FastjsonNode implements NodeWrapper<JSON> {
     }
 
     @Override
-    public Class<JSON> original() {
-        return JSON.class;
+    public Class<JSONObject> original() {
+        return JSONObject.class;
     }
 
     @Override
-    public NodeWrapper get(String key) {
+    public NodeWrapper getNode(String key) {
+        if(!CommonUtils.isNotBlank(key))
+            throw new UtilsException("Json-节点Key必须存在", UtilsType.JSON);
+
         if(value instanceof JSONObject) {
-            return new FastjsonNode(key, ((JSONObject) value).get(key));
+            Object o = ((JSONObject) value).get(key);
+            if(null == o) return null;
+            return new FastjsonNode(key, o);
         }
 
-        return new FastjsonNode(key, value);
+        return null;
     }
 
     @Override
-    public JsonWrapper put(String key, Object val) {
+    public JsonWrapper addNode(String key, Object val) {
+        if(!CommonUtils.isNotBlank(key))
+            throw new UtilsException("Json-节点Key必须存在", UtilsType.JSON);
+
         if(value instanceof JSONObject) {
-            ((JSONObject) value).put(key, val);
+            if(val instanceof FastjsonWrapper) {
+                ((JSONObject) value).put(key, val);
+            } else if(val instanceof FastjsonNode) {
+                JSONObject object = new JSONObject();
+                object.put(((FastjsonNode) val).getKey(), ((FastjsonNode) val).getVal());
+                ((JSONObject) value).put(key, object);
+            } else  {
+                ((JSONObject) value).put(key, val);
+            }
+
             return this;
         }
 
-        throw new IllegalStateException("此节点不是Json节点：" + value);
-    }
-
-    @Override
-    public JsonWrapper asChild(String key, Object val) {
-        if(value instanceof JSONObject) {
-            ((JSONObject) value).put(key, JSON.toJSON(val));
-            return this;
-        }
-
-        throw new IllegalStateException("此节点不是Json节点：" + value);
-    }
-
-    @Override
-    public JsonWrapper put(NodeWrapper node) {
-        return put(node.getKey(), node.getVal());
+        throw new UtilsException("不是Json节点(不能新增子节点)："+this.key, UtilsType.JSON);
     }
 
     @Override
     public String toJsonString() {
+        if(value instanceof JSON)
+            return ((JSON) value).toJSONString();
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, value);
         return jsonObject.toJSONString();

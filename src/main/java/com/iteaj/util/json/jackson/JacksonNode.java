@@ -1,6 +1,10 @@
 package com.iteaj.util.json.jackson;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.iteaj.util.UtilsException;
+import com.iteaj.util.UtilsType;
 import com.iteaj.util.json.JsonWrapper;
 import com.iteaj.util.json.NodeWrapper;
 
@@ -14,11 +18,11 @@ import com.iteaj.util.json.NodeWrapper;
 public class JacksonNode implements NodeWrapper<JsonNode> {
 
     private String key;
-    private JsonWrapper wrapper;
+    private JsonNode value;
 
-    public JacksonNode(String key, JsonNode node) {
+    protected JacksonNode(String key, JsonNode value) {
         this.key = key;
-        wrapper = new JacksonWrapper(node);
+        this.value = value;
     }
 
     @Override
@@ -27,28 +31,23 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
     }
 
     @Override
-    public Object getVal() {
-        return null;
+    public JsonNode getVal() {
+        return this.value;
     }
 
     @Override
-    public JsonWrapper asChild(String key, Object val) {
-        return null;
-    }
-
-    @Override
-    public NodeWrapper get(String key) {
-        return wrapper.get(key);
-    }
-
-    @Override
-    public JsonWrapper put(String key, Object val) {
-        return wrapper.put(key, val);
-    }
-
-    @Override
-    public JsonWrapper put(NodeWrapper node) {
-        return put(node.getKey(), node.getVal());
+    public JsonWrapper addNode(String key, Object val) {
+        if(value instanceof ObjectNode) {
+            if(val instanceof JsonWrapper) {
+                ((ObjectNode) value).putObject(key)
+                        .putPOJO(((JacksonNode) val).key, ((JacksonNode) val).value);
+            } else {
+                ((ObjectNode) value).putPOJO(key, val);
+            }
+        } else {
+            throw new UtilsException("不是Json节点(不能新增子节点)："+this.key, UtilsType.JSON);
+        }
+        return this;
     }
 
     @Override
@@ -57,7 +56,22 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
     }
 
     @Override
+    public NodeWrapper getNode(String key) {
+        if(value instanceof ObjectNode) {
+            JsonNode node = value.get(key);
+            if(node == null) return null;
+            else return new JacksonNode(key, node);
+        }
+
+        return null;
+    }
+
+    @Override
     public String toJsonString() {
-        return wrapper.toJsonString();
+        try {
+            return JacksonAdapter.objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new UtilsException("Json-解析失败", e, UtilsType.JSON);
+        }
     }
 }

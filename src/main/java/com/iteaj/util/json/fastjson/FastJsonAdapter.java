@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.iteaj.util.json.JsonAdapter;
 import com.iteaj.util.json.JsonWrapper;
+import com.iteaj.util.json.NodeWrapper;
 import org.apache.commons.lang.StringUtils;
 
 import java.text.DateFormat;
@@ -60,10 +61,7 @@ public class FastJsonAdapter implements JsonAdapter<JSON> {
     }
 
     @Override
-    public JsonWrapper build(String key, Object val) {
-        if(StringUtils.isEmpty(key))
-            throw new IllegalArgumentException("不能构建Json 因为key为空");
-
-        return build().put(key, val);
+    public NodeWrapper build(String name, Object val) {
+        return null;
     }
 }

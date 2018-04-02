@@ -22,7 +22,7 @@ public interface JsonWrapper<T> {
      * @param key
      * @return
      */
-    NodeWrapper get(String key);
+    NodeWrapper getNode(String key);
 
     /**
      * 往json里面新增一个key-val的键值对
@@ -30,14 +30,7 @@ public interface JsonWrapper<T> {
      * @param val
      * @return
      */
-    JsonWrapper put(String key, Object val);
-
-    /**
-     * 往json里面新增一个节点
-     * @param node
-     * @return
-     */
-    JsonWrapper put(NodeWrapper node);
+    JsonWrapper addNode(String key, Object val);
 
     /**
      * 返回一个json字符串

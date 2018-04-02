@@ -81,5 +81,11 @@ public interface JsonAdapter<R> {
      */
     JsonWrapper build();
 
-    JsonWrapper build(String key, Object val);
+    /**
+     * 构建一个Json节点对象
+     * @param name
+     * @param val
+     * @return
+     */
+    NodeWrapper build(String name, Object val);
 }

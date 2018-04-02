@@ -86,7 +86,6 @@
         </dependency>
 
         <dependency>
-            <scope>provided</scope>
 
             <version>2.9.3</version>
             <artifactId>jackson-databind</artifactId>

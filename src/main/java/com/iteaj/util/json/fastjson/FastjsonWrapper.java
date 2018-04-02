@@ -12,26 +12,21 @@ import com.iteaj.util.json.NodeWrapper;
  * @version 1.0
  * @since 1.7
  */
-public class FastjsonWrapper implements JsonWrapper<JSON> {
+public class FastjsonWrapper extends JSONObject implements JsonWrapper<JSONObject> {
 
-    private JSONObject jsonObject;
 
     public FastjsonWrapper() {
-        this.jsonObject = new JSONObject();
-    }
 
-    public FastjsonWrapper(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
     }
 
     @Override
-    public Class<JSON> original() {
-        return null;
+    public Class<JSONObject> original() {
+        return JSONObject.class;
     }
 
     @Override
-    public NodeWrapper get(String key) {
-        Object o = jsonObject.get(key);
+    public NodeWrapper getNode(String key) {
+        Object o = get(key);
         if(null == o) return null;
 
         return new FastjsonNode(key, o);
@@ -39,30 +34,20 @@ public class FastjsonWrapper implements JsonWrapper<JSON> {
 
 
     @Override
-    public JsonWrapper put(String key, Object val) {
-        if(val instanceof NodeWrapper){
+    public JsonWrapper addNode(String key, Object val) {
+        if(val instanceof FastjsonNode){
             JSONObject object = new JSONObject();
-            if(val instanceof JSON) {
-                object.put(((NodeWrapper) val).getKey(), ((NodeWrapper) val).getVal());
-            } else {
-                object.put(((NodeWrapper) val).getKey(), JSON.toJSON(((NodeWrapper) val).getVal()));
-            }
-
-            this.jsonObject.put(key, object);
-            return this;
+            object.put(((FastjsonNode) val).getKey(), ((FastjsonNode) val).getVal());
+            put(key, object);
+        } else {
+            put(key, val);
         }
 
-        this.jsonObject.put(key, JSON.toJSON(val));
         return this;
     }
 
     @Override
-    public JsonWrapper put(NodeWrapper node) {
-        return put(node.getKey(), node.getVal());
-    }
-
-    @Override
     public String toJsonString() {
-        return jsonObject.toJSONString();
+        return this.toJSONString();
     }
 }

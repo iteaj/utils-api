@@ -1,5 +1,7 @@
 package com.iteaj.util.json;
 
+import com.iteaj.util.UtilsException;
+import com.iteaj.util.UtilsType;
 import com.iteaj.util.json.fastjson.FastJsonAdapter;
 import com.iteaj.util.json.jackson.JacksonAdapter;
 
@@ -12,41 +14,39 @@ import com.iteaj.util.json.jackson.JacksonAdapter;
  */
 public class JsonFactory {
 
+    private static JsonAdapter CURRENT_ADAPTER;
     private static JsonAdapter JACKSON_ADAPTER;
     private static JsonAdapter FAST_JSON_ADAPTER;
-    private static ClassNotFoundException EXCEPTION = new ClassNotFoundException();
 
     static {
         try {
+            JACKSON_ADAPTER = new JacksonAdapter();
+            CURRENT_ADAPTER = JACKSON_ADAPTER;
+        } catch (Throwable e) {
 
+        }
+        try {
             FAST_JSON_ADAPTER = new FastJsonAdapter();
+            if(null == CURRENT_ADAPTER)
+                CURRENT_ADAPTER = FAST_JSON_ADAPTER;
         } catch (Throwable e){
 
         }
 
-        try {
-
-            JACKSON_ADAPTER = new JacksonAdapter();
-        } catch (Throwable e) {
-
-        }
     }
 
-    public static JsonWrapper create() {
-       return jsonAdapter().build();
+    public static JsonWrapper createJson() {
+       return adapter().build();
     }
 
-    public static JsonWrapper create(String key, Object val) {
-        return jsonAdapter().build(key, val);
+    public static NodeWrapper createNode(String name, Object val) {
+        return adapter().build(name, val);
     }
 
-    public static JsonAdapter jsonAdapter() {
-        if(null != JACKSON_ADAPTER)
-            return JACKSON_ADAPTER;
+    public static JsonAdapter adapter() {
+        if(null == CURRENT_ADAPTER)
+            throw new UtilsException("Json-请导入至少一种Json库(Gson, Jackson, FastJson)", UtilsType.JSON);
 
-        if(null != FAST_JSON_ADAPTER)
-            return FAST_JSON_ADAPTER;
-
-        throw new IllegalStateException("请导入至少一种Json库(Gson, Jackson, FastJson)", EXCEPTION);
+        return CURRENT_ADAPTER;
     }
 }

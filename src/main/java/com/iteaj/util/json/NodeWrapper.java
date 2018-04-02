@@ -21,11 +21,4 @@ public interface NodeWrapper<T> extends JsonWrapper<T> {
      */
     Object getVal();
 
-    /**
-     * 创建一个节点, 并且成为此节点的子节点
-     * @param key
-     * @param val
-     * @return
-     */
-    JsonWrapper asChild(String key, Object val);
 }

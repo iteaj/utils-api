@@ -20,7 +20,6 @@ public abstract class AuthorizationTypeAbstract
     private static String authorizeServletUrl;
     private Map<String, AuthorizePhase> phases;
     protected static PhaseChain phaseChain = new HashPhaseChain();
-    protected static HttpAdapter http;
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     public AuthorizationTypeAbstract() {

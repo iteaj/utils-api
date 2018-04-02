@@ -8,7 +8,7 @@ package com.iteaj.util;
  */
 public enum UtilsType {
 
-    HTTP("http"), JSON("json");
+    HTTP("http"), JSON("json"), Common("common");
 
     public String desc;
 

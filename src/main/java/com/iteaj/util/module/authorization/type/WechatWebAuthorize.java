@@ -1,7 +1,8 @@
 package com.iteaj.util.module.authorization.type;
 
 import com.alibaba.fastjson.JSON;
-import com.iteaj.util.http.param.UrlBuilder;
+import com.iteaj.util.HttpUtils;
+import com.iteaj.util.http.build.UrlBuilder;
 import com.iteaj.util.module.authorization.*;
 import com.iteaj.util.module.authorization.http.AsyncAuthorizationAbstract;
 import com.iteaj.util.module.authorization.http.AuthorizePhaseAbstract;
@@ -11,7 +12,6 @@ import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 
 /**
  * <p>微信网页授权</p>
@@ -279,7 +279,7 @@ public class WechatWebAuthorize extends
                     .append("appid=").append(appId).append("&secret=").append(secret)
                     .append("&code=").append(context.getParam("code"))
                     .append("&grant_type=").append(grantType);
-            String result = http.get(UrlBuilder.build(sb.toString()), "utf-8");
+            String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
             if(StringUtils.isBlank(result)) {
                 logger.error(ERROR_INFO,getTypeAlias(), phaseAlias(), result);
@@ -324,7 +324,7 @@ public class WechatWebAuthorize extends
                     .append("access_token=").append(token.getAccess_token())
                     .append("&openid=").append(token.getOpenid())
                     .append("&lang=").append(lang);
-            String result = http.get(UrlBuilder.build(sb.toString()), "utf-8");
+            String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
             //获取用户信息失败
             if(StringUtils.isBlank(result)){

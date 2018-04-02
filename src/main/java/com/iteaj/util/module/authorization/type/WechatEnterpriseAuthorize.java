@@ -2,7 +2,9 @@ package com.iteaj.util.module.authorization.type;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.iteaj.util.http.param.UrlBuilder;
+import com.iteaj.util.HttpUtils;
+import com.iteaj.util.http.build.EntityBuilder;
+import com.iteaj.util.http.build.UrlBuilder;
 import com.iteaj.util.module.authorization.*;
 import com.iteaj.util.module.authorization.http.AsyncAuthorizationAbstract;
 import com.iteaj.util.module.authorization.http.AuthorizePhaseAbstract;
@@ -11,9 +13,6 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Create Date By 2017-04-27
@@ -287,7 +286,7 @@ public class WechatEnterpriseAuthorize extends
             StringBuilder sb = new StringBuilder(accessGateway).append("?")
                     .append("corpid=").append(corpId).append("&corpsecret=").append(corpSecret);
 
-            String result = http.get(UrlBuilder.build(sb.toString()));
+            String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
             if(StringUtils.isBlank(result)) {
                 logger.error(ERROR_INFO,getTypeAlias(), phaseAlias(), result);
@@ -330,7 +329,7 @@ public class WechatEnterpriseAuthorize extends
             StringBuilder sb = new StringBuilder(userInfoGateway).append("?")
                     .append("access_token=").append(token.get("access_token"))
                     .append("&code=").append(context.getParam("code"));
-            String result = http.get(UrlBuilder.build(sb.toString()));
+            String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
             //获取用户信息失败
             if(StringUtils.isBlank(result)){
@@ -370,10 +369,12 @@ public class WechatEnterpriseAuthorize extends
             WechatEnterpriseResult.UserInfo userInfo =
                     (WechatEnterpriseResult.UserInfo)context.getParam("user");
 
-            byte[] bytes = http.post(userDetailGateway
-                    , ("{\"user_ticket\":\""+userInfo.getUser_ticket()+"\"}").getBytes(), (String) token.get("access_token"));
+            String accessToken = (String) token.get("access_token");
+            EntityBuilder builder = EntityBuilder.build(userDetailGateway)
+                    .addParam("access_token", accessToken)
+                    .addBody(null, "{\"user_ticket\":\""+userInfo.getUser_ticket()+"\"}");
 
-            String result = new String(bytes, "utf-8");
+            String result = HttpUtils.doPost(builder, "UTF-8");
             //获取用户详情失败
             if(StringUtils.isBlank(result)){
                 logger.error(ERROR_INFO, getTypeAlias(), phaseAlias(), result);

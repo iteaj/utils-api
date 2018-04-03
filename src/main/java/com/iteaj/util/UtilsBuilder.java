@@ -1,22 +1,23 @@
 package com.iteaj.util;
 
-import com.iteaj.util.http.HttpAdapter;
-import com.iteaj.util.json.JsonWrapper;
+import com.iteaj.util.wechat.WechatApi;
+import com.iteaj.util.wechat.WechatConfig;
 
 /**
  * Create Date By 2018-04-03
- *
+ *  工具类构建器
  * @author iteaj
  * @since 1.7
  */
 public class UtilsBuilder {
 
-    public static JsonWrapper jsonBuild() {
-        return null;
+    /**
+     * 构建微信Api接口
+     * @param config    接口对应的配置
+     * @param <T>       具体的微信Api类型
+     * @return
+     */
+    public static <T extends WechatApi> T wechatApi(WechatConfig<T> config) {
+        return config.buildApi();
     }
-
-    public static HttpAdapter httpBuild() {
-        return null;
-    }
-
 }

@@ -85,4 +85,8 @@ public abstract class HttpUtils {
         HttpResponse post = adapter.post(builder);
         return post.getContent(charset);
     }
+
+    public static HttpAdapter currentAdapter() {
+        return adapter;
+    }
 }

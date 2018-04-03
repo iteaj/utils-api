@@ -16,15 +16,20 @@ import com.iteaj.util.wechat.WechatApi;
  */
 public class WechatBasicToken implements WechatApi<WechatBasicTokenConfig, UtilsApi.VoidApiParam> {
 
-    private WechatBasicTokenConfig basicTokenConfig;
+    private WechatBasicTokenConfig config;
 
-    protected WechatBasicToken(WechatBasicTokenConfig basicTokenConfig) {
-        this.basicTokenConfig = basicTokenConfig;
+    protected WechatBasicToken(WechatBasicTokenConfig config) {
+        this.config = config;
     }
 
     @Override
     public WechatBasicTokenConfig getConfig() {
-        return basicTokenConfig;
+        return config;
+    }
+
+    @Override
+    public void setConfig(WechatBasicTokenConfig config) {
+        this.config = config;
     }
 
     /**
@@ -41,7 +46,7 @@ public class WechatBasicToken implements WechatApi<WechatBasicTokenConfig, Utils
 
     private BasicToken getBasicToken() {
 
-        UrlBuilder builder = UrlBuilder.build(getConfig().getTokenGateway())
+        UrlBuilder builder = UrlBuilder.build(getConfig().getApiGateway())
                 .addParam("appid", getConfig().getAppId())
                 .addParam("secret", getConfig().getAppSecret())
                 .addParam("grant_type", getConfig().getGrantType());

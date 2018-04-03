@@ -1,6 +1,6 @@
 package com.iteaj.util;
 
-import com.iteaj.util.wechat.WechatApiBuilder;
+import com.iteaj.util.wechat.basictoken.WechatBasicToken;
 import com.iteaj.util.wechat.basictoken.WechatBasicTokenConfig;
 
 /**
@@ -13,8 +13,6 @@ public class UtilsTest {
 
     public static void main(String[] args) {
         WechatBasicTokenConfig config = new WechatBasicTokenConfig("", "");
-        WechatApiBuilder.buildApi(config);
-
-
+        WechatBasicToken.BasicToken token = UtilsBuilder.wechatApi(config).invoke(null);
     }
 }

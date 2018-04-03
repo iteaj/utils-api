@@ -17,4 +17,9 @@ public interface WechatApi<C extends WechatConfig
      */
     C getConfig();
 
+    /**
+     * 设置接口配置配置
+     * @param config
+     */
+    void setConfig(C config);
 }

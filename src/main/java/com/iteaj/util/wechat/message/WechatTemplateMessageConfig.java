@@ -13,8 +13,8 @@ public class WechatTemplateMessageConfig extends WechatConfig<TemplateMessage> {
     //发送消息网关
     private static String API_GATEWAY = "https://api.weixin.qq.com/cgi-bin/message/template/send";
 
-    public WechatTemplateMessageConfig(String appId) {
-        super(appId);
+    public WechatTemplateMessageConfig(String appId, String appSecret) {
+        super(appId, appSecret);
     }
 
     @Override

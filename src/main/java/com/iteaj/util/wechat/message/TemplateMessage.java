@@ -2,15 +2,13 @@ package com.iteaj.util.wechat.message;
 
 import com.iteaj.util.*;
 import com.iteaj.util.http.build.SimpleBuilder;
-import com.iteaj.util.json.JsonFactory;
 import com.iteaj.util.json.JsonWrapper;
 import com.iteaj.util.wechat.WechatApi;
 import com.iteaj.util.wechat.basictoken.WechatBasicToken;
+import com.iteaj.util.wechat.basictoken.WechatBasicTokenConfig;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * Create Date By 2018-03-07
@@ -21,17 +19,30 @@ import java.util.List;
 public class TemplateMessage implements WechatApi<WechatTemplateMessageConfig, TemplateMessageParam> {
 
 
-    private WechatBasicToken wechatAccessToken;
+    private WechatBasicToken basicToken;
     private WechatTemplateMessageConfig config;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected TemplateMessage(WechatTemplateMessageConfig messageConfig) {
-        this.config = messageConfig;
+    protected TemplateMessage(WechatTemplateMessageConfig config) {
+        this.config = config;
+        this.basicToken = UtilsBuilder.wechatApi(new WechatBasicTokenConfig
+                (config.getAppId(), config.getAppSecret()));
+    }
+
+    protected TemplateMessage(WechatBasicToken basicToken
+            , WechatTemplateMessageConfig config) {
+        this.basicToken = basicToken;
+        this.config = config;
     }
 
     @Override
     public WechatTemplateMessageConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public void setConfig(WechatTemplateMessageConfig config) {
+        this.config = config;
     }
 
     @Override
@@ -42,33 +53,33 @@ public class TemplateMessage implements WechatApi<WechatTemplateMessageConfig, T
         AssertUtil.isTrue(CommonUtils.isNotEmpty(param.getItems()), "微信模版消息 - 未模版数据项", UtilsType.WECHAT);
 
         try {
-            WechatBasicToken.BasicToken invoke = wechatAccessToken.invoke(UtilsApi.VOID_PARAM);
+            WechatBasicToken.BasicToken invoke = basicToken.invoke(UtilsApi.VOID_PARAM);
             if(!invoke.success()) throw new IllegalStateException("获取微信AccessToken失败："+invoke.getErrmsg());
 
-            JsonWrapper json = JsonFactory.createJson();
+            JsonWrapper json = JsonUtils.buildJson();
             if(StringUtils.isNotBlank(param.getUrl()))json.addNode("url", param.getUrl());
             if(StringUtils.isNotBlank(config.getAppId())
                     && StringUtils.isNotBlank(param.getPagepath())){
-                JsonWrapper build = JsonFactory.createJson();
-                build.addNode("appid", appid)
-                        .addNode("pagepath", pagepath)
-                        .addNode("miniprogram", miniprogram);
+                JsonWrapper build = JsonUtils.buildJson();
+                build.addNode("appid", config.getAppId())
+                        .addNode("pagepath", param.getPagepath())
+                        .addNode("miniprogram", param.getMiniprogram());
             }
 
-            JsonWrapper data = JsonFactory.createJson();
-            for(Item item : items){
-                data.addNode(item.key, item);
+            JsonWrapper data = JsonUtils.buildJson();
+            for(TemplateMessageParam.Item item : param.getItems()){
+                data.addNode(item.getKey(), item);
             }
 
             json.addNode("data", data);
-            json.addNode("touser", openId);
-            json.addNode("template_id", templateId);
+            json.addNode("touser", param.getOpenId());
+            json.addNode("template_id", param.getTemplateId());
 
             if(logger.isDebugEnabled())
                 logger.debug("类别：微信接口 - 动作：发送模版消息 - 描述：发送报文 {} - token：{}"
                         , json.toJsonString(), invoke.getAccess_token());
 
-            SimpleBuilder builder = SimpleBuilder.build(this.gateway);
+            SimpleBuilder builder = SimpleBuilder.build(config.getApiGateway());
             builder.addParam("access_token", invoke.getAccess_token())
                     .addBody(json.toJsonString());
 
@@ -78,7 +89,6 @@ public class TemplateMessage implements WechatApi<WechatTemplateMessageConfig, T
             throw new IllegalStateException("发送微信模版消息失败：", e);
         }
 
-        return null;
     }
 
     public static class MessageResponse {
@@ -86,6 +96,10 @@ public class TemplateMessage implements WechatApi<WechatTemplateMessageConfig, T
         private String msgid;
         private String errmsg;
         private String errcode;
+
+        public boolean success() {
+            return "0".equals(errcode);
+        }
 
         public String getMsgid() {
             return msgid;
@@ -113,11 +127,11 @@ public class TemplateMessage implements WechatApi<WechatTemplateMessageConfig, T
     }
 
 
-    public WechatBasicToken getWechatAccessToken() {
-        return wechatAccessToken;
+    public WechatBasicToken getBasicToken() {
+        return basicToken;
     }
 
-    public void setWechatAccessToken(WechatBasicToken wechatAccessToken) {
-        this.wechatAccessToken = wechatAccessToken;
+    public void setBasicToken(WechatBasicToken basicToken) {
+        this.basicToken = basicToken;
     }
 }

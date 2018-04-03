@@ -1,6 +1,7 @@
 package com.iteaj.util.wechat;
 
 import com.iteaj.util.ApiConfig;
+import com.iteaj.util.AssertUtil;
 import com.iteaj.util.UtilsType;
 
 /**
@@ -18,11 +19,14 @@ public abstract class WechatConfig<A extends WechatApi> implements ApiConfig {
 
     public WechatConfig(String appId) {
         this.appId = appId;
+        AssertUtil.isNotBlank(appId, "微信配置 - 未指定appId", UtilsType.WECHAT);
     }
 
     public WechatConfig(String appId, String appSecret) {
         this.appId = appId;
         this.appSecret = appSecret;
+        AssertUtil.isNotBlank(appId, "微信配置 - 未指定appId", UtilsType.WECHAT);
+        AssertUtil.isNotBlank(appSecret, "微信配置 - 未指定appSecret", UtilsType.WECHAT);
     }
 
     public abstract A buildApi();

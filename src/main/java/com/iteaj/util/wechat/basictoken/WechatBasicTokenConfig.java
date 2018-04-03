@@ -41,11 +41,13 @@ public class WechatBasicTokenConfig extends WechatConfig<WechatBasicToken> {
         this.GRANT_TYPE = grantType;
     }
 
-    public String getTokenGateway() {
+    @Override
+    public String getApiGateway() {
         return TOKEN_GATEWAY;
     }
 
-    public void setTokenGateway(String tokenGateway) {
-        this.TOKEN_GATEWAY = tokenGateway;
+    @Override
+    public void setApiGateway(String gateway) {
+        TOKEN_GATEWAY = gateway;
     }
 }

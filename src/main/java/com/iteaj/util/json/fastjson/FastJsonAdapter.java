@@ -62,6 +62,6 @@ public class FastJsonAdapter implements JsonAdapter<JSON> {
 
     @Override
     public NodeWrapper build(String name, Object val) {
-        return null;
+        return new FastjsonNode(name, val);
     }
 }

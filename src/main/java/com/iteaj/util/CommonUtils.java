@@ -17,7 +17,9 @@ public abstract class CommonUtils {
     private static long GB = 1024*1024*1024;
 
     public static boolean isNotBlank(String param) {
-        return param != null && param.length() > 0;
+        if(param == null) return false;
+
+        return param.trim().length() > 0;
     }
 
     public static boolean isNotEmpty(Collection<?> params) {

@@ -1,7 +1,9 @@
 package com.iteaj.util.wechat;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.iteaj.util.HttpUtils;
 import com.iteaj.util.JsonUtils;
+import com.iteaj.util.http.build.SimpleBuilder;
 import com.iteaj.util.module.authorization.MapStorageContext;
 import com.iteaj.util.http.HttpAdapter;
 import com.iteaj.util.json.JsonFactory;
@@ -74,11 +76,12 @@ public class WechatTemplateMessage {
                 logger.debug("类别：微信接口 - 动作：发送模版消息 - 描述：发送报文 {} - token：{}"
                         , json.toJsonString(), invoke.getAccess_token());
 
-            byte[] bytes = http.post(this.gateway+"?access_token="
-                    +invoke.getAccess_token(), json.toJsonString().getBytes());
+            SimpleBuilder builder = SimpleBuilder.build(this.gateway);
+            builder.addParam("access_token", invoke.getAccess_token())
+                    .addBody(json.toJsonString());
 
-
-            return JsonUtils.toBean(new String(bytes, "utf-8"), Response.class);
+            String result = HttpUtils.doPost(builder, "utf-8");
+            return JsonUtils.toBean(result, Response.class);
         } catch (Exception e) {
             throw new IllegalStateException("发送微信模版消息失败：", e);
         }

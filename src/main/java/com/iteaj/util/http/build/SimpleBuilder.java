@@ -7,6 +7,8 @@ import com.iteaj.util.http.AbstractBuilder;
 import com.iteaj.util.http.ContentType;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * create time: 2018/4/1
@@ -17,10 +19,11 @@ import java.io.UnsupportedEncodingException;
  */
 public class SimpleBuilder extends AbstractBuilder {
 
-    private byte[] body;
+    private List<byte[]> bodys;
 
     private SimpleBuilder(String url, ContentType type) {
         super(url, type);
+        this.bodys = new ArrayList<>();
     }
 
     /**
@@ -55,23 +58,27 @@ public class SimpleBuilder extends AbstractBuilder {
         return (SimpleBuilder) super.addParam(name, value);
     }
 
-    public void addBody(String body) {
-        this.body = body.getBytes();
+    public SimpleBuilder addBody(String body) {
+        this.addBody(body, "UTF-8");
+        return this;
     }
 
-    public void addBody(byte[] body) {
-        this.body = body;
+    public SimpleBuilder addBody(byte[] body) {
+        this.bodys.add(body);
+        return this;
     }
 
-    public void addBody(String body, String charset) throws UtilsException {
+    public SimpleBuilder addBody(String body, String charset) throws UtilsException {
         try {
-            this.body = body.getBytes(charset);
+            this.bodys.add(body.getBytes(charset));
         } catch (UnsupportedEncodingException e) {
             throw new UtilsException("http-不支持的编码: "+charset, e, UtilsType.HTTP);
         }
+
+        return this;
     }
 
-    public byte[] getBody() {
-        return body;
+    public List<byte[]> getBodys() {
+        return bodys;
     }
 }

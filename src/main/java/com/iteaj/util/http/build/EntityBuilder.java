@@ -29,6 +29,7 @@ public class EntityBuilder extends AbstractBuilder {
 
     private String boundary; //body字段与字段之间的分隔符
     private List<EntityParam> entitys;
+    private static byte[] EMPTY_CONTENT = new byte[0];
 
     private EntityBuilder(String url) {
         this(url, ContentType.Multipart);
@@ -166,7 +167,6 @@ public class EntityBuilder extends AbstractBuilder {
         public EntityParam(String name, byte[] bytes) {
             super(name, null);
             this.content = bytes;
-            this.type = ContentType.OctetStream;
         }
 
         public EntityParam(String name, String value, byte[] content, ContentType type) {
@@ -181,6 +181,8 @@ public class EntityBuilder extends AbstractBuilder {
             if(!CommonUtils.isNotEmpty(content)
                     && CommonUtils.isNotBlank(getValue()))
                 content = getValue().getBytes(getCharset());
+
+            else content = EMPTY_CONTENT;
 
             return content;
         }

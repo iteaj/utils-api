@@ -25,7 +25,7 @@ public class HttpClientAdapter implements HttpAdapter<HttpClientResponse> {
 
     private final static Object syncLock = new Object();
     private static CloseableHttpClient httpClient=null;
-    private static RequestConfig config = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD_STRICT).build();
+    private static RequestConfig config = RequestConfig.custom().build();
     private PoolingHttpClientConnectionManager connectionManager;
 
     @Override

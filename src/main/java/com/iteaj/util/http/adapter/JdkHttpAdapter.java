@@ -6,15 +6,15 @@ import com.iteaj.util.UtilsType;
 import com.iteaj.util.http.AbstractBuilder;
 import com.iteaj.util.http.ContentType;
 import com.iteaj.util.http.HttpAdapter;
-import com.iteaj.util.http.HttpResponse;
 import com.iteaj.util.http.build.EntityBuilder;
 import com.iteaj.util.http.build.SimpleBuilder;
 import com.iteaj.util.http.build.UrlBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -33,7 +33,7 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
     /** 换车换行 */
     private static String ENTER = "\r\n";
     private static byte[] ENTER_BYTES = ENTER.getBytes();
-//    private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      *
@@ -138,7 +138,9 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
                 OutputStream outputStream = connection.getOutputStream();
 
                 //将内容写入Body
-                outputStream.write(((SimpleBuilder) builder).getBody());
+                for(byte[] item : ((SimpleBuilder) builder).getBodys()) {
+                    outputStream.write(item);
+                }
                 outputStream.flush();
             } else {
                 //Get request 不需要写
@@ -171,6 +173,10 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
                 for(int i = 0; i< entitys.size(); i++) {
                     EntityBuilder.EntityParam item = entitys.get(i);
 
+                    if(!CommonUtils.isNotBlank(item.getName()))
+                        throw new UtilsException("Http-构建Post输出流失败 " +
+                                "原因：UrlEncoded类型 参数name必填", UtilsType.HTTP);
+
                     output.write(item.getName().getBytes());
                     output.write("=".getBytes());
                     output.write(item.getContent());
@@ -192,8 +198,19 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
 
                 // 所以的内容全部写完之后,必须在写入一行分隔符,内容与前面的有点不同：前缀+分隔符+前缀+换行,多了一个前缀
                 output.write((PREFIX + builder.getBoundary() + PREFIX + ENTER).getBytes());
-            } else {
+            } else if(ContentType.OctetStream == builder.getType()) {
+                for (EntityBuilder.EntityParam item : entitys){
+                    if(CommonUtils.isNotBlank(item.getName())) {
+                        logger.warn("类别：Http - 动作：构建Post输出流 - 描述：OctetStream 类型带有参数名 - 处理：直接跳过");
+                        continue;
+                    }
 
+                    output.write(item.getContent());
+                }
+            } else {
+                for (EntityBuilder.EntityParam item : entitys){
+                    output.write(item.getContent());
+                }
             }
 
             output.flush();

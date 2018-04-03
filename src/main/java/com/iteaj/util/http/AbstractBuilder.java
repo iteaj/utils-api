@@ -36,9 +36,6 @@ public abstract class AbstractBuilder {
      * @return
      */
     public AbstractBuilder addParam(String name, String value) {
-        if(null == name || name.length() == 0 || null == value)
-            throw new UtilsException("新增的Url参数错误", UtilsType.HTTP);
-
         params.add(new UrlParam(name, value));
         return this;
     }
@@ -97,6 +94,10 @@ public abstract class AbstractBuilder {
             this.name = name;
             this.value = value;
             this.charset = charset;
+            if(!CommonUtils.isNotBlank(name))
+                throw new UtilsException("Http-Url参数名错误", UtilsType.HTTP);
+
+            if(null == value) this.value="";
         }
 
         public String getName() {

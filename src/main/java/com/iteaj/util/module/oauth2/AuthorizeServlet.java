@@ -22,6 +22,7 @@ public class AuthorizeServlet extends HttpServlet {
 
     private AuthorizeStorageManager storageManager;
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private static String INIT_PARAM_MANAGER = "OAuth2StorageManager";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -69,7 +70,7 @@ public class AuthorizeServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         try {
-            String storageManager = getServletContext().getInitParameter("OAuth2StorageManager");
+            String storageManager = getServletContext().getInitParameter(INIT_PARAM_MANAGER);
             if(CommonUtils.isNotBlank(storageManager)) {
                 Class<?> forName = Class.forName(storageManager, true, getClass().getClassLoader());
                 this.storageManager = (AuthorizeStorageManager)forName.newInstance();

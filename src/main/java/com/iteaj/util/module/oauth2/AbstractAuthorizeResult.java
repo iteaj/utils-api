@@ -10,8 +10,8 @@ public abstract class AbstractAuthorizeResult {
 
     private String errMsg;
     private boolean success;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private transient HttpServletRequest request;
+    private transient HttpServletResponse response;
     protected AbstractStorageContext context;
 
     public AbstractAuthorizeResult(AbstractStorageContext context) {

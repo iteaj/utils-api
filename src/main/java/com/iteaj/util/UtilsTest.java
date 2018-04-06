@@ -1,8 +1,8 @@
 package com.iteaj.util;
 
-import com.iteaj.util.wechat.authhorize.WechatWebAuthorizeApi;
-import com.iteaj.util.wechat.basictoken.WechatBasicToken;
-import com.iteaj.util.wechat.basictoken.WechatBasicTokenConfig;
+import com.iteaj.util.module.wechat.authhorize.WechatWebAuthorizeApi;
+import com.iteaj.util.module.wechat.basictoken.WechatBasicToken;
+import com.iteaj.util.module.wechat.basictoken.WechatBasicTokenConfig;
 
 /**
  * Create Date By 2018-04-03

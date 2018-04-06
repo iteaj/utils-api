@@ -1,6 +1,6 @@
 package com.iteaj.util.module.oauth2;
 
-import com.iteaj.util.ApiConfig;
+import com.iteaj.util.core.ApiConfig;
 
 /**
  * create time: 2018/4/5
@@ -16,4 +16,5 @@ public interface OAuth2ApiConfig extends ApiConfig {
      * @return
      */
     String getRedirectUrl();
+
 }

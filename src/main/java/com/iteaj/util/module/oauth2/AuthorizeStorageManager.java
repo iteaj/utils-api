@@ -13,6 +13,13 @@ public interface AuthorizeStorageManager {
     String STORAGE_MANAGER = AuthorizeStorageManager.class.getName();
 
     /**
+     * 返回一个超时时间 毫秒单位
+     * 超过这个时间上下文就会被清除掉
+     * @return
+     */
+    long getTimeout();
+
+    /**
      * 返回一个存储上下文
      * @param key
      * @param <T>

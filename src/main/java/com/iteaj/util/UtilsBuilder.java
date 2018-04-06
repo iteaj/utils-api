@@ -1,7 +1,7 @@
 package com.iteaj.util;
 
-import com.iteaj.util.wechat.WechatApi;
-import com.iteaj.util.wechat.WechatConfig;
+import com.iteaj.util.module.wechat.WechatApi;
+import com.iteaj.util.module.wechat.WechatConfig;
 
 /**
  * Create Date By 2018-04-03

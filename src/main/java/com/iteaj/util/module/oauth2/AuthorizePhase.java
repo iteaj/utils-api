@@ -1,6 +1,6 @@
 package com.iteaj.util.module.oauth2;
 
-import com.iteaj.util.UtilsException;
+import com.iteaj.util.core.UtilsException;
 
 import java.io.Serializable;
 

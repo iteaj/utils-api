@@ -1,6 +1,5 @@
 package com.iteaj.util.module.oauth2;
 
-import com.iteaj.util.UtilsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

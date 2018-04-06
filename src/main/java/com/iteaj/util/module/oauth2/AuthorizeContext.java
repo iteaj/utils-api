@@ -44,4 +44,5 @@ public interface AuthorizeContext extends Serializable {
      * @return
      */
     AuthorizeContext removeContextParam(String name);
+
 }

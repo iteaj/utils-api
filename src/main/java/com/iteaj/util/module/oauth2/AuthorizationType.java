@@ -12,7 +12,6 @@ public interface AuthorizationType {
 
     /**
      * <p>返回授权类型别名</p>
-     * @see TypeFactory#getTypes() 返回类型集合,每个类型的别名必须唯一
      * @return
      */
     String getTypeAlias();

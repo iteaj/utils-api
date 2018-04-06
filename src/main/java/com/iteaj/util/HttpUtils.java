@@ -1,12 +1,12 @@
 package com.iteaj.util;
 
-import com.iteaj.util.http.HttpAdapter;
-import com.iteaj.util.http.HttpResponse;
-import com.iteaj.util.http.adapter.HttpClientAdapter;
-import com.iteaj.util.http.adapter.JdkHttpAdapter;
-import com.iteaj.util.http.build.EntityBuilder;
-import com.iteaj.util.http.build.SimpleBuilder;
-import com.iteaj.util.http.build.UrlBuilder;
+import com.iteaj.util.module.http.HttpAdapter;
+import com.iteaj.util.module.http.HttpResponse;
+import com.iteaj.util.module.http.adapter.HttpClientAdapter;
+import com.iteaj.util.module.http.adapter.JdkHttpAdapter;
+import com.iteaj.util.module.http.build.EntityBuilder;
+import com.iteaj.util.module.http.build.SimpleBuilder;
+import com.iteaj.util.module.http.build.UrlBuilder;
 
 import java.net.HttpURLConnection;
 
@@ -63,9 +63,9 @@ public abstract class HttpUtils {
 
     /**
      * 发起一个Post请求
-     * 1. 如果Content-Type为{@link com.iteaj.util.http.ContentType#UrlEncoded} <br>
+     * 1. 如果Content-Type为{@link com.iteaj.util.module.http.ContentType#UrlEncoded} <br>
      *     写入到Body的内容格式为 name1=value1&name2=value2&...
-     * 2. 如果Content-Type为{@link com.iteaj.util.http.ContentType#Multipart} 可以用来上传文件 <br>
+     * 2. 如果Content-Type为{@link com.iteaj.util.module.http.ContentType#Multipart} 可以用来上传文件 <br>
      *     写入到Body的内容格式比较复杂, 详见{@link JdkHttpAdapter#writeEntityContent(HttpURLConnection, EntityBuilder)}
      * @param builder   用来构建Entity参数,发送时候会写入到Http的Body里面
      * @param charset   用来指定服务器响应的数据以什么字符集进行编码

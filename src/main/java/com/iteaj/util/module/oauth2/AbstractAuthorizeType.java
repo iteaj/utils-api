@@ -1,8 +1,8 @@
 package com.iteaj.util.module.oauth2;
 
 import com.iteaj.util.CommonUtils;
-import com.iteaj.util.UtilsException;
-import com.iteaj.util.UtilsType;
+import com.iteaj.util.core.UtilsException;
+import com.iteaj.util.core.UtilsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public abstract class AbstractAuthorizeType<C extends AbstractStorageContext>
 
     public AbstractAuthorizeType build() {
         if(logger.isDebugEnabled())
-            logger.debug("初始化授权类型:[{}] 类型描述：[{}] 阶段流程：[{}]",getClass().getSimpleName()
+            logger.debug("类别：OAuth2 - 动作：初始化授权类型:[{}] - 类型描述：[{}] 阶段流程：[{}]",getClass().getSimpleName()
                     , getDescription(), getProcessStage());
 
         return this;
@@ -50,7 +50,7 @@ public abstract class AbstractAuthorizeType<C extends AbstractStorageContext>
         } catch (UtilsException e) {
             throw e;
         }catch (Exception e) {
-            throw new UtilsException("OAuth2 - 执行错误：", e, UtilsType.OAuth2);
+            throw new UtilsException("OAuth2 - 执行错误", e, UtilsType.OAuth2);
         }
     }
 
@@ -72,16 +72,16 @@ public abstract class AbstractAuthorizeType<C extends AbstractStorageContext>
     @Override
     public void registerAuthorizePhase(AuthorizePhase phase) {
         if(phase == null || !CommonUtils.isNotBlank(phase.phaseAlias()))
-            throw new IllegalArgumentException("阶段不能为空或者阶段类型不能为空");
+            throw new UtilsException("授权类型在注册阶段的时候错误,必须指定阶段", UtilsType.OAuth2);
 
         if(phases.containsKey(phase.phaseAlias())){
-            logger.warn("类型：[{}] 里面的 [{}] 阶段将被覆写", getClass().getSimpleName()
+            logger.warn("动作：OAuth2 - 动作：注册阶段 - 类型：[{}] 里面的 [{}] 阶段将被覆写", getClass().getSimpleName()
                     , phase.getClass().getSimpleName());
             phases.put(phase.phaseAlias(), phase);
             return;
         }
 
-        logger.info("注册阶段：[{}] 到类型：[{}] 阶段别名：[{}]", phase.getClass().getSimpleName(),
+        logger.info("动作：OAuth2 - 动作：注册阶段[{}]到类型[{}] - 阶段别名：[{}]", phase.getClass().getSimpleName(),
                 getClass().getSimpleName(), phase.phaseAlias());
 
         phases.put(phase.phaseAlias(), phase);

@@ -9,6 +9,7 @@ package com.iteaj.util.module.oauth2;
  */
 public class ContextManagerFactory {
 
+    //默认的上下文存储管理器
     private static AuthorizeStorageManager storageManager = new MapStorageManager();
 
     public static AuthorizeStorageManager getDefaultManager() {

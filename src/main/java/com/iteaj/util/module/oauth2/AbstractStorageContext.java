@@ -1,8 +1,8 @@
 package com.iteaj.util.module.oauth2;
 
-import com.iteaj.util.AssertUtil;
+import com.iteaj.util.AssertUtils;
 import com.iteaj.util.CommonUtils;
-import com.iteaj.util.UtilsType;
+import com.iteaj.util.core.UtilsType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,11 +54,11 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
         this.type = type;
         this.nextPhase = type.getAuthorizePhase(type.getPhaseEntry());
 
-        AssertUtil.isTrue(nextPhase != null
+        AssertUtils.isTrue(nextPhase != null
                 , "OAuth2 - 找不到要执行的入口阶段：phaseEntry 在类型 "
                         +type.getClass().getName(), UtilsType.OAuth2);
 
-        AssertUtil.isTrue(type.authorizeResult() != null, "", UtilsType.OAuth2);
+        AssertUtils.isTrue(type.authorizeResult() != null, "", UtilsType.OAuth2);
 
         //初始化授权结果
         Constructor<? extends AbstractAuthorizeResult> constructor = type
@@ -142,4 +142,6 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
     public AbstractAuthorizeResult getAuthorizeResult() {
         return authorizeResult;
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.iteaj.util;
 
+import com.iteaj.util.wechat.authhorize.WechatWebAuthorizeApi;
 import com.iteaj.util.wechat.basictoken.WechatBasicToken;
 import com.iteaj.util.wechat.basictoken.WechatBasicTokenConfig;
 
@@ -12,7 +13,9 @@ import com.iteaj.util.wechat.basictoken.WechatBasicTokenConfig;
 public class UtilsTest {
 
     public static void main(String[] args) {
-        WechatBasicTokenConfig config = new WechatBasicTokenConfig("", "");
-        WechatBasicToken.BasicToken token = UtilsBuilder.wechatApi(config).invoke(null);
+        String tet = "{\"openid\":\"oT2k_v-ghoTBVw-mvoN6iwCjdDyw\",\"nickname\":\"倾城\uE41D\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"厦门\",\"province\":\"福建\",\"country\":\"中国\",\"headimgurl\":\"http:\\/\\/thirdwx.qlogo.cn\\/mmopen\\/vi_32\\/VqC1ROPKSrfzY4Gyw2MlJwCJ5EeX0ic7H487FkPrMaBOFXdOaX5lZibFVtN85SH0FAjicia0bDQ68qIa6qZa8ia5jFw\\/132\",\"privilege\":[]}";
+
+        WechatWebAuthorizeApi.UserInfo userInfo = JsonUtils.toBean(tet, WechatWebAuthorizeApi.UserInfo.class);
+        System.out.println(userInfo);
     }
 }

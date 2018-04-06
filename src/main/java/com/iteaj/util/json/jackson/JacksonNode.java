@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.iteaj.util.UtilsException;
 import com.iteaj.util.UtilsType;
+import com.iteaj.util.http.adapter.JdkHttpAdapter;
 import com.iteaj.util.json.JsonWrapper;
 import com.iteaj.util.json.NodeWrapper;
 
@@ -33,6 +34,15 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
     @Override
     public JsonNode getVal() {
         return this.value;
+    }
+
+    @Override
+    public String getString() {
+        try {
+            return JacksonAdapter.objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new UtilsException("Json-解析失败", e, UtilsType.JSON);
+        }
     }
 
     @Override
@@ -69,7 +79,13 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
     @Override
     public String toJsonString() {
         try {
-            return JacksonAdapter.objectMapper.writeValueAsString(value);
+            if(value instanceof ObjectNode)
+                return JacksonAdapter.objectMapper.writeValueAsString(value);
+
+            ObjectNode objectNode = JacksonAdapter.getNodeFactory().objectNode();
+            objectNode.set(key, value);
+
+            return JacksonAdapter.objectMapper.writeValueAsString(objectNode);
         } catch (JsonProcessingException e) {
             throw new UtilsException("Json-解析失败", e, UtilsType.JSON);
         }

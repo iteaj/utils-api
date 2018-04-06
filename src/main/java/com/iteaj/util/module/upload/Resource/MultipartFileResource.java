@@ -1,6 +1,6 @@
 package com.iteaj.util.module.upload.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import com.iteaj.util.CommonUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class MultipartFileResource implements UploadResource {
     @Override
     public String getSuffix() {
         String fileName = getFileName();
-        if(StringUtils.isEmpty(fileName)){
+        if(CommonUtils.isBlank(fileName)){
         	return "";
         }
         return fileName.substring(fileName.lastIndexOf("."));
@@ -73,7 +73,7 @@ public class MultipartFileResource implements UploadResource {
 
     @Override
     public boolean isExist() {
-        return (StringUtils.isNotBlank(getFileName()) || !isEmpty());
+        return (CommonUtils.isNotBlank(getFileName()) || !isEmpty());
     }
 
     public MultipartFile getFile() {

@@ -1,10 +1,10 @@
 package com.iteaj.util.module.aop.output;
 
+import com.iteaj.util.CommonUtils;
 import com.iteaj.util.module.aop.ActionOutput;
 import com.iteaj.util.module.aop.ActionRecord;
 import com.iteaj.util.module.aop.record.ExceptionRecord;
 import com.iteaj.util.module.aop.record.VoidRecord;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -54,7 +54,7 @@ public class Slf4JActionOutput extends ActionOutput implements InitializingBean 
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if(StringUtils.isBlank(this.loggerName))
+        if(!CommonUtils.isBlank(this.loggerName))
             this.loggerName = "Slf4jMonitoring";
 
         this.logger = LoggerFactory.getLogger(getLoggerName());

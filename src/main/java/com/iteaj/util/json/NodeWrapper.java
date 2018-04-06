@@ -21,4 +21,9 @@ public interface NodeWrapper<T> extends JsonWrapper<T> {
      */
     Object getVal();
 
+    /**
+     * 返回字符串形式的值
+     * @return
+     */
+    String getString();
 }

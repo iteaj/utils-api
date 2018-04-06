@@ -15,7 +15,7 @@ public abstract class AssertUtil {
      * @param type
      */
     public static void isNotBlank(String str, String msg, UtilsType type) {
-        if(CommonUtils.isNotBlank(str))
+        if(!CommonUtils.isNotBlank(str))
             throw new UtilsException(msg, type);
 
     }

@@ -1,7 +1,6 @@
 package com.iteaj.util.module.aop;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import com.iteaj.util.CommonUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -10,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Create Date By 2016/11/17
@@ -77,7 +74,7 @@ public abstract class AopExtendUtils {
         //获取目标接口
         if(Proxy.isProxyClass(targetClass)){
             Class<?>[] interfaces = targetClass.getInterfaces();
-            if(ArrayUtils.isNotEmpty(interfaces))
+            if(CommonUtils.isNotEmpty(interfaces))
                 targetInterfaces = interfaces[0];
 
             if(targetInterfaces == null) return false;

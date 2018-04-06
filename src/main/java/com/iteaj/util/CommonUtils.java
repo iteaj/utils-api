@@ -162,4 +162,8 @@ public abstract class CommonUtils {
         }
         return sb.substring(0, sb.length()-separator.length());
     }
+
+    public static boolean isBlank(String str) {
+        return null == str || str.trim().length()==0;
+    }
 }

@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.iteaj.util.json.JsonAdapter;
 import com.iteaj.util.json.JsonWrapper;
 import com.iteaj.util.json.NodeWrapper;
-import org.apache.commons.lang.StringUtils;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -61,7 +60,16 @@ public class FastJsonAdapter implements JsonAdapter<JSON> {
     }
 
     @Override
-    public NodeWrapper build(String name, Object val) {
+    public JsonWrapper build(String json) {
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        FastjsonWrapper build = (FastjsonWrapper)build();
+        jsonObject.putAll(jsonObject);
+
+        return build;
+    }
+
+    @Override
+    public NodeWrapper buildNode(String name, Object val) {
         return new FastjsonNode(name, val);
     }
 }

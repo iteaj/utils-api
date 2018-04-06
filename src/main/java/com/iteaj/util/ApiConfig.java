@@ -13,7 +13,7 @@ public interface ApiConfig {
      * @see UtilsType 详细的类型
      * @return
      */
-    UtilsType getType();
+    UtilsType getUtilsType();
 
     /**
      * 返回调用Api的网关

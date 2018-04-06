@@ -36,6 +36,14 @@ public class FastjsonNode implements NodeWrapper<JSONObject> {
     }
 
     @Override
+    public String getString() {
+        if(value instanceof JSON)
+            return ((JSON) value).toJSONString();
+
+        return value.toString();
+    }
+
+    @Override
     public Class<JSONObject> original() {
         return JSONObject.class;
     }

@@ -4,8 +4,7 @@ import com.iteaj.util.HttpUtils;
 import com.iteaj.util.JsonUtils;
 import com.iteaj.util.UtilsApi;
 import com.iteaj.util.http.build.UrlBuilder;
-import com.iteaj.util.module.authorization.AuthorizeContext;
-import com.iteaj.util.module.authorization.SyncResult;
+import com.iteaj.util.module.oauth2.AuthorizeContext;
 import com.iteaj.util.wechat.WechatApi;
 
 /**
@@ -23,12 +22,12 @@ public class WechatBasicToken implements WechatApi<WechatBasicTokenConfig, Utils
     }
 
     @Override
-    public WechatBasicTokenConfig getConfig() {
+    public WechatBasicTokenConfig getApiConfig() {
         return config;
     }
 
     @Override
-    public void setConfig(WechatBasicTokenConfig config) {
+    public void setApiConfig(WechatBasicTokenConfig config) {
         this.config = config;
     }
 
@@ -46,16 +45,16 @@ public class WechatBasicToken implements WechatApi<WechatBasicTokenConfig, Utils
 
     private BasicToken getBasicToken() {
 
-        UrlBuilder builder = UrlBuilder.build(getConfig().getApiGateway())
-                .addParam("appid", getConfig().getAppId())
-                .addParam("secret", getConfig().getAppSecret())
-                .addParam("grant_type", getConfig().getGrantType());
+        UrlBuilder builder = UrlBuilder.build(getApiConfig().getApiGateway())
+                .addParam("appid", getApiConfig().getAppId())
+                .addParam("secret", getApiConfig().getAppSecret())
+                .addParam("grant_type", getApiConfig().getGrantType());
 
         String result = HttpUtils.doGet(builder, "utf-8");
         return JsonUtils.toBean(result, BasicToken.class);
     }
 
-    public static class BasicToken extends SyncResult{
+    public static class BasicToken{
 
         private String errcode;
         private String errmsg;
@@ -64,10 +63,6 @@ public class WechatBasicToken implements WechatApi<WechatBasicTokenConfig, Utils
 
         public BasicToken(){
 
-        }
-
-        public BasicToken(AuthorizeContext context) {
-            super(context);
         }
 
         public boolean success(){

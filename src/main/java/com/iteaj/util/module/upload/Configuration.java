@@ -1,5 +1,6 @@
 package com.iteaj.util.module.upload;
 
+import com.iteaj.util.CommonUtils;
 import com.iteaj.util.Generator;
 import com.iteaj.util.module.upload.Resource.MultipartFileResource;
 import com.iteaj.util.module.upload.Resource.UploadResource;
@@ -11,7 +12,6 @@ import com.iteaj.util.module.upload.transfer.LocationTarget;
 import com.iteaj.util.module.upload.transfer.TransferTarget;
 import com.iteaj.util.module.upload.utils.FileNameGenerator;
 import com.iteaj.util.module.upload.utils.UploadUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -77,11 +77,11 @@ public class Configuration implements ResourceProcessRegistry,FilePropertyFilter
 
     protected void _initDefault() {
         //初始化根路径(root),如果以/结尾,则去掉/
-        if(!StringUtils.isEmpty(root) && root.endsWith(PATH_SEPARATOR))
+        if(CommonUtils.isNotBlank(root) && root.endsWith(PATH_SEPARATOR))
             root = UploadUtils.cutOutPath(root);
 
         //初始化suffixType到patterns
-        if(StringUtils.isNotBlank(suffixTypes))
+        if(CommonUtils.isNotBlank(suffixTypes))
             this.patterns = UploadUtils.stringToList(suffixTypes,SUFFIX_SEPARATOR);
 
         //注册源处理器
@@ -92,7 +92,7 @@ public class Configuration implements ResourceProcessRegistry,FilePropertyFilter
 
     protected void _validatePath() throws IOException {
         //如果没有指定上传直接返回
-        if(StringUtils.isBlank(root))
+        if(!CommonUtils.isNotBlank(root))
             throw new FileNotFoundException("没有指定上传目录root！");
 
         rootDir = new File(root);

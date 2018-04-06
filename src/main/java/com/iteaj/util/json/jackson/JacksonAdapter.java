@@ -1,16 +1,19 @@
 package com.iteaj.util.json.jackson;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.iteaj.util.UtilsException;
+import com.iteaj.util.UtilsType;
 import com.iteaj.util.json.JsonAdapter;
 import com.iteaj.util.json.JsonWrapper;
 import com.iteaj.util.json.NodeWrapper;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -142,7 +145,21 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
     }
 
     @Override
-    public NodeWrapper build(String name, Object val) {
+    public JsonWrapper build(String json) {
+        try {
+            JsonNode jsonNode = objectMapper.readTree(json);
+
+            JacksonWrapper jsonNodes = new JacksonWrapper();
+            jsonNodes.setAll((ObjectNode) jsonNode);
+
+            return jsonNodes;
+        } catch (Exception e) {
+            throw new UtilsException("Json - 错误的json字符串："+json, UtilsType.JSON);
+        }
+    }
+
+    @Override
+    public NodeWrapper buildNode(String name, Object val) {
         return new JacksonNode(name, getNodeFactory().pojoNode(val));
     }
 

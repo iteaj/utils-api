@@ -1,7 +1,7 @@
 package com.iteaj.util.module.aop.record;
 
+import com.iteaj.util.CommonUtils;
 import com.iteaj.util.module.aop.WeaveAction;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,7 +29,7 @@ public class TimeWebSupport extends TimeRecord {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         if(requestAttributes instanceof ServletRequestAttributes) {
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-            String queryString = StringUtils.isBlank(request.getQueryString()) ? "" : MARK+request.getQueryString();
+            String queryString = CommonUtils.isBlank(request.getQueryString()) ? "" : MARK+request.getQueryString();
             uri = request.getRequestURI()+queryString;
 
             contextPath = request.getContextPath();

@@ -1,11 +1,10 @@
 package com.iteaj.util.module.sms.smsBao;
 
+import com.iteaj.util.CommonUtils;
 import com.iteaj.util.module.sms.Sms;
 import com.iteaj.util.module.sms.SmsConfigure;
 import com.iteaj.util.module.sms.SmsEntity;
 import com.iteaj.util.module.util.EncryptSecurity;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.net.URLEncoder;
 
@@ -76,8 +75,8 @@ public class SmsBao implements Sms<SmsBaoSendStatus> {
         if(null==configure)
             throw new IllegalArgumentException("未设置短信接口配置信息：SmsConfigure");
 
-        if(StringUtils.isBlank(configure.getUserName()) ||
-                StringUtils.isBlank(configure.getPassword()))
+        if(CommonUtils.isBlank(configure.getUserName()) ||
+                CommonUtils.isBlank(configure.getPassword()))
             throw new IllegalArgumentException("短信接口配置：用户名或密码为空");
 
         this.validated = true;
@@ -101,11 +100,11 @@ public class SmsBao implements Sms<SmsBaoSendStatus> {
     private String assemblePhones(String... phones){
         StringBuffer sb = new StringBuffer();
 
-        if(ArrayUtils.isEmpty(phones))
+        if(!CommonUtils.isNotEmpty(phones))
             throw new IllegalArgumentException("警告：此短信未指定号码,发送失败");
 
         for(String item : phones){
-            if(StringUtils.isBlank(item))
+            if(CommonUtils.isBlank(item))
                 throw new IllegalArgumentException("警告：此短信指定的号码列表错误,发送失败");
 
             sb.append(item).append(',');

@@ -16,4 +16,9 @@ public interface Const {
 
     String FILE_XML = ".xml";
     String FILE_HTML = ".html";
+
+    /**
+     * Url参数Key
+     */
+    String CONTEXT_PARAM_KEY = "utils_oauth2";
 }

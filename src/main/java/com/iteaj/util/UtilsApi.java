@@ -14,14 +14,14 @@ public interface UtilsApi<P extends UtilsApi.ApiParam> {
      * 返回指定api接口的   配置
      * @return
      */
-    ApiConfig getConfig();
+    ApiConfig getApiConfig();
 
     /**
      * 调用接口
      * @param param 调用所需的参数
      * @return
      */
-    Object invoke(P param);
+    Object invoke(P param) throws UtilsException;
 
     /**
      *  调用方法是所需要的参数

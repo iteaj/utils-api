@@ -6,7 +6,6 @@ import com.iteaj.util.json.JsonWrapper;
 import com.iteaj.util.wechat.WechatApi;
 import com.iteaj.util.wechat.basictoken.WechatBasicToken;
 import com.iteaj.util.wechat.basictoken.WechatBasicTokenConfig;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +35,12 @@ public class TemplateMessage implements WechatApi<WechatTemplateMessageConfig, T
     }
 
     @Override
-    public WechatTemplateMessageConfig getConfig() {
+    public WechatTemplateMessageConfig getApiConfig() {
         return config;
     }
 
     @Override
-    public void setConfig(WechatTemplateMessageConfig config) {
+    public void setApiConfig(WechatTemplateMessageConfig config) {
         this.config = config;
     }
 
@@ -57,9 +56,9 @@ public class TemplateMessage implements WechatApi<WechatTemplateMessageConfig, T
             if(!invoke.success()) throw new IllegalStateException("获取微信AccessToken失败："+invoke.getErrmsg());
 
             JsonWrapper json = JsonUtils.buildJson();
-            if(StringUtils.isNotBlank(param.getUrl()))json.addNode("url", param.getUrl());
-            if(StringUtils.isNotBlank(config.getAppId())
-                    && StringUtils.isNotBlank(param.getPagepath())){
+            if(CommonUtils.isNotBlank(param.getUrl()))json.addNode("url", param.getUrl());
+            if(CommonUtils.isNotBlank(config.getAppId())
+                    && CommonUtils.isNotBlank(param.getPagepath())){
                 JsonWrapper build = JsonUtils.buildJson();
                 build.addNode("appid", config.getAppId())
                         .addNode("pagepath", param.getPagepath())

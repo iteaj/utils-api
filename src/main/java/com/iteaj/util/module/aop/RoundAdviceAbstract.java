@@ -1,8 +1,8 @@
 package com.iteaj.util.module.aop;
 
+import com.iteaj.util.CommonUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.beans.factory.InitializingBean;
@@ -82,7 +82,7 @@ public abstract class RoundAdviceAbstract implements MethodInterceptor, Initiali
      */
     protected List<WeaveAction> getWeaveActions(Method method, Object oriThis) {
         Set<AbstractWeaveActionFactory> factorySet = methodActionMapping.get(method);
-        if(CollectionUtils.isEmpty(factorySet)) return EMPTY_ACTION;
+        if(!CommonUtils.isNotEmpty(factorySet)) return EMPTY_ACTION;
 
         Iterator<AbstractWeaveActionFactory> iterator = factorySet.iterator();
         List<WeaveAction> actionList = new ArrayList<>();

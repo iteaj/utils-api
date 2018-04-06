@@ -1,10 +1,9 @@
 package com.iteaj.util.module.aop;
 
+import com.iteaj.util.CommonUtils;
 import com.iteaj.util.module.aop.factory.time.TimeWeaveActionFactory;
 import com.iteaj.util.module.aop.record.TimeRecord;
 import com.iteaj.util.module.aop.record.TimeWebSupport;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
@@ -99,7 +98,7 @@ public class AopProxyExtend extends StaticMethodMatcherPointcutAdvisor implement
 
 
         //如果织入工厂为空或者输出为空则手动关闭这个功能
-        if(MapUtils.isEmpty(beansOfType) || MapUtils.isEmpty(outputMap)) {
+        if(!CommonUtils.isNotEmpty(beansOfType) || !CommonUtils.isNotEmpty(outputMap)) {
             this.isStart = false; return;
         }
 
@@ -111,7 +110,7 @@ public class AopProxyExtend extends StaticMethodMatcherPointcutAdvisor implement
             }
         }
 
-        if(MapUtils.isNotEmpty(distinct)) {
+        if(!CommonUtils.isNotEmpty(distinct)) {
             this._weaveActionFactories = distinct.values();
         }
 
@@ -121,8 +120,8 @@ public class AopProxyExtend extends StaticMethodMatcherPointcutAdvisor implement
         }
 
         //只要有一种没有存在则直接手动关闭
-        if(CollectionUtils.isEmpty(_weaveActionFactories)
-                || MapUtils.isEmpty(_OUTPUTS)){
+        if(!CommonUtils.isNotEmpty(_weaveActionFactories)
+                || !CommonUtils.isNotEmpty(_OUTPUTS)){
 
             this.isStart = false; return;
         }

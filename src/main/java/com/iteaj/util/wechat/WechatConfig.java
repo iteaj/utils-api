@@ -32,7 +32,7 @@ public abstract class WechatConfig<A extends WechatApi> implements ApiConfig {
     public abstract A buildApi();
 
     @Override
-    public UtilsType getType() {
+    public UtilsType getUtilsType() {
         return UtilsType.WECHAT;
     }
 

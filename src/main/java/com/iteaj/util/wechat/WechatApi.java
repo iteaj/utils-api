@@ -15,11 +15,11 @@ public interface WechatApi<C extends WechatConfig
      * 返回一个微信对应Api的配置
      * @return
      */
-    C getConfig();
+    C getApiConfig();
 
     /**
      * 设置接口配置配置
      * @param config
      */
-    void setConfig(C config);
+    void setApiConfig(C config);
 }

@@ -61,8 +61,12 @@ public final class JsonUtils{
 		return CURRENT_ADAPTER.build();
 	}
 
+	public static JsonWrapper buildJson(String json) {
+		return CURRENT_ADAPTER.build(json);
+	}
+
 	public static NodeWrapper buildNode(String name, Object val) {
-		return CURRENT_ADAPTER.build(name, val);
+		return CURRENT_ADAPTER.buildNode(name, val);
 	}
 
 	public static JsonAdapter adapter() {

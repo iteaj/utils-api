@@ -21,7 +21,7 @@ public class MapStorageManager implements AuthorizeStorageManager {
     public Map<String, ContextWrapper> storage;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected MapStorageManager() {
+    public MapStorageManager() {
         this.storage = new ConcurrentHashMap<>();
     }
 

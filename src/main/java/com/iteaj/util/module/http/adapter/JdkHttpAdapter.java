@@ -3,26 +3,27 @@ package com.iteaj.util.module.http.adapter;
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
-import com.iteaj.util.module.http.AbstractBuilder;
-import com.iteaj.util.module.http.ContentType;
-import com.iteaj.util.module.http.HttpAdapter;
+import com.iteaj.util.module.http.*;
 import com.iteaj.util.module.http.build.EntityBuilder;
-import com.iteaj.util.module.http.build.SimpleBuilder;
+import com.iteaj.util.module.http.build.TextBuilder;
 import com.iteaj.util.module.http.build.UrlBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
+import java.util.zip.DeflaterInputStream;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Create Date By 2018-03-30
  *  对Jdk自带的{@link HttpURLConnection}进行简单的封装<br>
- *          , 并且统一向外提供一套简单易用的Api
  * @author iteaj
  * @since JDK1.7
  */
@@ -45,9 +46,9 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
     @Override
     public JdkHttpResponse get(UrlBuilder builder) throws UtilsException {
         if(null == builder)
-            throw new UtilsException("Http-请指定构建器", UtilsType.HTTP);
+            throw new UtilsException("请指定参数构建器", UtilsType.HTTP);
 
-        HttpURLConnection connection = getConnection(builder.parseUrl(), "GET");
+        HttpURLConnection connection = getConnection(builder, "GET");
 
         //设置http协议的请求头
         setHeaders(connection, builder);
@@ -59,17 +60,15 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
      *
      * @param builder 用来构建Http请求的Body内容, <br>
      *                和{@link EntityBuilder}不同的是写入body的参数只有参数Value没有参数名.
-     *                而且不能以链式的操作不断增加内容, 只能写一次,
-     *                如果第二次调用addBody增数据将覆盖第一次的内容
      * @return
      * @throws UtilsException
      */
     @Override
-    public JdkHttpResponse post(SimpleBuilder builder) throws UtilsException {
+    public JdkHttpResponse post(TextBuilder builder) throws UtilsException {
         if(null == builder)
-            throw new UtilsException("Http-请指定构建器", UtilsType.HTTP);
+            throw new UtilsException("请指定参数构建器", UtilsType.HTTP);
 
-        HttpURLConnection connection = getConnection(builder.parseUrl(), "POST");
+        HttpURLConnection connection = getConnection(builder, "POST");
 
         //设置http协议的请求头
         setHeaders(connection, builder);
@@ -93,9 +92,9 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
     @Override
     public JdkHttpResponse post(EntityBuilder builder) throws UtilsException {
         if(null == builder)
-            throw new UtilsException("Http-请指定构建器", UtilsType.HTTP);
+            throw new UtilsException("请指定参数构建器", UtilsType.HTTP);
 
-        HttpURLConnection connection = getConnection(builder.parseUrl(), "POST");
+        HttpURLConnection connection = getConnection(builder, "POST");
 
         //设置http协议的请求头
         setHeaders(connection, builder);
@@ -108,17 +107,22 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
 
     /**
      *
-     * @param url
+     * @param builder
      * @param method
      * @return
      */
-    protected HttpURLConnection getConnection(String url, String method) {
+    protected HttpURLConnection getConnection(AbstractBuilder builder, String method) {
         try {
-            if(null == url) throw new UtilsException("无Url连接", UtilsType.HTTP);
+            HttpRequestConfig config = builder.getRequestConfig();
 
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            HttpURLConnection connection = (HttpURLConnection)
+                    new URL(builder.parseUrl()).openConnection();
+
             connection.setRequestMethod(method);
-
+            connection.setUseCaches(config.isUseCaches());
+            connection.setReadTimeout(config.getReadTimeout());
+            connection.setConnectTimeout(config.getConnectTimeout());
+            connection.setInstanceFollowRedirects(config.isFollowRedirects());
             return connection;
         } catch (IOException e) {
             throw new UtilsException("不能获取Url连接", e, UtilsType.HTTP);
@@ -134,13 +138,12 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
             if(builder instanceof EntityBuilder) {
                 //将内容写入Body
                 writeEntityContent(connection, (EntityBuilder) builder);
-            } else if(builder instanceof SimpleBuilder) {
+            } else if(builder instanceof TextBuilder) {
                 OutputStream outputStream = connection.getOutputStream();
 
                 //将内容写入Body
-                for(byte[] item : ((SimpleBuilder) builder).getBodys()) {
-                    outputStream.write(item);
-                }
+                outputStream.write(((TextBuilder) builder).getTestString()
+                        .getBytes((builder).getCharset()));
                 outputStream.flush();
             } else {
                 //Get request 不需要写
@@ -153,13 +156,36 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
             }
 
             if(connection.getResponseCode() == 200) {
-                return new JdkHttpResponse(200, CommonUtils
-                        .read(connection.getInputStream()), connection);
+
+                return new JdkHttpResponse(200, getResponseContent(connection), connection);
             }
             return new JdkHttpResponse(connection.getResponseCode(), null, connection);
         } catch (IOException e) {
             throw new UtilsException("发送Http请求失败", e, UtilsType.HTTP);
+        } finally {
+            //释放链接
+            connection.disconnect();
         }
+    }
+
+    private byte[] getResponseContent(HttpURLConnection connection) throws IOException {
+        InputStream inputStream = connection.getInputStream();
+        String encoding = connection.getHeaderField("Content-Encoding");
+
+        //如果没有指定内容编码则直接读取内容
+        if(null == encoding) return CommonUtils.read(inputStream);
+
+        if("gzip".equals(encoding) || "x-gzip".equals(encoding)) {
+            inputStream = new GZIPInputStream(inputStream);
+        } else if("deflate".equals(encoding)) {
+            inputStream = new DeflaterInputStream(inputStream);
+        } else if ("identity".equals(encoding)){
+            /* 正常编码不需要处理 */
+        } else {
+            throw new UtilsException("不支持的内容编码："+ encoding, UtilsType.HTTP);
+        }
+
+        return CommonUtils.read(inputStream);
     }
 
     protected void writeEntityContent(HttpURLConnection connection
@@ -174,7 +200,7 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
                     EntityBuilder.EntityParam item = entitys.get(i);
 
                     if(!CommonUtils.isNotBlank(item.getName()))
-                        throw new UtilsException("Http-构建Post输出流失败 " +
+                        throw new UtilsException("构建Post输出流失败 " +
                                 "原因：UrlEncoded类型 参数name必填", UtilsType.HTTP);
 
                     output.write(item.getName().getBytes());
@@ -226,12 +252,11 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
         connection.setUseCaches(false);
 
         //设置成长连接
-        connection.setRequestProperty("Connection", "Keep-Alive");
-        connection.setRequestProperty("Accept", "*/*");
-        connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-        connection.setRequestProperty("Cache-Control", "no-cache");
-
-        connection.setDoInput(true); //设置可输入
+        Iterator<HttpHead> iterator = builder.iterator();
+        while (iterator.hasNext()) {
+            HttpHead next = iterator.next();
+            connection.setRequestProperty(next.getName(), next.getValue());
+        }
 
         if(builder instanceof EntityBuilder) {
             connection.setDoOutput(true); //设置可输出
@@ -242,6 +267,10 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
              */
             connection.setRequestProperty("Content-Type", builder.getType().type
                     + "; boundary=" + ((EntityBuilder) builder).getBoundary());
+        } else if(builder instanceof TextBuilder) {
+
+            connection.setDoOutput(true); //设置可输出
+            connection.setRequestProperty("Content-Type", builder.getType().type);
         } else {
             connection.setRequestProperty("Content-Type", builder.getType().type);
         }

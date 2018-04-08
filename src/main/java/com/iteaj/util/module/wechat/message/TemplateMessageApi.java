@@ -1,8 +1,9 @@
 package com.iteaj.util.module.wechat.message;
 
 import com.iteaj.util.*;
+import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
-import com.iteaj.util.module.http.build.SimpleBuilder;
+import com.iteaj.util.module.http.build.TextBuilder;
 import com.iteaj.util.module.json.JsonWrapper;
 import com.iteaj.util.module.wechat.AbstractWechatApi;
 import com.iteaj.util.module.wechat.basictoken.WechatBasicToken;
@@ -51,7 +52,7 @@ public class TemplateMessageApi extends AbstractWechatApi
         AssertUtils.isTrue(null != param, "微信模版消息 - 参数错误", UtilsType.WECHAT);
         AssertUtils.isNotBlank(param.getOpenId(), "微信模版消息 - 未指定接受者的openId", UtilsType.WECHAT);
         AssertUtils.isNotBlank(param.getTemplateId(), "微信模版消息 - 未指定模版的templateId", UtilsType.WECHAT);
-        AssertUtils.isTrue(CommonUtils.isNotEmpty(param.getItems()), "微信模版消息 - 未模版数据项", UtilsType.WECHAT);
+        AssertUtils.isTrue(CommonUtils.isNotEmpty(param.getItems()), "微信模版消息 - 无模版数据项", UtilsType.WECHAT);
 
         try {
             WechatBasicToken.BasicToken invoke = basicToken.invoke(null);
@@ -59,12 +60,14 @@ public class TemplateMessageApi extends AbstractWechatApi
 
             JsonWrapper json = JsonUtils.buildJson();
             if(CommonUtils.isNotBlank(param.getUrl()))json.addNode("url", param.getUrl());
-            if(CommonUtils.isNotBlank(config.getAppId())
+            if(CommonUtils.isNotBlank(param.getMiniprogram())
                     && CommonUtils.isNotBlank(param.getPagepath())){
+
                 JsonWrapper build = JsonUtils.buildJson();
                 build.addNode("appid", config.getAppId())
-                        .addNode("pagepath", param.getPagepath())
-                        .addNode("miniprogram", param.getMiniprogram());
+                        .addNode("pagepath", param.getPagepath());
+
+                json.addNode("miniprogram", build);
             }
 
             JsonWrapper data = JsonUtils.buildJson();
@@ -76,18 +79,18 @@ public class TemplateMessageApi extends AbstractWechatApi
             json.addNode("touser", param.getOpenId());
             json.addNode("template_id", param.getTemplateId());
 
+            String message = json.toJsonString();
             if(logger.isDebugEnabled())
                 logger.debug("类别：微信接口 - 动作：发送模版消息 - 描述：发送报文 {} - token：{}"
-                        , json.toJsonString(), invoke.getAccess_token());
+                        , message, invoke.getAccess_token());
 
-            SimpleBuilder builder = SimpleBuilder.build(config.getApiGateway());
-            builder.addParam("access_token", invoke.getAccess_token())
-                    .addBody(json.toJsonString());
+            TextBuilder builder = TextBuilder.build(config.getApiGateway());
+            builder.addParam("access_token", invoke.getAccess_token()).addText(message);
 
             String result = HttpUtils.doPost(builder, "utf-8");
             return JsonUtils.toBean(result, MessageResponse.class);
         } catch (Exception e) {
-            throw new IllegalStateException("发送微信模版消息失败：", e);
+            throw new UtilsException("发送微信模版消息失败：", e, UtilsType.WECHAT);
         }
 
     }

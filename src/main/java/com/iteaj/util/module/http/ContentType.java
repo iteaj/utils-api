@@ -12,18 +12,18 @@ import java.nio.charset.Charset;
  * @since 1.7
  */
 public enum ContentType {
-    UrlEncoded("application/x-www-form-urlencoded", Const.UTF_8)
-    ,Json("application/json", Const.UTF_8)
-    ,OctetStream("octet-stream", null)
-    ,Multipart("multipart/form-data", Const.ISO_8859_1)
-    ,Html("text/html", Const.UTF_8)
-    ,Plain("test/plain", Const.UTF_8)
-    ,Xml("text/xml", Const.UTF_8);
+    UrlEncoded("application/x-www-form-urlencoded", "UTF-8")
+    ,Json("application/json", "UTF-8")
+    ,OctetStream("octet-stream", "ISO_8859_1")
+    ,Multipart("multipart/form-data", "ISO_8859_1")
+    ,Html("text/html", "UTF-8")
+    ,Plain("text/plain", "UTF-8")
+    ,Xml("text/xml", "UTF-8");
 
     public String type;
-    public Charset charset;
+    public String charset;
 
-    ContentType(String type, Charset charset) {
+    ContentType(String type, String charset) {
         this.type = type;
         this.charset = charset;
     }

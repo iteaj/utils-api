@@ -142,7 +142,6 @@ public class TemplateMessageParam implements WechatApiParam {
             this.color = color;
         }
 
-        @JSONField(serialize = false)
         public String getKey() {
             return key;
         }

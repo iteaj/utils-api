@@ -16,12 +16,12 @@ public class UtilsException extends RuntimeException {
     }
 
     public UtilsException(String message, UtilsType type) {
-        super(message+type.desc);
+        super(type.desc+message);
         this.type = type;
     }
 
     public UtilsException(String message, Throwable cause, UtilsType type) {
-        super(message+type.desc, cause);
+        super(type.desc+message, cause);
         this.type = type;
     }
 

@@ -36,7 +36,7 @@ public class JdkHttpResponse implements HttpResponse {
             this.headers = getHeaderFields(connection);
             this.message = connection.getResponseMessage();
         } catch (IOException e) {
-            throw new UtilsException("Http-解析响应失败", e, UtilsType.HTTP);
+            throw new UtilsException("解析响应失败", e, UtilsType.HTTP);
         }
     }
 
@@ -70,7 +70,6 @@ public class JdkHttpResponse implements HttpResponse {
 
     @Override
     public byte[] getContent() {
-
         return content;
     }
 
@@ -82,7 +81,7 @@ public class JdkHttpResponse implements HttpResponse {
 
             return null;
         } catch (UnsupportedEncodingException e) {
-            throw new UtilsException("Http-不支持的编码："+charset, e, UtilsType.HTTP);
+            throw new UtilsException("不支持的编码："+charset, e, UtilsType.HTTP);
         }
     }
 

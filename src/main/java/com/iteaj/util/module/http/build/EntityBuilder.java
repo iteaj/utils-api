@@ -32,10 +32,14 @@ public class EntityBuilder extends AbstractBuilder {
     private static byte[] EMPTY_CONTENT = new byte[0];
 
     private EntityBuilder(String url) {
-        this(url, ContentType.Multipart);
+        this(url, ContentType.UrlEncoded.charset, ContentType.UrlEncoded);
     }
 
-    private EntityBuilder(String url, ContentType type) {
+    private EntityBuilder(String url, String charset) {
+        this(url, charset, ContentType.UrlEncoded);
+    }
+
+    private EntityBuilder(String url, String charset, ContentType type) {
         super(url, type);
         this.entitys = new ArrayList<>();
         this.boundary = UUID.randomUUID().toString();
@@ -52,6 +56,18 @@ public class EntityBuilder extends AbstractBuilder {
     }
 
     /**
+     * 构建一个实例对象
+     * contentType 默认为 {@link ContentType#UrlEncoded}
+     * @param url   必填
+     * @return
+     */
+    public static EntityBuilder build(String url, String charset) throws UtilsException {
+        if(!CommonUtils.isNotBlank(url))
+            throw new UtilsException("Url错误", UtilsType.HTTP);
+        return new EntityBuilder(url, charset, ContentType.UrlEncoded);
+    }
+
+    /**
      *
      * @param url
      * @param contentType
@@ -59,9 +75,9 @@ public class EntityBuilder extends AbstractBuilder {
      */
     public static EntityBuilder build(String url, ContentType contentType) {
         if(!CommonUtils.isNotBlank(url))
-            throw new UtilsException("http Url错误", UtilsType.HTTP);
+            throw new UtilsException("Url错误", UtilsType.HTTP);
 
-        return new EntityBuilder(url, contentType);
+        return new EntityBuilder(url, contentType.charset, contentType);
     }
 
     @Override
@@ -96,14 +112,27 @@ public class EntityBuilder extends AbstractBuilder {
     }
 
     /**
+     * 往Body里面写入String -> String的参数, 并可以指定写入的编码
+     * @param name
+     * @param value
+     * @param charset
+     * @param type 此参数的Content-Type类型
+     * @return
+     */
+    public EntityBuilder addBody(String name, String value, String charset, ContentType type) {
+        entitys.add(new EntityParam(name, value, charset, type));
+        return this;
+    }
+
+    /**
      * 往Body里面写入 String,byte[]的参数
      * @see ContentType#OctetStream 此参数的Content-Type类型
      * @param name
      * @param bytes
      * @return
      */
-    public EntityBuilder addBody(String name, byte[] bytes) {
-        entitys.add(new EntityParam(name, bytes));
+    public EntityBuilder addBody(String name, byte[] bytes, String fileName) {
+        entitys.add(new EntityParam(name, fileName, bytes, ContentType.OctetStream));
         return this;
     }
 
@@ -158,19 +187,21 @@ public class EntityBuilder extends AbstractBuilder {
 
         public EntityParam(String name, String value) {
             super(name, value, "UTF-8");
+            this.type = ContentType.Plain;
         }
 
         public EntityParam(String name, String value, String charset) {
             super(name, value, charset);
+            this.type = ContentType.Plain;
         }
 
-        public EntityParam(String name, byte[] bytes) {
-            super(name, null);
-            this.content = bytes;
+        public EntityParam(String name, String value, String charset, ContentType type) {
+            super(name, value, charset);
+            this.type = type;
         }
 
-        public EntityParam(String name, String value, byte[] content, ContentType type) {
-            super(name, value);
+        public EntityParam(String name, String fileName, byte[] content, ContentType type) {
+            super(name, fileName);
             this.type = type;
             this.isFile = true;
             this.content = content;
@@ -178,11 +209,14 @@ public class EntityBuilder extends AbstractBuilder {
 
         public byte[] getContent() throws UnsupportedEncodingException {
             //将值转成字节数组
-            if(!CommonUtils.isNotEmpty(content)
-                    && CommonUtils.isNotBlank(getValue()))
+            if(CommonUtils.isNotEmpty(content)) {
+                return content;
+            } else if(CommonUtils.isNotBlank(getValue())) {
                 content = getValue().getBytes(getCharset());
 
-            else content = EMPTY_CONTENT;
+            } else {
+                content = EMPTY_CONTENT;
+            }
 
             return content;
         }

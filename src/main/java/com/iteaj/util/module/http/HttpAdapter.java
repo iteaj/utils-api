@@ -4,7 +4,7 @@ import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.module.http.adapter.HttpClientAdapter;
 import com.iteaj.util.module.http.adapter.JdkHttpAdapter;
 import com.iteaj.util.module.http.build.EntityBuilder;
-import com.iteaj.util.module.http.build.SimpleBuilder;
+import com.iteaj.util.module.http.build.TextBuilder;
 import com.iteaj.util.module.http.build.UrlBuilder;
 
 import java.io.File;
@@ -33,18 +33,18 @@ public interface HttpAdapter<T extends HttpResponse> {
      * 简单的实体构建器
      * @param builder 用来构建Http请求的Body内容, <br>
      *                和{@link EntityBuilder}不同的是写入body的参数只有参数Value没有参数名.
-     * @see SimpleBuilder#addBody(byte[])
+     * @see TextBuilder#addText(String)
      * @return
      * @throws UtilsException
      */
-    T post(SimpleBuilder builder) throws UtilsException;
+    T post(TextBuilder builder) throws UtilsException;
 
     /**
      * 发送Post请求
      * @param builder  用来构建Http请求的Body内容, 每一个参数都包含参数名和参数值的对应关系.
      *                 可以增加文件{@link EntityBuilder#addBody(String, File)}、
      *                 普通的参数{@link EntityBuilder#addBody(String, String)}、
-     *                 流参数{@link EntityBuilder#addBody(String, String)}
+     *                 流参数{@link EntityBuilder#addBody(String, byte[])}
      *
      * @return
      * @throws UtilsException

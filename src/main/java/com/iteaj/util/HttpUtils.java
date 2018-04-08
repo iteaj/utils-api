@@ -1,11 +1,10 @@
 package com.iteaj.util;
 
-import com.iteaj.util.module.http.HttpAdapter;
+import com.iteaj.util.core.UtilsManagerFactory;
 import com.iteaj.util.module.http.HttpResponse;
-import com.iteaj.util.module.http.adapter.HttpClientAdapter;
 import com.iteaj.util.module.http.adapter.JdkHttpAdapter;
 import com.iteaj.util.module.http.build.EntityBuilder;
-import com.iteaj.util.module.http.build.SimpleBuilder;
+import com.iteaj.util.module.http.build.TextBuilder;
 import com.iteaj.util.module.http.build.UrlBuilder;
 
 import java.net.HttpURLConnection;
@@ -19,29 +18,14 @@ import java.net.HttpURLConnection;
  */
 public abstract class HttpUtils {
 
-    private static HttpAdapter adapter;
-
-    /**
-     * 默认优先使用HttpClient
-     */
-    static {
-        try {
-            adapter = new HttpClientAdapter();
-        } catch (Throwable e) {
-            /*doing nothing*/
-        }
-
-        if(null == adapter)
-            adapter = new JdkHttpAdapter();
-    }
-
     /**
      * 发起一个Get请求
      * @param builder  用来构建Url参数, 参数会追加到源Url后面
      * @return
      */
     public static byte[] doGet(UrlBuilder builder) {
-        HttpResponse response = adapter.get(builder);
+        HttpResponse response = UtilsManagerFactory
+                .getDefaultHttpAdapter().get(builder);
         return response.getContent();
     }
 
@@ -52,12 +36,14 @@ public abstract class HttpUtils {
      * @return
      */
     public static String doGet(UrlBuilder builder, String charset) {
-        HttpResponse response = adapter.get(builder);
+        HttpResponse response = UtilsManagerFactory
+                .getDefaultHttpAdapter().get(builder);
         return response.getContent(charset);
     }
 
     public static byte[] doPost(EntityBuilder builder) {
-        HttpResponse post = adapter.post(builder);
+        HttpResponse post = UtilsManagerFactory
+                .getDefaultHttpAdapter().post(builder);
         return post.getContent();
     }
 
@@ -72,21 +58,20 @@ public abstract class HttpUtils {
      * @return
      */
     public static String doPost(EntityBuilder builder, String charset) {
-        HttpResponse post = adapter.post(builder);
+        HttpResponse post = UtilsManagerFactory
+                .getDefaultHttpAdapter().post(builder);
         return post.getContent(charset);
     }
 
-    public static byte[] doPost(SimpleBuilder builder) {
-        HttpResponse post = adapter.post(builder);
+    public static byte[] doPost(TextBuilder builder) {
+        HttpResponse post = UtilsManagerFactory
+                .getDefaultHttpAdapter().post(builder);
         return post.getContent();
     }
 
-    public static String doPost(SimpleBuilder builder, String charset) {
-        HttpResponse post = adapter.post(builder);
+    public static String doPost(TextBuilder builder, String charset) {
+        HttpResponse post = UtilsManagerFactory
+                .getDefaultHttpAdapter().post(builder);
         return post.getContent(charset);
-    }
-
-    public static HttpAdapter currentAdapter() {
-        return adapter;
     }
 }

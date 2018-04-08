@@ -1,11 +1,12 @@
 package com.iteaj.util.module.http;
 
+import com.iteaj.util.AssertUtils;
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
+import com.iteaj.util.core.UtilsManagerFactory;
 import com.iteaj.util.core.UtilsType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * create time: 2018/3/31
@@ -14,16 +15,42 @@ import java.util.List;
  * @version 1.0
  * @since 1.7
  */
-public abstract class AbstractBuilder {
+public abstract class AbstractBuilder implements HttpHeaderBuilder{
 
+    private String charset; //字符编码 在Content-Type:application/x-www-form-urlencoded 才生效
     protected ContentType type;
     protected StringBuilder url;
     protected List<UrlParam> params;
+    protected Map<String, HttpHead> headers;
+    protected HttpRequestConfig requestConfig;
+
+    private static Map<String, HttpHead> defaultHead;
+    static {
+        defaultHead = new HashMap<>();
+        defaultHead.put("Accept", new HttpHead("Accept", "*/*"));
+        defaultHead.put("Connection", new HttpHead("Connection", "Keep-Alive"));
+        defaultHead.put("Cache-Control", new HttpHead("Cache-Control", "no-cache"));
+        defaultHead.put("Accept-Encoding", new HttpHead("Accept-Encoding", "gzip, deflate"));
+    }
+
+    public AbstractBuilder(String url, String charset) {
+        this(url, charset, ContentType.UrlEncoded
+                , UtilsManagerFactory.getDefaultRequestConfig());
+    }
 
     public AbstractBuilder(String url, ContentType type) {
+        this(url, type.charset, type
+                , UtilsManagerFactory.getDefaultRequestConfig());
+    }
+
+    public AbstractBuilder(String url, String charset
+            , ContentType type, HttpRequestConfig requestConfig) {
         this.type = type;
+        this.charset = charset;
         this.params = new ArrayList<>();
         this.url = new StringBuilder(url);
+        this.requestConfig = requestConfig;
+        this.headers = new HashMap<>(defaultHead);
     }
 
     /**
@@ -35,8 +62,22 @@ public abstract class AbstractBuilder {
      * @return
      */
     public AbstractBuilder addParam(String name, String value) {
+        AssertUtils.isNotBlank(name, "未指定请求参数名", UtilsType.HTTP);
         params.add(new UrlParam(name, value));
         return this;
+    }
+
+    @Override
+    public AbstractBuilder addHead(String name, String value) {
+        AssertUtils.isNotBlank(name, "未指定请求头名称", UtilsType.HTTP);
+        AssertUtils.isNotBlank(value, "未指定请求头值："+name, UtilsType.HTTP);
+        headers.put(name, new HttpHead(name, value));
+        return this;
+    }
+
+    @Override
+    public Iterator<HttpHead> iterator() {
+        return headers.values().iterator();
     }
 
     /**
@@ -77,6 +118,19 @@ public abstract class AbstractBuilder {
 
     public ContentType getType() {
         return type;
+    }
+
+    public HttpRequestConfig getRequestConfig() {
+        return requestConfig;
+    }
+
+    public AbstractBuilder setRequestConfig(HttpRequestConfig requestConfig) {
+        this.requestConfig = requestConfig;
+        return this;
+    }
+
+    public String getCharset() {
+        return charset;
     }
 
     protected class UrlParam {

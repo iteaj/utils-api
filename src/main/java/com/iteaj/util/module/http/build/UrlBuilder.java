@@ -40,4 +40,8 @@ public class UrlBuilder extends AbstractBuilder {
         return (UrlBuilder) super.addParam(name, value);
     }
 
+    @Override
+    public UrlBuilder addHead(String name, String value) {
+        return (UrlBuilder) super.addHead(name, value);
+    }
 }

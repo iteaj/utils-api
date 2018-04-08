@@ -60,15 +60,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
             <version>4.3</version>
+            <scope>${scope}</scope>
+            <artifactId>httpclient</artifactId>
+            <groupId>org.apache.httpcomponents</groupId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
             <version>4.3</version>
+            <scope>${scope}</scope>
+            <artifactId>httpmime</artifactId>
+            <groupId>org.apache.httpcomponents</groupId>
         </dependency>
 
         <!-- Json -->
@@ -88,7 +90,7 @@
 
         <!-- logger -->
         <dependency>
-            <scope>${scope}</scope>
+            <scope>compile</scope>
             <version>1.7.25</version>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -134,6 +136,13 @@
             <version>${spring.version}</version>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
+        </dependency>
+
+        <dependency>
+            <scope>${scope}</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
         </dependency>
     </dependencies>
     <build>
@@ -192,6 +201,9 @@
     <profiles>
         <profile>
             <id>ossrh</id>
+            <properties>
+                <scope>provided</scope>
+            </properties>
             <build>
                 <plugins>
                     <!--<plugin>-->

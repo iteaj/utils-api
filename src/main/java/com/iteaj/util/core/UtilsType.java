@@ -8,11 +8,11 @@ package com.iteaj.util.core;
  */
 public enum UtilsType {
 
-    AOP("扩展SpringAop"),
-    HTTP("对Http的封装"),
-    JSON("对Json的封装"),
+    AOP(" - 扩展SpringAop"),
+    HTTP("Http-Api - "),
+    JSON("Json-Api - "),
     WECHAT(" - 提供微信公众号Api支持,详情见：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1445241432"),
-    OAuth2("提供OAuth2.0支持"),
+    OAuth2("OAuth2.0支持 - "),
     ASSERT("断言"),
     Common("其他常用的工具类支持");
 

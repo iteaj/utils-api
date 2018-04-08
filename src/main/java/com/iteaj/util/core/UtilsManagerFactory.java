@@ -1,7 +1,9 @@
 package com.iteaj.util.core;
 
+import com.iteaj.util.module.http.AllTrustManager;
 import com.iteaj.util.module.http.HttpAdapter;
 import com.iteaj.util.module.http.HttpRequestConfig;
+import com.iteaj.util.module.http.SSLContextManager;
 import com.iteaj.util.module.http.adapter.HttpClientAdapter;
 import com.iteaj.util.module.http.adapter.JdkHttpAdapter;
 import com.iteaj.util.module.json.JsonAdapter;
@@ -9,6 +11,8 @@ import com.iteaj.util.module.json.fastjson.FastJsonAdapter;
 import com.iteaj.util.module.json.jackson.JacksonAdapter;
 import com.iteaj.util.module.oauth2.AuthorizeStorageManager;
 import com.iteaj.util.module.oauth2.MapStorageManager;
+
+import javax.net.ssl.X509TrustManager;
 
 /**
  * create time: 2018/4/7
@@ -23,8 +27,14 @@ public class UtilsManagerFactory {
     private static Object lock = new Object();
     private static JsonAdapter defaultJsonAdapter;
     private static HttpAdapter defaultHttpAdapter;
+    private static SSLContextManager defaultSslManager;
     private static HttpRequestConfig defaultRequestConfig;
     private static AuthorizeStorageManager defaultStorageManager;
+
+    static {
+        //初始化默认的Https证书管理
+        defaultSslManager = new SSLContextManager();
+    }
 
     public static HttpAdapter getDefaultHttpAdapter() {
         if(null != defaultHttpAdapter)
@@ -91,5 +101,13 @@ public class UtilsManagerFactory {
 
     public static void setDefaultRequestConfig(HttpRequestConfig defaultRequestConfig) {
         UtilsManagerFactory.defaultRequestConfig = defaultRequestConfig;
+    }
+
+    public static SSLContextManager getDefaultSslManager() {
+        return defaultSslManager;
+    }
+
+    public static void setDefaultSslManager(SSLContextManager defaultSslManager) {
+        UtilsManagerFactory.defaultSslManager = defaultSslManager;
     }
 }

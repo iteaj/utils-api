@@ -2,6 +2,7 @@ package com.iteaj.util.module.http.adapter;
 
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
+import com.iteaj.util.core.UtilsManagerFactory;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.*;
 import com.iteaj.util.module.http.build.EntityBuilder;
@@ -10,12 +11,15 @@ import com.iteaj.util.module.http.build.UrlBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.DeflaterInputStream;
@@ -115,17 +119,32 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
         try {
             HttpRequestConfig config = builder.getRequestConfig();
 
-            HttpURLConnection connection = (HttpURLConnection)
-                    new URL(builder.parseUrl()).openConnection();
+            URL url = new URL(builder.parseUrl());
+            HttpURLConnection httpConnection;
+            String protocol = url.getProtocol();
+            if("http".equals(protocol)) {
+                httpConnection = (HttpURLConnection)url.openConnection();
+            } else if("https".equals(protocol)) {
+                HttpsURLConnection httpsConnection = (HttpsURLConnection)url.openConnection();
+                SSLContextManager sslManager = UtilsManagerFactory.getDefaultSslManager();
+                httpsConnection.setSSLSocketFactory(sslManager.getSslContext().getSocketFactory());//添加ssl参数
+                httpConnection = httpsConnection;
+            } else {
+                throw new UtilsException("不支持的协议："+protocol, UtilsType.HTTP);
+            }
 
-            connection.setRequestMethod(method);
-            connection.setUseCaches(config.isUseCaches());
-            connection.setReadTimeout(config.getReadTimeout());
-            connection.setConnectTimeout(config.getConnectTimeout());
-            connection.setInstanceFollowRedirects(config.isFollowRedirects());
-            return connection;
+            httpConnection.setRequestMethod(method);
+            httpConnection.setUseCaches(config.isUseCaches());
+            httpConnection.setReadTimeout(config.getReadTimeout());
+            httpConnection.setConnectTimeout(config.getConnectTimeout());
+            httpConnection.setInstanceFollowRedirects(config.isFollowRedirects());
+            return httpConnection;
         } catch (IOException e) {
             throw new UtilsException("不能获取Url连接", e, UtilsType.HTTP);
+        } catch (NoSuchAlgorithmException e) {
+            throw new UtilsException("Https证书算法异常", e, UtilsType.HTTP);
+        } catch (KeyManagementException e) {
+            throw new UtilsException("Https证书异常", e, UtilsType.HTTP);
         }
     }
 

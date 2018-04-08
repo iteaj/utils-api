@@ -34,7 +34,7 @@ public class UtilsTest {
     @Test
     public void http() {
         /* ------------------------------UrlBuilder-------------------------------- */
-        UrlBuilder urlBuilder = UrlBuilder.build("http://www.baidu.com/frame")
+        UrlBuilder urlBuilder = UrlBuilder.build("https://www.baidu.com/frame")
                 .addHead("Accept", "iteaj/*").addParam("who", "iteaj");
         JdkHttpAdapter jdkHttpAdapter = new JdkHttpAdapter();
         JdkHttpResponse jdkHttpResponse = jdkHttpAdapter.get(urlBuilder);

@@ -34,6 +34,8 @@ public class UtilsManagerFactory {
     static {
         //初始化默认的Https证书管理
         defaultSslManager = new SSLContextManager();
+        //初始化默认的OAuth2上下文存储管理
+        defaultStorageManager = new MapStorageManager();
     }
 
     public static HttpAdapter getDefaultHttpAdapter() {
@@ -57,17 +59,11 @@ public class UtilsManagerFactory {
     }
 
     public static AuthorizeStorageManager getDefaultStorageManager() {
-        if(defaultStorageManager != null)
-            return defaultStorageManager;
-
-        synchronized (lock) {
-            defaultStorageManager = new MapStorageManager();
-            return defaultStorageManager;
-        }
+        return defaultStorageManager;
     }
 
     public static void setDefaultStorageManager(AuthorizeStorageManager defaultStorageManager) {
-        if(UtilsManagerFactory.defaultStorageManager == null)
+        if(defaultStorageManager.getClass() != MapStorageManager.class)
             UtilsManagerFactory.defaultStorageManager = defaultStorageManager;
     }
 

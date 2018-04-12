@@ -28,8 +28,12 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
     private transient static Object lock = new Object();
     private transient AbstractAuthorizeResult authorizeResult;
 
-    public AbstractStorageContext(HttpServletResponse response) {
+    public AbstractStorageContext(HttpServletRequest request, HttpServletResponse response) {
+        this.request = request;
         this.response = response;
+        AssertUtils.isTrue(request!=null && response!=null
+                ,"请指定web信息request、response", UtilsType.OAuth2);
+
         this.storage = new HashMap<>();
     }
 

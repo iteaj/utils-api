@@ -2,6 +2,7 @@ package com.iteaj.util.module.wechat.authhorize;
 
 import com.iteaj.util.AssertUtils;
 import com.iteaj.util.core.UtilsType;
+import com.iteaj.util.module.wechat.WechatScope;
 
 /**
  * create time: 2018/4/5
@@ -13,7 +14,6 @@ import com.iteaj.util.core.UtilsType;
 public class WechatWebAuthorizeConfig extends AbstractWechatOAuth2ApiConfig<WechatWebAuthorizeApi> {
 
     private String lang;
-    private String scope;
     private String state;
     private String grantType;
     private String codeGateway;
@@ -28,7 +28,6 @@ public class WechatWebAuthorizeConfig extends AbstractWechatOAuth2ApiConfig<Wech
         this.state = "auth";
         this.lang = "zh_CN";
         this.responseType = "code";
-        this.scope = "snsapi_userinfo";
         this.redirectUrl = redirectUrl;
         this.grantType = "authorization_code";
         this.apiGateway = "https://api.weixin.qq.com/sns/userinfo";
@@ -60,14 +59,6 @@ public class WechatWebAuthorizeConfig extends AbstractWechatOAuth2ApiConfig<Wech
 
     public void setLang(String lang) {
         this.lang = lang;
-    }
-
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
     }
 
     public String getState() {

@@ -11,7 +11,6 @@ public class WechatEnterpriseAuthorizeConfig extends
         AbstractWechatOAuth2ApiConfig<WechatEnterpriseAuthorizeApi> {
 
     private String state;
-    private String scope;
     private String userType;
     private String agentid;
     private String responseType;
@@ -22,11 +21,12 @@ public class WechatEnterpriseAuthorizeConfig extends
 
     private String redirectUrl;
 
-    public WechatEnterpriseAuthorizeConfig(String corpId, String corpSecret, String redirectUrl) {
+    public WechatEnterpriseAuthorizeConfig(String corpId, String corpSecret
+            , String agentId, String redirectUrl) {
         super(corpId, corpSecret);
         this.state = "auth";
+        this.agentid = agentId;
         this.responseType = "code";
-        this.scope = "snsapi_userinfo";
         this.redirectUrl = redirectUrl;
         this.accessGateway = "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
         this.codeGateway = "https://open.weixin.qq.com/connect/oauth2/authorize";
@@ -57,14 +57,6 @@ public class WechatEnterpriseAuthorizeConfig extends
         this.state = state;
     }
 
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
-
     public String getUserType() {
         return userType;
     }
@@ -77,8 +69,9 @@ public class WechatEnterpriseAuthorizeConfig extends
         return agentid;
     }
 
-    public void setAgentid(String agentid) {
+    public WechatEnterpriseAuthorizeConfig setAgentid(String agentid) {
         this.agentid = agentid;
+        return this;
     }
 
     public String getResponseType() {
@@ -126,7 +119,8 @@ public class WechatEnterpriseAuthorizeConfig extends
         return this.redirectUrl;
     }
 
-    public void setRedirectUrl(String redirectUrl) {
+    public WechatEnterpriseAuthorizeConfig setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
+        return this;
     }
 }

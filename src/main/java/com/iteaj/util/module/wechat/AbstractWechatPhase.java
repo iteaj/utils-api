@@ -1,9 +1,7 @@
 package com.iteaj.util.module.wechat;
 
 import com.iteaj.util.CommonUtils;
-import com.iteaj.util.module.oauth2.AbstractAuthorizePhase;
-import com.iteaj.util.module.oauth2.AbstractStorageContext;
-import com.iteaj.util.module.oauth2.AuthorizePhase;
+import com.iteaj.util.module.oauth2.*;
 
 /**
  * create time: 2018/4/6
@@ -12,7 +10,7 @@ import com.iteaj.util.module.oauth2.AuthorizePhase;
  * @version 1.0
  * @since JDK1.7
  */
-public abstract class AbstractWechatPhase extends AbstractAuthorizePhase {
+public abstract class AbstractWechatPhase<T extends OAuth2ApiParam> extends AbstractAuthorizePhase<T> {
 
     public AbstractWechatPhase(AuthorizePhase nextPhase) {
         super(nextPhase);
@@ -33,4 +31,7 @@ public abstract class AbstractWechatPhase extends AbstractAuthorizePhase {
 
         return true;
     }
+
+    @Override
+    protected abstract void doPhase(PhaseChain chain, T context);
 }

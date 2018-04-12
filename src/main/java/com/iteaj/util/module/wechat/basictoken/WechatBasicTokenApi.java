@@ -12,22 +12,22 @@ import com.iteaj.util.module.wechat.WechatApiParam;
  * @author iteaj
  * @since 1.7
  */
-public class WechatBasicToken extends AbstractWechatApi
-        <WechatBasicTokenConfig, WechatApiParam> {
+public class WechatBasicTokenApi extends AbstractWechatApi
+        <WechatBasicTokenApiConfig, WechatApiParam> {
 
-    private WechatBasicTokenConfig config;
+    private WechatBasicTokenApiConfig config;
 
-    protected WechatBasicToken(WechatBasicTokenConfig config) {
+    protected WechatBasicTokenApi(WechatBasicTokenApiConfig config) {
         this.config = config;
     }
 
     @Override
-    public WechatBasicTokenConfig getApiConfig() {
+    public WechatBasicTokenApiConfig getApiConfig() {
         return config;
     }
 
     @Override
-    public void setApiConfig(WechatBasicTokenConfig config) {
+    public void setApiConfig(WechatBasicTokenApiConfig config) {
         this.config = config;
     }
 

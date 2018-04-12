@@ -13,7 +13,8 @@ import java.net.URLEncoder;
  * @author iteaj
  * @since 1.7
  */
-public abstract class AbstractAuthorizePhase implements AuthorizePhase {
+public abstract class AbstractAuthorizePhase<T extends AbstractStorageContext>
+        implements AuthorizePhase<T> {
 
     private AuthorizePhase nextPhase;
     protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -34,11 +35,11 @@ public abstract class AbstractAuthorizePhase implements AuthorizePhase {
      * @throws IOException
      */
     @Override
-    public void phase(PhaseChain chain, AbstractStorageContext context) {
+    public void phase(PhaseChain chain, T context) {
         doPhase(chain, context);
     }
 
-    protected abstract void doPhase(PhaseChain chain, AbstractStorageContext context);
+    protected abstract void doPhase(PhaseChain chain, T context);
 
     protected String getRedirectUrl(AbstractStorageContext context, String redirectUrl){
         try {

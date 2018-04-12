@@ -2,6 +2,7 @@ package com.iteaj.util.module.oauth2;
 
 import com.iteaj.util.core.ApiParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -14,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class OAuth2ApiParam extends AbstractStorageContext
         implements ApiParam {
 
-    public OAuth2ApiParam(HttpServletResponse response) {
-        super(response);
+
+    public OAuth2ApiParam(HttpServletRequest request, HttpServletResponse response) {
+        super(request, response);
     }
 }

@@ -1,10 +1,10 @@
 package com.iteaj.util.module.oauth2;
 
-import com.iteaj.util.CommonUtils;
+import com.iteaj.util.core.task.TimeoutTask;
+import com.iteaj.util.core.task.TimeoutTaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class MapStorageManager implements AuthorizeStorageManager {
 
-    public Map<String, ContextWrapper> storage;
+    public Map<String, AuthorizeContext> storage;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     public MapStorageManager() {
@@ -26,73 +26,41 @@ public class MapStorageManager implements AuthorizeStorageManager {
     }
 
     @Override
-    public long getTimeout() {
-        return 30 * 1000;
+    public int getTimeout() {
+        return 30;
     }
 
     @Override
     public <T extends AuthorizeContext> T getContext(String key) {
-        return (T) storage.get(key);
+        AuthorizeContext authorizeContext = storage.get(key);
+        if(null == authorizeContext) return null;
+
+        return (T) authorizeContext;
     }
 
     @Override
-    public void putContext(String key, AuthorizeContext context) {
-        storage.put(key, new ContextWrapper(context));
+    public void putContext(final String key, AuthorizeContext context) {
+        storage.put(key, context);
+        TimeoutTaskManager.instance().addTask(new TimeoutTask(getTimeout()
+                , TimeUnit.SECONDS) {
+            @Override
+            public void run() {
+                AuthorizeContext remove = storage.remove(key);
+                if(logger.isDebugEnabled()) {
+                    logger.debug("类别：OAuth2授权 - 动作：移除超时上下文 - 超时(s)：{} - 状态：{}"
+                            , getTimeout(), remove != null?"超时移除":"正常释放");
+                }
+            }
+        }.build());
     }
 
     @Override
     public AuthorizeContext removeContext(String key) {
-        ContextWrapper contextWrapper = storage.remove(key);
-        if(null != contextWrapper)
-            return contextWrapper.getContext();
+        AuthorizeContext context = storage.remove(key);
+        if(null != context)
+            return context;
 
         return null;
-    }
-
-    /**
-     * 上下文超时任务
-     */
-    protected class ContextTimeoutTask implements Runnable{
-
-        private Map<String, ContextWrapper> storage = MapStorageManager.this.storage;
-
-        @Override
-        public void run() {
-            if(!CommonUtils.isNotEmpty(this.storage))return;
-
-            int count = 0;
-            Iterator<ContextWrapper> iterator = storage.values().iterator();
-            while (iterator.hasNext()) {
-                ContextWrapper next = iterator.next();
-                long currentTimeMillis = System.currentTimeMillis();
-                if(currentTimeMillis - next.getCreateMillis() > getTimeout()) {
-                    iterator.remove();
-                    count ++;
-                }
-            }
-
-            if(count > 0)
-                logger.warn("类别：OAuth2 - 动作：授权上下文超时 - 描述：移除超时上下文 - 超时时长(ms)：{} - 超时数量：{}"
-                        , getTimeout(), count);
-        }
-    }
-
-    protected class ContextWrapper {
-        private long createMillis; //创建时的豪秒数
-        private AuthorizeContext context;
-
-        public ContextWrapper(AuthorizeContext context) {
-            this.context = context;
-            this.createMillis = System.currentTimeMillis();
-        }
-
-        public AuthorizeContext getContext() {
-            return context;
-        }
-
-        public long getCreateMillis() {
-            return createMillis;
-        }
     }
 
 }

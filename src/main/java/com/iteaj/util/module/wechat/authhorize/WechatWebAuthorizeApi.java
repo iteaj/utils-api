@@ -62,7 +62,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
     /**
      * 微信access_token入口阶段
      */
-    protected class EntryPhase extends AbstractAuthorizePhase {
+    protected class EntryPhase extends AbstractWechatPhase<WechatWebAuthorizeParam> {
 
         private String html_pre = "<!DOCTYPE html><html lang=\"zh_cn\"><head><meta charset=\"UTF-8\"></head><body><a id=\"auto_submit\" href=\"";
         private String html_suf = "\" /><script>document.getElementById(\"auto_submit\").click();</script></body></html>";
@@ -77,7 +77,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, AbstractStorageContext context) {
+        public void doPhase(PhaseChain chain, WechatWebAuthorizeParam context) {
             PrintWriter writer = null;
             try {
                 StringBuilder sb = new StringBuilder(html_pre);
@@ -85,7 +85,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
                         .append("?appid=").append(getApiConfig().getAppId())
                         .append("&redirect_uri=").append(getRedirectUrl(context, getApiConfig().getRedirectUrl()))
                         .append("&response_type=").append(getApiConfig().getResponseType())
-                        .append("&scope=").append(getApiConfig().getScope())
+                        .append("&scope=").append(context.getScope().val)
                         .append("&state=").append(getApiConfig().getState()).append("#wechat_redirect");
                 sb.append(html_suf);
 
@@ -111,7 +111,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class CodePhase extends AbstractWechatPhase {
+    protected class CodePhase extends AbstractWechatPhase<WechatWebAuthorizeParam> {
 
         public CodePhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -123,7 +123,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, AbstractStorageContext context) {
+        public void doPhase(PhaseChain chain, WechatWebAuthorizeParam context) {
             //获取微信授权code
             String code = context.getRequest().getParameter("code");
             String state = context.getRequest().getParameter("state");
@@ -143,7 +143,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class TokenPhase extends AbstractWechatPhase {
+    protected class TokenPhase extends AbstractWechatPhase<WechatWebAuthorizeParam> {
 
         public TokenPhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -155,7 +155,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, AbstractStorageContext context) {
+        public void doPhase(PhaseChain chain, WechatWebAuthorizeParam context) {
             StringBuilder sb = new StringBuilder(getApiConfig().getAccessGateway()).append("?")
                     .append("appid=").append(getApiConfig().getAppId())
                     .append("&secret=").append(getApiConfig().getAppSecret())
@@ -179,7 +179,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class UserPhase extends AbstractWechatPhase {
+    protected class UserPhase extends AbstractWechatPhase<WechatWebAuthorizeParam> {
 
         public UserPhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -196,7 +196,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        protected void doPhase(PhaseChain chain, AbstractStorageContext context) {
+        protected void doPhase(PhaseChain chain, WechatWebAuthorizeParam context) {
             AccessToken token = (AccessToken) context.getContextParam("token");
             StringBuilder sb = new StringBuilder(getApiConfig().getApiGateway()).append("?")
                     .append("access_token=").append(token.getAccess_token())

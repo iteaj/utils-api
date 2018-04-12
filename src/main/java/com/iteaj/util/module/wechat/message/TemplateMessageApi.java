@@ -6,8 +6,8 @@ import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.build.TextBuilder;
 import com.iteaj.util.module.json.JsonWrapper;
 import com.iteaj.util.module.wechat.AbstractWechatApi;
-import com.iteaj.util.module.wechat.basictoken.WechatBasicToken;
-import com.iteaj.util.module.wechat.basictoken.WechatBasicTokenConfig;
+import com.iteaj.util.module.wechat.basictoken.WechatBasicTokenApi;
+import com.iteaj.util.module.wechat.basictoken.WechatBasicTokenApiConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,17 +21,17 @@ public class TemplateMessageApi extends AbstractWechatApi
         <WechatTemplateMessageConfig, TemplateMessageParam> {
 
 
-    private WechatBasicToken basicToken;
+    private WechatBasicTokenApi basicToken;
     private WechatTemplateMessageConfig config;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     protected TemplateMessageApi(WechatTemplateMessageConfig config) {
         this.config = config;
-        this.basicToken = UtilsBuilder.wechatApi(new WechatBasicTokenConfig
+        this.basicToken = UtilsBuilder.wechatApi(new WechatBasicTokenApiConfig
                 (config.getAppId(), config.getAppSecret()));
     }
 
-    protected TemplateMessageApi(WechatBasicToken basicToken
+    protected TemplateMessageApi(WechatBasicTokenApi basicToken
             , WechatTemplateMessageConfig config) {
         this.basicToken = basicToken;
         this.config = config;
@@ -55,7 +55,7 @@ public class TemplateMessageApi extends AbstractWechatApi
         AssertUtils.isTrue(CommonUtils.isNotEmpty(param.getItems()), "微信模版消息 - 无模版数据项", UtilsType.WECHAT);
 
         try {
-            WechatBasicToken.BasicToken invoke = basicToken.invoke(null);
+            WechatBasicTokenApi.BasicToken invoke = basicToken.invoke(null);
             if(!invoke.success()) throw new IllegalStateException("获取微信AccessToken失败："+invoke.getErrmsg());
 
             JsonWrapper json = JsonUtils.buildJson();
@@ -131,11 +131,11 @@ public class TemplateMessageApi extends AbstractWechatApi
     }
 
 
-    public WechatBasicToken getBasicToken() {
+    public WechatBasicTokenApi getBasicToken() {
         return basicToken;
     }
 
-    public void setBasicToken(WechatBasicToken basicToken) {
+    public void setBasicToken(WechatBasicTokenApi basicToken) {
         this.basicToken = basicToken;
     }
 }

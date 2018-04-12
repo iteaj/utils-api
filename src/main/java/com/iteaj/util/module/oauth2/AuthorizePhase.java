@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author iteaj
  * @since 1.7
  */
-public interface AuthorizePhase extends Serializable {
+public interface AuthorizePhase<T extends AuthorizeContext> extends Serializable {
 
     /**
      * 返回当前阶段标识
@@ -40,5 +40,5 @@ public interface AuthorizePhase extends Serializable {
      * 执行此阶段
      * @return
      */
-    void phase(PhaseChain chain, AbstractStorageContext context) throws UtilsException;
+    void phase(PhaseChain chain, T context) throws UtilsException;
 }

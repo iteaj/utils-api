@@ -72,6 +72,8 @@ public class UtilsManagerFactory {
             return defaultJsonAdapter;
 
         synchronized (lock) {
+            if(defaultJsonAdapter!=null)
+                return defaultJsonAdapter;
             try {
                 defaultJsonAdapter = new JacksonAdapter();
             } catch (Throwable e) {

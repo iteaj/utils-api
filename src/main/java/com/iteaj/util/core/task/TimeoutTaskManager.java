@@ -2,6 +2,8 @@ package com.iteaj.util.core.task;
 
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -21,6 +23,8 @@ public class TimeoutTaskManager {
     private static Object lock = new Object();
     private static TimeoutTaskManager taskManager;
     private static SortedSet<TimeoutTask> timeoutTasks;
+    private static Logger logger = LoggerFactory.getLogger("UtilsTimeoutManager");
+    private static boolean debugEnabled = logger.isDebugEnabled();
 
     static {
         timeoutTasks = Collections.synchronizedSortedSet(new TreeSet<TimeoutTask>());
@@ -91,6 +95,9 @@ public class TimeoutTaskManager {
                      */
                     if(state == Thread.State.WAITING || newTaskRemain < firstTaskRemain) {
                         lock.notify();
+                        if(debugEnabled)
+                            logger.debug("类别：定时任务 - 动作：唤醒定时线程 - 描述：收到新任务,新任务的超时时间小于第一个任务" +
+                                    ",唤醒定时线程更改等待时间为新任务时间 - 新任务(ms)：{} - 第一个任务(ms)：{}", newTaskRemain, firstTaskRemain);
                     }
                 }
             }
@@ -122,6 +129,9 @@ public class TimeoutTaskManager {
                     //流逝的时间大于指定的超时时间, 说明第一个任务已经超时
                     boolean alreadyTimeout = elapseTime >= firstTask.getTimeout();
                     if (alreadyTimeout) {
+                        if(debugEnabled)
+                            logger.debug("类别：定时任务 - 动作：执行定时任务 - 描述：任务定时时间已到,开始执行任务 - 定时(ms)：{} - 误差(ms)：{}"
+                                    , firstTask.getTimeout(), elapseTime-firstTask.getTimeout());
                         try {
                             firstTask.run();
                         } catch (Throwable e) {
@@ -144,6 +154,8 @@ public class TimeoutTaskManager {
                         synchronized (lock) {
                             //获取离超时时间还有多久, 并且线程等待
                             long timeoutRemain = firstTask.getTimeout() - elapseTime;
+                            if(debugEnabled)
+                                logger.debug("类别：定时任务 - 动作：定时线程等待 - 描述：线程等待直到下一个任务超时 - 等待时间(ms)：{}", timeoutRemain);
                             lock.wait(timeoutRemain);
                         }
                     }

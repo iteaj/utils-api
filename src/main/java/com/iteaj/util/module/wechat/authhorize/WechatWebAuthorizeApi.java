@@ -5,6 +5,7 @@ import com.iteaj.util.JsonUtils;
 import com.iteaj.util.module.http.build.UrlBuilder;
 import com.iteaj.util.module.oauth2.*;
 import com.iteaj.util.module.wechat.AbstractWechatPhase;
+import com.iteaj.util.module.wechat.WechatScope;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -169,6 +170,10 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
             AccessToken token = JsonUtils.toBean(result, AccessToken.class);
             context.addContextParam(this.phaseAlias(), token);
 
+            //如果授权域为snsapi_base 则不需要执行下一阶段
+            if(WechatScope.Base == context.getScope())
+                return;
+
             //执行下一阶段
             chain.doPhase(context);
         }
@@ -219,6 +224,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
     public static class WechatWebResult extends AbstractAuthorizeResult {
 
         private String code;
+        private String openId;
         private UserInfo userInfo;
         private AccessToken accessToken;
 
@@ -232,30 +238,24 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
             this.code = (String)context.getContextParam("code");
             this.userInfo = (UserInfo) context.getContextParam("user");
             this.accessToken = (AccessToken) context.getContextParam("token");
+            this.openId = accessToken != null? accessToken.openid:null;
         }
 
         public String getCode() {
             return code;
         }
 
-        public void setCode(String code) {
-            this.code = code;
+
+        public String getOpenId() {
+            return openId;
         }
 
         public UserInfo getUserInfo() {
             return userInfo;
         }
 
-        public void setUserInfo(UserInfo userInfo) {
-            this.userInfo = userInfo;
-        }
-
         public AccessToken getAccessToken() {
             return accessToken;
-        }
-
-        public void setAccessToken(AccessToken accessToken) {
-            this.accessToken = accessToken;
         }
 
     }

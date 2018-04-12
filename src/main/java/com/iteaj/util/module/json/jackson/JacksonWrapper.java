@@ -34,10 +34,10 @@ public class JacksonWrapper extends ObjectNode implements JsonWrapper<JsonNode> 
     public JsonWrapper addNode(String key, Object val) {
         if(val instanceof JacksonNode) {
             ObjectNode node = this.putObject(key);
-            node.put(((JacksonNode) val).getKey()
+            node.set(((JacksonNode) val).getKey()
                     , ((JacksonNode) val).getVal());
         } else if(val instanceof JacksonWrapper) {
-            this.put(key, (ObjectNode)val);
+            this.set(key, (ObjectNode)val);
         } else {
             this.putPOJO(key, val);
         }

@@ -1,6 +1,6 @@
 package com.iteaj.util;
 
-import com.iteaj.util.core.UtilsManagerFactory;
+import com.iteaj.util.core.UtilsGlobalDefaultFactory;
 import com.iteaj.util.module.http.HttpResponse;
 import com.iteaj.util.module.http.adapter.JdkHttpAdapter;
 import com.iteaj.util.module.http.build.EntityBuilder;
@@ -24,7 +24,7 @@ public abstract class HttpUtils {
      * @return
      */
     public static byte[] doGet(UrlBuilder builder) {
-        HttpResponse response = UtilsManagerFactory
+        HttpResponse response = UtilsGlobalDefaultFactory
                 .getDefaultHttpAdapter().get(builder);
         return response.getContent();
     }
@@ -36,13 +36,13 @@ public abstract class HttpUtils {
      * @return
      */
     public static String doGet(UrlBuilder builder, String charset) {
-        HttpResponse response = UtilsManagerFactory
+        HttpResponse response = UtilsGlobalDefaultFactory
                 .getDefaultHttpAdapter().get(builder);
         return response.getContent(charset);
     }
 
     public static byte[] doPost(EntityBuilder builder) {
-        HttpResponse post = UtilsManagerFactory
+        HttpResponse post = UtilsGlobalDefaultFactory
                 .getDefaultHttpAdapter().post(builder);
         return post.getContent();
     }
@@ -58,19 +58,19 @@ public abstract class HttpUtils {
      * @return
      */
     public static String doPost(EntityBuilder builder, String charset) {
-        HttpResponse post = UtilsManagerFactory
+        HttpResponse post = UtilsGlobalDefaultFactory
                 .getDefaultHttpAdapter().post(builder);
         return post.getContent(charset);
     }
 
     public static byte[] doPost(TextBuilder builder) {
-        HttpResponse post = UtilsManagerFactory
+        HttpResponse post = UtilsGlobalDefaultFactory
                 .getDefaultHttpAdapter().post(builder);
         return post.getContent();
     }
 
     public static String doPost(TextBuilder builder, String charset) {
-        HttpResponse post = UtilsManagerFactory
+        HttpResponse post = UtilsGlobalDefaultFactory
                 .getDefaultHttpAdapter().post(builder);
         return post.getContent(charset);
     }

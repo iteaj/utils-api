@@ -3,6 +3,7 @@ package com.iteaj.util.module.wechat.authhorize;
 import com.iteaj.util.module.json.JsonWrapper;
 import com.iteaj.util.module.oauth2.AbstractStorageContext;
 import com.iteaj.util.module.oauth2.AbstractAuthorizeResult;
+import com.iteaj.util.module.wechat.WechatApiResponse;
 
 /**
  * Create Date By 2017-04-27
@@ -29,7 +30,7 @@ public class WechatEnterpriseResult extends AbstractAuthorizeResult {
         this.accessToken = (JsonWrapper) context.getContextParam("token");
     }
 
-    public static class UserInfo extends WechatResultEntityAbstract{
+    public static class UserInfo extends WechatApiResponse{
         private String userId;
         private String deviceId;
         private String expires_in;
@@ -68,7 +69,7 @@ public class WechatEnterpriseResult extends AbstractAuthorizeResult {
         }
     }
 
-    public static class UserDetail extends WechatResultEntityAbstract {
+    public static class UserDetail extends WechatApiResponse {
         private String userid;
         private String name;
         private String department;

@@ -1,13 +1,18 @@
 package com.iteaj.util.module.wechat.message;
 
-import com.iteaj.util.*;
+import com.iteaj.util.AssertUtils;
+import com.iteaj.util.CommonUtils;
+import com.iteaj.util.HttpUtils;
+import com.iteaj.util.JsonUtils;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.build.TextBuilder;
 import com.iteaj.util.module.json.JsonWrapper;
 import com.iteaj.util.module.wechat.AbstractWechatApi;
-import com.iteaj.util.module.wechat.basictoken.WechatBasicTokenApi;
-import com.iteaj.util.module.wechat.basictoken.WechatBasicTokenApiConfig;
+import com.iteaj.util.module.wechat.WechatApiResponse;
+import com.iteaj.util.module.wechat.WechatApiType;
+import com.iteaj.util.module.wechat.basictoken.BasicToken;
+import com.iteaj.util.module.wechat.basictoken.WechatConfigBasicToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,44 +23,26 @@ import org.slf4j.LoggerFactory;
  * @since 1.7
  */
 public class TemplateMessageApi extends AbstractWechatApi
-        <WechatTemplateMessageConfig, TemplateMessageParam> {
+        <WechatConfigTemplateMessage, WechatParamTemplateMessage> {
 
-
-    private WechatBasicTokenApi basicToken;
-    private WechatTemplateMessageConfig config;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected TemplateMessageApi(WechatTemplateMessageConfig config) {
-        this.config = config;
-        this.basicToken = UtilsBuilder.wechatApi(new WechatBasicTokenApiConfig
-                (config.getAppId(), config.getAppSecret()));
-    }
-
-    protected TemplateMessageApi(WechatBasicTokenApi basicToken
-            , WechatTemplateMessageConfig config) {
-        this.basicToken = basicToken;
-        this.config = config;
+    public TemplateMessageApi(WechatConfigTemplateMessage config) {
+        super(config);
     }
 
     @Override
-    public WechatTemplateMessageConfig getApiConfig() {
-        return config;
-    }
-
-    @Override
-    public void setApiConfig(WechatTemplateMessageConfig config) {
-        this.config = config;
-    }
-
-    @Override
-    public MessageResponse invoke(TemplateMessageParam param) {
+    public MessageResponse invoke(WechatParamTemplateMessage param) {
         AssertUtils.isTrue(null != param, "微信模版消息 - 参数错误", UtilsType.WECHAT);
         AssertUtils.isNotBlank(param.getOpenId(), "微信模版消息 - 未指定接受者的openId", UtilsType.WECHAT);
         AssertUtils.isNotBlank(param.getTemplateId(), "微信模版消息 - 未指定模版的templateId", UtilsType.WECHAT);
         AssertUtils.isTrue(CommonUtils.isNotEmpty(param.getItems()), "微信模版消息 - 无模版数据项", UtilsType.WECHAT);
 
         try {
-            WechatBasicTokenApi.BasicToken invoke = basicToken.invoke(null);
+            WechatConfigBasicToken tokenConfig = new WechatConfigBasicToken
+                    (getApiConfig().getAppId(), getApiConfig().getAppSecret());
+
+            BasicToken invoke = getApiConfig().getTokenManager().getToken(tokenConfig);
             if(!invoke.success()) throw new IllegalStateException("获取微信AccessToken失败："+invoke.getErrmsg());
 
             JsonWrapper json = JsonUtils.buildJson();
@@ -64,14 +51,14 @@ public class TemplateMessageApi extends AbstractWechatApi
                     && CommonUtils.isNotBlank(param.getPagepath())){
 
                 JsonWrapper build = JsonUtils.buildJson();
-                build.addNode("appid", config.getAppId())
+                build.addNode("appid", getApiConfig().getAppId())
                         .addNode("pagepath", param.getPagepath());
 
                 json.addNode("miniprogram", build);
             }
 
             JsonWrapper data = JsonUtils.buildJson();
-            for(TemplateMessageParam.Item item : param.getItems()){
+            for(WechatParamTemplateMessage.Item item : param.getItems()){
                 data.addNode(item.getKey(), item);
             }
 
@@ -84,26 +71,31 @@ public class TemplateMessageApi extends AbstractWechatApi
                 logger.debug("类别：微信接口 - 动作：发送模版消息 - 描述：发送报文 {} - token：{}"
                         , message, invoke.getAccess_token());
 
-            TextBuilder builder = TextBuilder.build(config.getApiGateway());
+            TextBuilder builder = TextBuilder.build(getApiConfig().getApiGateway());
             builder.addParam("access_token", invoke.getAccess_token()).addText(message);
 
             String result = HttpUtils.doPost(builder, "utf-8");
-            return JsonUtils.toBean(result, MessageResponse.class);
+            MessageResponse response = JsonUtils.toBean(result, MessageResponse.class);
+            if(!response.success()) {
+                //如果返回是40001错误 则强制刷新一次Token
+                if(response.getErrcode() == 40001)
+                    getApiConfig().getTokenManager().refresh(tokenConfig);
+            }
+            return response;
         } catch (Exception e) {
             throw new UtilsException("发送微信模版消息失败：", e, UtilsType.WECHAT);
         }
 
     }
 
-    public static class MessageResponse {
+    @Override
+    public WechatApiType getApiType() {
+        return WechatApiType.TemplateMessage;
+    }
+
+    public static class MessageResponse extends WechatApiResponse {
 
         private String msgid;
-        private String errmsg;
-        private String errcode;
-
-        public boolean success() {
-            return "0".equals(errcode);
-        }
 
         public String getMsgid() {
             return msgid;
@@ -112,30 +104,6 @@ public class TemplateMessageApi extends AbstractWechatApi
         public void setMsgid(String msgid) {
             this.msgid = msgid;
         }
-
-        public String getErrmsg() {
-            return errmsg;
-        }
-
-        public void setErrmsg(String errmsg) {
-            this.errmsg = errmsg;
-        }
-
-        public String getErrcode() {
-            return errcode;
-        }
-
-        public void setErrcode(String errcode) {
-            this.errcode = errcode;
-        }
     }
 
-
-    public WechatBasicTokenApi getBasicToken() {
-        return basicToken;
-    }
-
-    public void setBasicToken(WechatBasicTokenApi basicToken) {
-        this.basicToken = basicToken;
-    }
 }

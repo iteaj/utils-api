@@ -1,6 +1,9 @@
 package com.iteaj.util.module.wechat;
 
 import com.iteaj.util.CommonUtils;
+import com.iteaj.util.JsonUtils;
+import com.iteaj.util.module.json.JsonWrapper;
+import com.iteaj.util.module.json.NodeWrapper;
 import com.iteaj.util.module.oauth2.*;
 
 /**
@@ -16,14 +19,9 @@ public abstract class AbstractWechatPhase<T extends OAuth2ApiParam> extends Abst
         super(nextPhase);
     }
 
-    protected boolean isSuccess(AbstractStorageContext context, String result, String alias, String msg) {
+    protected boolean isSuccess(AbstractStorageContext context, String result, String alias) {
         if(CommonUtils.isBlank(result)){
-            logger.error(ERROR_INFO, getTypeAlias(), alias, msg);
-
-            context.getAuthorizeResult().setSuccess(false).setErrMsg(msg);
-            return false;
-        } else if(result.contains("errcode")) {
-            logger.error(ERROR_INFO, getTypeAlias(), alias, result);
+            logger.error(ERROR_INFO, getTypeAlias(), alias);
 
             context.getAuthorizeResult().setSuccess(false).setErrMsg(result);
             return false;

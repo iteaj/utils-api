@@ -23,17 +23,8 @@ public abstract class TimeoutTask implements Runnable, Comparable<TimeoutTask> {
                 unit != TimeUnit.MICROSECONDS,
                 "请指定超时时间单位且必须在毫秒以上(包含毫秒)", UtilsType.TimeoutTask);
         this.timeout = unit.toMillis(timeout);
-        if(timeout < 0) throw new IllegalArgumentException("超时时间必须为大于0的整数");
-    }
-
-    public TimeoutTask build() {
         this.createTime = System.currentTimeMillis();
-        return this;
-    }
-
-    public TimeoutTask build(long startMillis) {
-        this.createTime = startMillis;
-        return this;
+        if(timeout < 0) throw new IllegalArgumentException("超时时间必须为大于0的整数");
     }
 
     /**

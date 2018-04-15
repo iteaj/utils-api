@@ -19,11 +19,11 @@ public interface NodeWrapper<T> extends JsonWrapper<T> {
      * 返回此节点对应的val
      * @return
      */
-    Object getVal();
+    <T> T getVal();
 
     /**
      * 返回字符串形式的值
      * @return
      */
-    String getString();
+    String getValString();
 }

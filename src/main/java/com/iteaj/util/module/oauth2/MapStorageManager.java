@@ -51,7 +51,7 @@ public class MapStorageManager implements AuthorizeStorageManager {
                             , getTimeout(), remove != null?"超时移除":"正常释放");
                 }
             }
-        }.build());
+        });
     }
 
     @Override

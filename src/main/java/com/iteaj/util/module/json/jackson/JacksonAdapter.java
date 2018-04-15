@@ -16,6 +16,7 @@ import com.iteaj.util.module.json.NodeWrapper;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,10 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
      */
     public String toJson(Object obj){
         try {
+            if(null == obj) return null;
             return objectMapper.writeValueAsString(obj);
         } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new UtilsException(e.getMessage(), e, UtilsType.JSON);
         }
     }
 
@@ -53,11 +55,15 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
      * @param format    日期格式化
      * @return
      */
-    public String toJson(Object obj, DateFormat format){
+    public String toJson(Object obj, SimpleDateFormat format){
         try {
-            return objectMapper.writer(format).writeValueAsString(obj);
+            if(null == obj) return null;
+            if(null != format)
+                return objectMapper.writer(format).writeValueAsString(obj);
+
+            return objectMapper.writeValueAsString(obj);
         } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new UtilsException(e.getMessage(), e, UtilsType.JSON);
         }
     }
 
@@ -70,9 +76,10 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
      */
     public <T> T toBean(String json, Class<T> clazz){
         try {
+            if(null == json || null == clazz) return null;
             return objectMapper.readValue(json, clazz);
         } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new UtilsException(e.getMessage(), e, UtilsType.JSON);
         }
     }
 
@@ -85,12 +92,13 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
      */
     public <T> List<T> toList(String json, Class<T> elementType){
         try {
+            if(null == json || null == elementType) return null;
             CollectionType type = getTypeFactory(objectMapper)
                     .constructCollectionType(ArrayList.class, elementType);
 
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new UtilsException(e.getMessage(), e, UtilsType.JSON);
         }
 
     }
@@ -99,15 +107,15 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
      * json转数组对象
      * @param json
      * @param elementType   数组的类型
-     * @param <T>
      * @return
      */
-    public <T> T[] toArray(String json, Class<T> elementType){
+    public Object[] toArray(String json, Class elementType){
         try {
+            if(null == json || null == elementType) return null;
             ArrayType arrayType = getTypeFactory(objectMapper).constructArrayType(elementType);
             return objectMapper.readValue(json, arrayType);
         } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new UtilsException(e.getMessage(), e, UtilsType.JSON);
         }
 
     }
@@ -122,14 +130,18 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
      * @param <V>
      * @return
      */
-    public <K,V> Map<K,V> toMap(String json, Class<? extends Map<K,V>> mapType, Class<K> keyType, Class<V> valueType){
+    public <K,V> Map<K,V> toMap(String json, Class<? extends Map> mapType, Class<K> keyType, Class<V> valueType){
         try {
+            if(null == json) return null;
+            if(null == mapType || null == keyType || valueType == null)
+                throw new UtilsException("Json解析到Map 必须指定Map的Key-Value类型", UtilsType.JSON);
+
             MapType mapType1 = getTypeFactory(objectMapper)
                     .constructMapType(mapType, keyType, valueType);
 
             return objectMapper.readValue(json, mapType1);
         } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new UtilsException(e.getMessage(), e, UtilsType.JSON);
         }
     }
 

@@ -4,6 +4,8 @@ import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
 
 import java.io.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 
@@ -167,5 +169,14 @@ public abstract class CommonUtils {
 
     public static boolean isBlank(String str) {
         return null == str || str.trim().length()==0;
+    }
+
+    public static Type[] getParameterizedType(Object obj) {
+        Type superclass = obj.getClass().getGenericSuperclass();
+        if(superclass instanceof ParameterizedType) {
+            return ((ParameterizedType) superclass).getActualTypeArguments();
+        }
+
+        return null;
     }
 }

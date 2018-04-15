@@ -31,16 +31,21 @@ public class FastjsonNode implements NodeWrapper<JSONObject> {
     }
 
     @Override
-    public Object getVal() {
-        return value;
+    public <T> T getVal() {
+        return (T)value;
     }
 
     @Override
-    public String getString() {
+    public String getValString() {
         if(value instanceof JSON)
             return ((JSON) value).toJSONString();
-
-        return value.toString();
+        else if(value instanceof Number)
+            return value.toString();
+        else if(value instanceof Enum)
+            return value.toString();
+        else if(value instanceof Boolean)
+            return value.toString();
+        else return JSON.toJSON(value).toString();
     }
 
     @Override

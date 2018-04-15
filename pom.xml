@@ -139,6 +139,13 @@
         </dependency>
 
         <dependency>
+            <scope>test</scope>
+            <version>${spring.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+
+        <dependency>
             <scope>${scope}</scope>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -147,6 +154,14 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>

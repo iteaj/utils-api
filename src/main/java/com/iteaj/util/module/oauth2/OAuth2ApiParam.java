@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @since JDK1.7
  */
 public abstract class OAuth2ApiParam extends AbstractStorageContext
-        implements ApiParam {
+        implements ApiParam<OAuth2AuthorizeApi.InvokeReturn> {
 
 
     public OAuth2ApiParam(HttpServletRequest request, HttpServletResponse response) {

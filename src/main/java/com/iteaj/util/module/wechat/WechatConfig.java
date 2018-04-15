@@ -1,8 +1,8 @@
 package com.iteaj.util.module.wechat;
 
-import com.iteaj.util.core.ApiConfig;
 import com.iteaj.util.AssertUtils;
 import com.iteaj.util.core.UtilsType;
+import com.iteaj.util.core.http.HttpApiConfig;
 
 /**
  * Create Date By 2018-04-03
@@ -10,7 +10,7 @@ import com.iteaj.util.core.UtilsType;
  * @author iteaj
  * @since 1.7
  */
-public abstract class WechatConfig<A extends WechatApi> implements ApiConfig {
+public abstract class WechatConfig<A extends WechatApi> implements HttpApiConfig {
 
     /**微信用来标识唯一的一个App, 由微信提供*/
     private String appId;

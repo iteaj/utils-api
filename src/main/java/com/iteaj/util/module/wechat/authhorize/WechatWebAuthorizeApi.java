@@ -5,6 +5,8 @@ import com.iteaj.util.JsonUtils;
 import com.iteaj.util.module.http.build.UrlBuilder;
 import com.iteaj.util.module.oauth2.*;
 import com.iteaj.util.module.wechat.AbstractWechatPhase;
+import com.iteaj.util.module.wechat.WechatApiResponse;
+import com.iteaj.util.module.wechat.WechatApiType;
 import com.iteaj.util.module.wechat.WechatScope;
 
 import java.io.IOException;
@@ -18,9 +20,9 @@ import java.util.Arrays;
  * @since 1.7
  */
 public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
-        <WechatWebAuthorizeConfig, WechatWebAuthorizeParam>{
+        <WechatConfigWebAuthorize, WechatParamWebAuthorize>{
 	
-    public WechatWebAuthorizeApi(WechatWebAuthorizeConfig config) {
+    public WechatWebAuthorizeApi(WechatConfigWebAuthorize config) {
         super(config);
     }
 
@@ -60,10 +62,15 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         return "entry-->code-->token-->user";
     }
 
+    @Override
+    public WechatApiType getApiType() {
+        return WechatApiType.WebAuthorize;
+    }
+
     /**
      * 微信access_token入口阶段
      */
-    protected class EntryPhase extends AbstractWechatPhase<WechatWebAuthorizeParam> {
+    protected class EntryPhase extends AbstractWechatPhase<WechatParamWebAuthorize> {
 
         private String html_pre = "<!DOCTYPE html><html lang=\"zh_cn\"><head><meta charset=\"UTF-8\"></head><body><a id=\"auto_submit\" href=\"";
         private String html_suf = "\" /><script>document.getElementById(\"auto_submit\").click();</script></body></html>";
@@ -78,7 +85,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, WechatWebAuthorizeParam context) {
+        public void doPhase(PhaseChain chain, WechatParamWebAuthorize context) {
             PrintWriter writer = null;
             try {
                 StringBuilder sb = new StringBuilder(html_pre);
@@ -112,7 +119,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class CodePhase extends AbstractWechatPhase<WechatWebAuthorizeParam> {
+    protected class CodePhase extends AbstractWechatPhase<WechatParamWebAuthorize> {
 
         public CodePhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -124,12 +131,12 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, WechatWebAuthorizeParam context) {
+        public void doPhase(PhaseChain chain, WechatParamWebAuthorize context) {
             //获取微信授权code
             String code = context.getRequest().getParameter("code");
             String state = context.getRequest().getParameter("state");
 
-            if(!isSuccess(context, code, phaseAlias(), "获取code失败"))return;
+            if(!isSuccess(context, code, phaseAlias()))return;
 
             //将返回的code存储到授权上下文
             context.addContextParam("code", code).addContextParam("state", state);
@@ -144,7 +151,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class TokenPhase extends AbstractWechatPhase<WechatWebAuthorizeParam> {
+    protected class TokenPhase extends AbstractWechatPhase<WechatParamWebAuthorize> {
 
         public TokenPhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -156,7 +163,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, WechatWebAuthorizeParam context) {
+        public void doPhase(PhaseChain chain, WechatParamWebAuthorize context) {
             StringBuilder sb = new StringBuilder(getApiConfig().getAccessGateway()).append("?")
                     .append("appid=").append(getApiConfig().getAppId())
                     .append("&secret=").append(getApiConfig().getAppSecret())
@@ -164,7 +171,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
                     .append("&grant_type=").append(getApiConfig().getGrantType());
             String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
-            if(!isSuccess(context, result, phaseAlias(), "获取Access_Token失败"))return;
+            if(!isSuccess(context, result, phaseAlias()))return;
 
             //存储AccessToken信息到上下文
             AccessToken token = JsonUtils.toBean(result, AccessToken.class);
@@ -184,7 +191,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class UserPhase extends AbstractWechatPhase<WechatWebAuthorizeParam> {
+    protected class UserPhase extends AbstractWechatPhase<WechatParamWebAuthorize> {
 
         public UserPhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -201,7 +208,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        protected void doPhase(PhaseChain chain, WechatWebAuthorizeParam context) {
+        protected void doPhase(PhaseChain chain, WechatParamWebAuthorize context) {
             AccessToken token = (AccessToken) context.getContextParam("token");
             StringBuilder sb = new StringBuilder(getApiConfig().getApiGateway()).append("?")
                     .append("access_token=").append(token.getAccess_token())
@@ -210,7 +217,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
             String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
             //获取用户信息失败
-            if(!isSuccess(context, result, phaseAlias(), "获取用户信息失败"))return;
+            if(!isSuccess(context, result, phaseAlias()))return;
 
             //存储用户信息到上下文
             UserInfo userInfo = JsonUtils.toBean(result, UserInfo.class);
@@ -263,7 +270,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
     /**
      * 微信网页授权返回的AccessToken对象
      */
-    public static class AccessToken extends WechatResultEntityAbstract{
+    public static class AccessToken extends WechatApiResponse {
         private String scope;
         private String openid;
         private String expires_in;
@@ -325,7 +332,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
     /**
      * 微信返回的用户信息
      */
-    public static class UserInfo extends WechatResultEntityAbstract{
+    public static class UserInfo extends WechatApiResponse{
         private String sex;
         private String city;
         private String openid;

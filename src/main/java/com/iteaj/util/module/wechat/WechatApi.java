@@ -1,7 +1,7 @@
 package com.iteaj.util.module.wechat;
 
 import com.iteaj.util.core.ApiParam;
-import com.iteaj.util.core.UtilsApi;
+import com.iteaj.util.core.http.HttpApi;
 
 /**
  * Create Date By 2018-04-03
@@ -10,7 +10,7 @@ import com.iteaj.util.core.UtilsApi;
  * @since 1.7
  */
 public interface WechatApi<C extends WechatConfig
-        , P extends ApiParam> extends UtilsApi<P> {
+        , P extends ApiParam> extends HttpApi<P> {
 
     /**
      * 返回一个微信对应Api的配置
@@ -23,4 +23,10 @@ public interface WechatApi<C extends WechatConfig
      * @param config
      */
     void setApiConfig(C config);
+
+    /**
+     * 返回Api类型
+     * @return
+     */
+    WechatApiType getApiType();
 }

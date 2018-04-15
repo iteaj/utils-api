@@ -9,10 +9,10 @@ import com.iteaj.util.module.http.build.EntityBuilder;
 import com.iteaj.util.module.http.build.UrlBuilder;
 import com.iteaj.util.module.json.JsonWrapper;
 import com.iteaj.util.module.oauth2.AbstractAuthorizeResult;
-import com.iteaj.util.module.oauth2.AbstractStorageContext;
 import com.iteaj.util.module.oauth2.AuthorizePhase;
 import com.iteaj.util.module.oauth2.PhaseChain;
 import com.iteaj.util.module.wechat.AbstractWechatPhase;
+import com.iteaj.util.module.wechat.WechatApiType;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,9 +24,9 @@ import java.io.PrintWriter;
  * @since 1.7
  */
 public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
-        <WechatEnterpriseAuthorizeConfig, WechatEnterpriseAuthorizeParam> {
+        <WechatConfigEnterpriseAuthorize, WechatParamEnterpriseAuthorize> {
 
-    public WechatEnterpriseAuthorizeApi(WechatEnterpriseAuthorizeConfig config) {
+    public WechatEnterpriseAuthorizeApi(WechatConfigEnterpriseAuthorize config) {
         super(config);
     }
 
@@ -74,10 +74,15 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         return "entry->code->token->user->detail";
     }
 
+    @Override
+    public WechatApiType getApiType() {
+        return WechatApiType.EnterpriseAuthorize;
+    }
+
     /**
      * 微信access_token入口阶段
      */
-    protected class EntryPhase extends AbstractWechatPhase<WechatEnterpriseAuthorizeParam> {
+    protected class EntryPhase extends AbstractWechatPhase<WechatParamEnterpriseAuthorize> {
 
         private String html_pre = "<!DOCTYPE html><html lang=\"zh_cn\"><head><meta charset=\"UTF-8\"></head><body><a id=\"auto_submit\" href=\"";
         private String html_suf = "\" /><script>document.getElementById(\"auto_submit\").click();</script></body></html>";
@@ -92,13 +97,17 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, WechatEnterpriseAuthorizeParam context) {
+        public void doPhase(PhaseChain chain, WechatParamEnterpriseAuthorize context) {
             PrintWriter writer = null;
             try {
                 StringBuilder sb = new StringBuilder();
+                //授权参数的redirectUrl覆盖授权配置里面的redirectUrl
+                String redirectUrl = CommonUtils.isBlank(context.getRedirectUrl())
+                        ?getApiConfig().getRedirectUrl():context.getRedirectUrl();
+
                 sb.append(getApiConfig().getCodeGateway())
                         .append("?appid=").append(getApiConfig().getAppId())
-                        .append("&redirect_uri=").append(getRedirectUrl(context, getApiConfig().getRedirectUrl()))
+                        .append("&redirect_uri=").append(getRedirectUrl(context, redirectUrl))
                         .append("&response_type=").append(getApiConfig().getResponseType())
                         .append("&scope=").append(context.getScope().val)
                         .append("&agentid=").append(getApiConfig().getAgentid())
@@ -126,7 +135,7 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class CodePhase extends AbstractWechatPhase<WechatEnterpriseAuthorizeParam> {
+    protected class CodePhase extends AbstractWechatPhase<WechatParamEnterpriseAuthorize> {
 
         public CodePhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -138,11 +147,11 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, WechatEnterpriseAuthorizeParam context) {
+        public void doPhase(PhaseChain chain, WechatParamEnterpriseAuthorize context) {
             //获取微信授权code
             String code = context.getRequest().getParameter("code");
 
-            if(!isSuccess(context, code, phaseAlias(), "获取Code失败")) return;
+            if(!isSuccess(context, code, phaseAlias())) return;
 
             //将返回的code存储到授权上下文
             context.addContextParam(phaseAlias(), code).addContextParam("state"
@@ -158,7 +167,7 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class TokenPhase extends AbstractWechatPhase<WechatEnterpriseAuthorizeParam> {
+    protected class TokenPhase extends AbstractWechatPhase<WechatParamEnterpriseAuthorize> {
 
         public TokenPhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -170,14 +179,14 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        public void doPhase(PhaseChain chain, WechatEnterpriseAuthorizeParam context) {
+        public void doPhase(PhaseChain chain, WechatParamEnterpriseAuthorize context) {
             StringBuilder sb = new StringBuilder(getApiConfig().getAccessGateway()).append("?")
                     .append("corpid=").append(getApiConfig().getAppId())
                     .append("&corpsecret=").append(getApiConfig().getAppSecret());
 
             String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
-            if(!isSuccess(context, result, phaseAlias(), "获取Access_Token失败")) return;
+            if(!isSuccess(context, result, phaseAlias())) return;
 
             //存储AccessToken信息到上下文
             JsonWrapper json = JsonUtils.buildJson(result);
@@ -193,7 +202,7 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class UserPhase extends AbstractWechatPhase<WechatEnterpriseAuthorizeParam> {
+    protected class UserPhase extends AbstractWechatPhase<WechatParamEnterpriseAuthorize> {
 
         public UserPhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -210,19 +219,25 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        protected void doPhase(PhaseChain chain, WechatEnterpriseAuthorizeParam context) {
+        protected void doPhase(PhaseChain chain, WechatParamEnterpriseAuthorize context) {
             JsonWrapper token = (JsonWrapper) context.getContextParam("token");
             StringBuilder sb = new StringBuilder(getApiConfig().getUserInfoGateway()).append("?")
-                    .append("access_token=").append(token.getNode("access_token").getString())
+                    .append("access_token=").append(token.getNode("access_token").getValString())
                     .append("&code=").append(context.getContextParam("code"));
             String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
             //获取用户信息失败
-            if(!isSuccess(context, result, phaseAlias(), "获取用户信息失败")) return;
+            if(!isSuccess(context, result, phaseAlias())) return;
 
             //存储用户信息到上下文
             WechatEnterpriseResult.UserInfo userInfo = JsonUtils
                     .toBean(result, WechatEnterpriseResult.UserInfo.class);
+            if(!userInfo.success()){
+                logger.error(ERROR_INFO, getTypeAlias(), phaseAlias(), result);
+                context.getAuthorizeResult().setSuccess(false).setErrMsg(result);
+                return;
+            }
+
             context.addContextParam(this.phaseAlias(), userInfo);
 
             //执行下一阶段
@@ -230,7 +245,7 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
     }
 
-    protected class UserDetailPhase extends AbstractWechatPhase<WechatEnterpriseAuthorizeParam> {
+    protected class UserDetailPhase extends AbstractWechatPhase<WechatParamEnterpriseAuthorize> {
 
         public UserDetailPhase(AuthorizePhase nextPhase) {
             super(nextPhase);
@@ -247,12 +262,12 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         }
 
         @Override
-        protected void doPhase(PhaseChain chain, WechatEnterpriseAuthorizeParam context) {
+        protected void doPhase(PhaseChain chain, WechatParamEnterpriseAuthorize context) {
             JsonWrapper token = (JsonWrapper) context.getContextParam("token");
             WechatEnterpriseResult.UserInfo userInfo =
                     (WechatEnterpriseResult.UserInfo)context.getContextParam("user");
 
-            String accessToken = token.getNode("access_token").getString();
+            String accessToken = token.getNode("access_token").getValString();
             EntityBuilder builder = EntityBuilder.build(getApiConfig().getUserDetailGateway())
                     .addParam("access_token", accessToken)
                     .addBody(null, "{\"user_ticket\":\""+userInfo.getUser_ticket()+"\"}");
@@ -260,11 +275,17 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
             String result = HttpUtils.doPost(builder, "UTF-8");
 
             //获取用户详情失败
-            if(!isSuccess(context, result, phaseAlias(), "获取用户信息详情失败")) return;
+            if(!isSuccess(context, result, phaseAlias())) return;
 
             //存储用户信息到上下文
             WechatEnterpriseResult.UserDetail userDetail = JsonUtils
                     .toBean(result, WechatEnterpriseResult.UserDetail.class);
+            if(!userDetail.success()){
+                logger.error(ERROR_INFO, getTypeAlias(), phaseAlias(), "获取用户信息详情失败");
+                context.getAuthorizeResult().setSuccess(false).setErrMsg("获取用户信息详情失败");
+                return;
+            }
+
             context.addContextParam(this.phaseAlias(), userDetail);
         }
     }

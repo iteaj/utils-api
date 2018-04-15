@@ -10,19 +10,21 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * create time: 2018/4/5
- *
+ *  微信企业号网页授权参数
  * @author iteaj
  * @version 1.0
  * @since JDK1.7
  */
-public class WechatEnterpriseAuthorizeParam extends OAuth2ApiParam {
+public class WechatParamEnterpriseAuthorize extends OAuth2ApiParam {
 
     private WechatScope scope;
-    public WechatEnterpriseAuthorizeParam(HttpServletRequest request, HttpServletResponse response) {
+    private String redirectUrl;
+
+    public WechatParamEnterpriseAuthorize(HttpServletRequest request, HttpServletResponse response) {
         this(request, response, WechatScope.UserInfo);
     }
 
-    public WechatEnterpriseAuthorizeParam(HttpServletRequest request
+    public WechatParamEnterpriseAuthorize(HttpServletRequest request
             , HttpServletResponse response, WechatScope scope) {
         super(request, response);
         this.scope = scope;
@@ -33,4 +35,14 @@ public class WechatEnterpriseAuthorizeParam extends OAuth2ApiParam {
     public WechatScope getScope() {
         return scope;
     }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public WechatParamEnterpriseAuthorize setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+        return this;
+    }
+
 }

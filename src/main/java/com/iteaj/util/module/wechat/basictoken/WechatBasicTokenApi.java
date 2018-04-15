@@ -4,7 +4,7 @@ import com.iteaj.util.HttpUtils;
 import com.iteaj.util.JsonUtils;
 import com.iteaj.util.module.http.build.UrlBuilder;
 import com.iteaj.util.module.wechat.AbstractWechatApi;
-import com.iteaj.util.module.wechat.WechatApiParam;
+import com.iteaj.util.module.wechat.WechatApiType;
 
 /**
  * <p>微信access_token</p>
@@ -13,22 +13,10 @@ import com.iteaj.util.module.wechat.WechatApiParam;
  * @since 1.7
  */
 public class WechatBasicTokenApi extends AbstractWechatApi
-        <WechatBasicTokenApiConfig, WechatApiParam> {
+        <WechatConfigBasicToken, WechatParamBasicToken> {
 
-    private WechatBasicTokenApiConfig config;
-
-    protected WechatBasicTokenApi(WechatBasicTokenApiConfig config) {
-        this.config = config;
-    }
-
-    @Override
-    public WechatBasicTokenApiConfig getApiConfig() {
-        return config;
-    }
-
-    @Override
-    public void setApiConfig(WechatBasicTokenApiConfig config) {
-        this.config = config;
+    protected WechatBasicTokenApi(WechatConfigBasicToken config) {
+        super(config);
     }
 
     /**
@@ -38,7 +26,7 @@ public class WechatBasicTokenApi extends AbstractWechatApi
      * @return
      */
     @Override
-    public BasicToken invoke(WechatApiParam param) {
+    public BasicToken invoke(WechatParamBasicToken param) {
         //调用微信接口并且获取调用结果
         UrlBuilder builder = UrlBuilder.build(getApiConfig().getApiGateway())
                 .addParam("appid", getApiConfig().getAppId())
@@ -49,69 +37,8 @@ public class WechatBasicTokenApi extends AbstractWechatApi
         return JsonUtils.toBean(result, BasicToken.class);
     }
 
-    public static class BasicToken{
-
-        private String errcode;
-        private String errmsg;
-        private String expires_in;
-        private String access_token;
-
-        public BasicToken(){
-
-        }
-
-        public boolean success(){
-            return null == errcode;
-        }
-
-        /**
-         * access_token过期时间
-         * @return
-         */
-        public String getExpires_in() {
-            return expires_in;
-        }
-
-        public void setExpires_in(String expires_in) {
-            this.expires_in = expires_in;
-        }
-
-        /**
-         * 微信访问令牌
-         * @return
-         */
-        public String getAccess_token() {
-            return access_token;
-        }
-
-        public void setAccess_token(String access_token) {
-            this.access_token = access_token;
-        }
-
-        public String getErrcode() {
-            return errcode;
-        }
-
-        public void setErrcode(String errcode) {
-            this.errcode = errcode;
-        }
-
-        public String getErrmsg() {
-            return errmsg;
-        }
-
-        public void setErrmsg(String errmsg) {
-            this.errmsg = errmsg;
-        }
-
-        @Override
-        public String toString() {
-            return "BasicToken{" +
-                    "errcode='" + errcode + '\'' +
-                    ", errmsg='" + errmsg + '\'' +
-                    ", expires_in='" + expires_in + '\'' +
-                    ", access_token='" + access_token + '\'' +
-                    '}';
-        }
+    @Override
+    public WechatApiType getApiType() {
+        return WechatApiType.BasicToken;
     }
 }

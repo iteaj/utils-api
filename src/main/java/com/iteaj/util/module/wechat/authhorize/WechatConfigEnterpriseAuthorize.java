@@ -7,7 +7,7 @@ package com.iteaj.util.module.wechat.authhorize;
  * @version 1.0
  * @since JDK1.7
  */
-public class WechatEnterpriseAuthorizeConfig extends
+public class WechatConfigEnterpriseAuthorize extends
         AbstractWechatOAuth2ApiConfig<WechatEnterpriseAuthorizeApi> {
 
     private String state;
@@ -21,7 +21,7 @@ public class WechatEnterpriseAuthorizeConfig extends
 
     private String redirectUrl;
 
-    public WechatEnterpriseAuthorizeConfig(String corpId, String corpSecret
+    public WechatConfigEnterpriseAuthorize(String corpId, String corpSecret
             , String agentId, String redirectUrl) {
         super(corpId, corpSecret);
         this.state = "auth";
@@ -69,7 +69,7 @@ public class WechatEnterpriseAuthorizeConfig extends
         return agentid;
     }
 
-    public WechatEnterpriseAuthorizeConfig setAgentid(String agentid) {
+    public WechatConfigEnterpriseAuthorize setAgentid(String agentid) {
         this.agentid = agentid;
         return this;
     }
@@ -119,7 +119,7 @@ public class WechatEnterpriseAuthorizeConfig extends
         return this.redirectUrl;
     }
 
-    public WechatEnterpriseAuthorizeConfig setRedirectUrl(String redirectUrl) {
+    public WechatConfigEnterpriseAuthorize setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
         return this;
     }

@@ -2,7 +2,7 @@ package com.iteaj.util.module.http.adapter;
 
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
-import com.iteaj.util.core.UtilsManagerFactory;
+import com.iteaj.util.core.UtilsGlobalDefaultFactory;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.*;
 import com.iteaj.util.module.http.build.EntityBuilder;
@@ -126,7 +126,7 @@ public class JdkHttpAdapter implements HttpAdapter<JdkHttpResponse> {
                 httpConnection = (HttpURLConnection)url.openConnection();
             } else if("https".equals(protocol)) {
                 HttpsURLConnection httpsConnection = (HttpsURLConnection)url.openConnection();
-                SSLContextManager sslManager = UtilsManagerFactory.getDefaultSslManager();
+                SSLContextManager sslManager = UtilsGlobalDefaultFactory.getDefaultSslManager();
                 httpsConnection.setSSLSocketFactory(sslManager.getSslContext().getSocketFactory());//添加ssl参数
                 httpConnection = httpsConnection;
             } else {

@@ -31,16 +31,16 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
     }
 
     @Override
-    public JsonNode getVal() {
-        return this.value;
+    public <T> T getVal() {
+        return (T)this.value;
     }
 
     @Override
-    public String getString() {
+    public String getValString() {
         try {
             return JacksonAdapter.objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            throw new UtilsException("Json-解析失败", e, UtilsType.JSON);
+            throw new UtilsException("解析失败", e, UtilsType.JSON);
         }
     }
 
@@ -86,7 +86,7 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
 
             return JacksonAdapter.objectMapper.writeValueAsString(objectNode);
         } catch (JsonProcessingException e) {
-            throw new UtilsException("Json-解析失败", e, UtilsType.JSON);
+            throw new UtilsException("解析失败", e, UtilsType.JSON);
         }
     }
 }

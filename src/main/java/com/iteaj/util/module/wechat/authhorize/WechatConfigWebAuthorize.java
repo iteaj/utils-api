@@ -11,7 +11,7 @@ import com.iteaj.util.module.wechat.WechatScope;
  * @version 1.0
  * @since JDK1.7
  */
-public class WechatWebAuthorizeConfig extends AbstractWechatOAuth2ApiConfig<WechatWebAuthorizeApi> {
+public class WechatConfigWebAuthorize extends AbstractWechatOAuth2ApiConfig<WechatWebAuthorizeApi> {
 
     private String lang;
     private String state;
@@ -23,7 +23,7 @@ public class WechatWebAuthorizeConfig extends AbstractWechatOAuth2ApiConfig<Wech
 
     private String redirectUrl;
 
-    public WechatWebAuthorizeConfig(String appId, String appSecret, String redirectUrl) {
+    public WechatConfigWebAuthorize(String appId, String appSecret, String redirectUrl) {
         super(appId, appSecret);
         this.state = "auth";
         this.lang = "zh_CN";
@@ -38,8 +38,8 @@ public class WechatWebAuthorizeConfig extends AbstractWechatOAuth2ApiConfig<Wech
     @Override
     public WechatWebAuthorizeApi buildApi() {
         AssertUtils.isNotBlank(this.getAppId(), "请指定AppId", UtilsType.WECHAT);
-        AssertUtils.isNotBlank(this.getAppId(), "请指定RedirectUrl", UtilsType.WECHAT);
         AssertUtils.isNotBlank(this.getAppSecret(), "请指定AppSecret", UtilsType.WECHAT);
+        AssertUtils.isNotBlank(this.getRedirectUrl(), "请指定RedirectUrl", UtilsType.WECHAT);
         return new WechatWebAuthorizeApi(this).build();
     }
 

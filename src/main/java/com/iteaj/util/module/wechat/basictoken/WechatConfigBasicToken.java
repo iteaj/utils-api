@@ -10,14 +10,14 @@ import com.iteaj.util.module.wechat.WechatConfig;
  * @author iteaj
  * @since 1.7
  */
-public class WechatBasicTokenApiConfig extends WechatConfig<WechatBasicTokenApi> {
+public class WechatConfigBasicToken extends WechatConfig<WechatBasicTokenApi> {
 
     /**普通的token使用client_credential*/
-    private static String GRANT_TYPE = "client_credential";
+    private String GRANT_TYPE = "client_credential";
     /**调用普通token需要的接口网关*/
-    private static String TOKEN_GATEWAY = "https://api.weixin.qq.com/cgi-bin/token";
+    private String TOKEN_GATEWAY = "https://api.weixin.qq.com/cgi-bin/token";
 
-    public WechatBasicTokenApiConfig(String appId, String appSecret) {
+    public WechatConfigBasicToken(String appId, String appSecret) {
         super(appId, appSecret);
     }
 

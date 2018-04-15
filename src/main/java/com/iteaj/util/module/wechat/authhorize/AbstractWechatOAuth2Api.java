@@ -18,6 +18,11 @@ public abstract class AbstractWechatOAuth2Api<C extends AbstractWechatOAuth2ApiC
 
     private C config;
 
+    @Override
+    public String desc() {
+        return getApiType().desc;
+    }
+
     public AbstractWechatOAuth2Api(C config) {
         this.config = config;
     }

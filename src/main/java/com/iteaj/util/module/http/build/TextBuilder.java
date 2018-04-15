@@ -2,11 +2,10 @@ package com.iteaj.util.module.http.build;
 
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
-import com.iteaj.util.core.UtilsManagerFactory;
+import com.iteaj.util.core.UtilsGlobalDefaultFactory;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.AbstractBuilder;
 import com.iteaj.util.module.http.ContentType;
-import com.iteaj.util.module.http.HttpRequestConfig;
 
 /**
  * create time: 2018/4/1
@@ -20,7 +19,7 @@ public class TextBuilder extends AbstractBuilder {
     private StringBuilder text;
 
     private TextBuilder(String url, String charset, ContentType type) {
-        super(url, charset, type, UtilsManagerFactory
+        super(url, charset, type, UtilsGlobalDefaultFactory
                 .getDefaultRequestConfig());
         this.text = new StringBuilder();
     }

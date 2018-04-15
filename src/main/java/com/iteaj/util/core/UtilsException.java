@@ -11,17 +11,17 @@ public class UtilsException extends RuntimeException {
     private UtilsType type;
 
     public UtilsException(UtilsType type) {
-        super(type.desc);
+        super("异常类型"+type.desc);
         this.type = type;
     }
 
     public UtilsException(String message, UtilsType type) {
-        super(type.desc+message);
+        super(message+type.desc);
         this.type = type;
     }
 
     public UtilsException(String message, Throwable cause, UtilsType type) {
-        super(type.desc+message, cause);
+        super(message+type.desc, cause);
         this.type = type;
     }
 

@@ -15,16 +15,4 @@ public interface ApiConfig {
      */
     UtilsType getUtilsType();
 
-    /**
-     * 返回调用Api的网关
-     * e.g.  http://www.iteaj.com
-     * @return
-     */
-    String getApiGateway();
-
-    /**
-     * 设置Api接口的网关
-     * @param gateway
-     */
-    void setApiGateway(String gateway);
 }

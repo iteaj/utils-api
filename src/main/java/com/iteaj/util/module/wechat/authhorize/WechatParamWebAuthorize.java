@@ -15,14 +15,14 @@ import javax.servlet.http.HttpServletResponse;
  * @version 1.0
  * @since JDK1.7
  */
-public class WechatWebAuthorizeParam extends OAuth2ApiParam {
+public class WechatParamWebAuthorize extends OAuth2ApiParam {
 
     private WechatScope scope; //授权域 有两种值：1.snsapi_userinfo 2.snsapi_base
-    public WechatWebAuthorizeParam(HttpServletRequest request, HttpServletResponse response) {
+    public WechatParamWebAuthorize(HttpServletRequest request, HttpServletResponse response) {
         this(request, response, WechatScope.UserInfo);
     }
 
-    public WechatWebAuthorizeParam(HttpServletRequest request
+    public WechatParamWebAuthorize(HttpServletRequest request
             , HttpServletResponse response, WechatScope scope) {
         super(request, response);
         this.scope = scope;

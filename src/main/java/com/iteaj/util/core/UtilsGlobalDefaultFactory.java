@@ -1,6 +1,5 @@
 package com.iteaj.util.core;
 
-import com.iteaj.util.module.http.AllTrustManager;
 import com.iteaj.util.module.http.HttpAdapter;
 import com.iteaj.util.module.http.HttpRequestConfig;
 import com.iteaj.util.module.http.SSLContextManager;
@@ -11,8 +10,8 @@ import com.iteaj.util.module.json.fastjson.FastJsonAdapter;
 import com.iteaj.util.module.json.jackson.JacksonAdapter;
 import com.iteaj.util.module.oauth2.AuthorizeStorageManager;
 import com.iteaj.util.module.oauth2.MapStorageManager;
-
-import javax.net.ssl.X509TrustManager;
+import com.iteaj.util.module.wechat.LocationWechatTokenManager;
+import com.iteaj.util.module.wechat.WechatTokenManager;
 
 /**
  * create time: 2018/4/7
@@ -22,11 +21,12 @@ import javax.net.ssl.X509TrustManager;
  * @version 1.0
  * @since JDK1.7
  */
-public class UtilsManagerFactory {
+public class UtilsGlobalDefaultFactory {
 
     private static Object lock = new Object();
     private static JsonAdapter defaultJsonAdapter;
     private static HttpAdapter defaultHttpAdapter;
+    private static WechatTokenManager tokenManager;
     private static SSLContextManager defaultSslManager;
     private static HttpRequestConfig defaultRequestConfig;
     private static AuthorizeStorageManager defaultStorageManager;
@@ -36,6 +36,10 @@ public class UtilsManagerFactory {
         defaultSslManager = new SSLContextManager();
         //初始化默认的OAuth2上下文存储管理
         defaultStorageManager = new MapStorageManager();
+        //初始化默认的微信Token管理
+        tokenManager = LocationWechatTokenManager.instance();
+        //初始化默认的Http请求配置
+        defaultRequestConfig = HttpRequestConfig.getDefault();
     }
 
     public static HttpAdapter getDefaultHttpAdapter() {
@@ -54,8 +58,8 @@ public class UtilsManagerFactory {
     }
 
     public static void setDefaultHttpAdapter(HttpAdapter defaultHttpAdapter) {
-        if(UtilsManagerFactory.defaultHttpAdapter == null)
-            UtilsManagerFactory.defaultHttpAdapter = defaultHttpAdapter;
+        if(UtilsGlobalDefaultFactory.defaultHttpAdapter == null)
+            UtilsGlobalDefaultFactory.defaultHttpAdapter = defaultHttpAdapter;
     }
 
     public static AuthorizeStorageManager getDefaultStorageManager() {
@@ -64,7 +68,7 @@ public class UtilsManagerFactory {
 
     public static void setDefaultStorageManager(AuthorizeStorageManager defaultStorageManager) {
         if(defaultStorageManager.getClass() != MapStorageManager.class)
-            UtilsManagerFactory.defaultStorageManager = defaultStorageManager;
+            UtilsGlobalDefaultFactory.defaultStorageManager = defaultStorageManager;
     }
 
     public static JsonAdapter getDefaultJsonAdapter() {
@@ -87,7 +91,7 @@ public class UtilsManagerFactory {
     }
 
     public static void setDefaultJsonAdapter(JsonAdapter defaultJsonAdapter) {
-        UtilsManagerFactory.defaultJsonAdapter = defaultJsonAdapter;
+        UtilsGlobalDefaultFactory.defaultJsonAdapter = defaultJsonAdapter;
     }
 
     public static HttpRequestConfig getDefaultRequestConfig() {
@@ -98,7 +102,7 @@ public class UtilsManagerFactory {
     }
 
     public static void setDefaultRequestConfig(HttpRequestConfig defaultRequestConfig) {
-        UtilsManagerFactory.defaultRequestConfig = defaultRequestConfig;
+        UtilsGlobalDefaultFactory.defaultRequestConfig = defaultRequestConfig;
     }
 
     public static SSLContextManager getDefaultSslManager() {
@@ -106,6 +110,14 @@ public class UtilsManagerFactory {
     }
 
     public static void setDefaultSslManager(SSLContextManager defaultSslManager) {
-        UtilsManagerFactory.defaultSslManager = defaultSslManager;
+        UtilsGlobalDefaultFactory.defaultSslManager = defaultSslManager;
+    }
+
+    public static WechatTokenManager getTokenManager() {
+        return tokenManager;
+    }
+
+    public static void setTokenManager(WechatTokenManager tokenManager) {
+        UtilsGlobalDefaultFactory.tokenManager = tokenManager;
     }
 }

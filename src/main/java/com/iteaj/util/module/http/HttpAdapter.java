@@ -44,7 +44,7 @@ public interface HttpAdapter<T extends HttpResponse> {
      * @param builder  用来构建Http请求的Body内容, 每一个参数都包含参数名和参数值的对应关系.
      *                 可以增加文件{@link EntityBuilder#addBody(String, File)}、
      *                 普通的参数{@link EntityBuilder#addBody(String, String)}、
-     *                 流参数{@link EntityBuilder#addBody(String, byte[])}
+     *                 流参数{@link EntityBuilder#addBody(String, byte[], String)}
      *
      * @return
      * @throws UtilsException

@@ -34,14 +34,15 @@ public class FastjsonWrapper extends JSONObject implements JsonWrapper<JSONObjec
 
     @Override
     public JsonWrapper addNode(String key, Object val) {
-        if(val instanceof FastjsonNode){
+        if(val instanceof FastjsonWrapper) {
+            this.put(key, val);
+        } else if(val instanceof FastjsonNode) {
             JSONObject object = new JSONObject();
             object.put(((FastjsonNode) val).getKey(), ((FastjsonNode) val).getVal());
-            put(key, object);
-        } else {
-            put(key, val);
+            this.put(key, object);
+        } else  {
+            this.put(key, val);
         }
-
         return this;
     }
 

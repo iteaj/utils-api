@@ -1,6 +1,5 @@
 package com.iteaj.util.module.wechat.message;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.iteaj.util.module.wechat.WechatApiParam;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.List;
  * @author iteaj
  * @since 1.7
  */
-public class TemplateMessageParam implements WechatApiParam {
+public class WechatParamTemplateMessage implements WechatApiParam<TemplateMessageApi.MessageResponse> {
 
     //模版跳转url
     private String url;
@@ -25,7 +24,7 @@ public class TemplateMessageParam implements WechatApiParam {
 
     private List<Item> items; //微信消息模版的Data数据
 
-    public TemplateMessageParam(String openId, String templateId) {
+    public WechatParamTemplateMessage(String openId, String templateId) {
         this.openId = openId;
         this.templateId = templateId;
         this.items = new ArrayList<>();
@@ -37,7 +36,7 @@ public class TemplateMessageParam implements WechatApiParam {
      * @param val
      * @return
      */
-    public TemplateMessageParam addItem(String key, String val) {
+    public WechatParamTemplateMessage addItem(String key, String val) {
         return this.addItem(key, val, null);
     }
 
@@ -48,7 +47,7 @@ public class TemplateMessageParam implements WechatApiParam {
      * @param color
      * @return
      */
-    public TemplateMessageParam addItem(String key, String val, String color) {
+    public WechatParamTemplateMessage addItem(String key, String val, String color) {
         this.items.add(new Item(key, val, color));
         return this;
     }
@@ -57,7 +56,7 @@ public class TemplateMessageParam implements WechatApiParam {
         return url;
     }
 
-    public TemplateMessageParam setUrl(String url) {
+    public WechatParamTemplateMessage setUrl(String url) {
         this.url = url;
         return this;
     }
@@ -66,7 +65,7 @@ public class TemplateMessageParam implements WechatApiParam {
         return templateId;
     }
 
-    public TemplateMessageParam setTemplateId(String templateId) {
+    public WechatParamTemplateMessage setTemplateId(String templateId) {
         this.templateId = templateId;
         return this;
     }
@@ -75,7 +74,7 @@ public class TemplateMessageParam implements WechatApiParam {
         return miniprogram;
     }
 
-    public TemplateMessageParam setMiniprogram(String miniprogram) {
+    public WechatParamTemplateMessage setMiniprogram(String miniprogram) {
         this.miniprogram = miniprogram;
         return this;
     }
@@ -84,7 +83,7 @@ public class TemplateMessageParam implements WechatApiParam {
         return pagepath;
     }
 
-    public TemplateMessageParam setPagepath(String pagepath) {
+    public WechatParamTemplateMessage setPagepath(String pagepath) {
         this.pagepath = pagepath;
         return this;
     }
@@ -93,7 +92,7 @@ public class TemplateMessageParam implements WechatApiParam {
         return color;
     }
 
-    public TemplateMessageParam setColor(String color) {
+    public WechatParamTemplateMessage setColor(String color) {
         this.color = color;
         return this;
     }

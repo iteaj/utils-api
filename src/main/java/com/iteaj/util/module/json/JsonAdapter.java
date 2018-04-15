@@ -1,6 +1,7 @@
 package com.iteaj.util.module.json;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public interface JsonAdapter<R> {
      * @param format    日期格式化
      * @return
      */
-    String toJson(Object obj, DateFormat format);
+    String toJson(Object obj, SimpleDateFormat format);
 
     /**
      * json转pojo对象
@@ -50,10 +51,9 @@ public interface JsonAdapter<R> {
      * json转数组对象
      * @param json
      * @param elementType   数组的类型
-     * @param <T>
      * @return
      */
-    <T> T[] toArray(String json, Class<T> elementType);
+    Object[] toArray(String json, Class elementType);
 
     /**
      * json转成map
@@ -65,7 +65,7 @@ public interface JsonAdapter<R> {
      * @param <V>
      * @return
      */
-    <K,V> Map<K,V> toMap(String json, Class<? extends Map<K,V>> mapType
+    <K,V> Map<K,V> toMap(String json, Class<? extends Map> mapType
             , Class<K> keyType, Class<V> valueType);
 
     /**

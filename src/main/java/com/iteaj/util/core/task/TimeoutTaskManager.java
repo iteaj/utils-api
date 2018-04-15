@@ -47,7 +47,7 @@ public class TimeoutTaskManager {
 
     public void addTask(TimeoutTask task) {
         if(null == task || task.getCreateTime() == 0)
-            throw new UtilsException("超时任务参数异常", UtilsType.TimeoutTask);
+            throw new UtilsException("任务未正常构建", UtilsType.TimeoutTask);
 
         if(timeoutTasks.size() == 0) {
             synchronized (lock) {
@@ -160,9 +160,9 @@ public class TimeoutTaskManager {
                         }
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error("超时管理器中断异常："+e.getMessage(), e);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("超时管理器未知异常："+e.getMessage(), e);
                 }
             }
         }

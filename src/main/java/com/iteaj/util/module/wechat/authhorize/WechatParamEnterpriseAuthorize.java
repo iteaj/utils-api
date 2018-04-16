@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 public class WechatParamEnterpriseAuthorize extends OAuth2ApiParam {
 
     private WechatScope scope;
-    private String redirectUrl;
 
     public WechatParamEnterpriseAuthorize(HttpServletRequest request, HttpServletResponse response) {
         this(request, response, WechatScope.UserInfo);
@@ -29,19 +28,47 @@ public class WechatParamEnterpriseAuthorize extends OAuth2ApiParam {
         super(request, response);
         this.scope = scope;
 
-        AssertUtils.isTrue(scope!=null,"请指定授权域", UtilsType.WECHAT);
+        AssertUtils.isTrue(scope!=null,"请指定企业微信授权参数：scope", UtilsType.WECHAT);
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param redirectUrl 此参数和{@link WechatConfigEnterpriseAuthorize#redirectUrl}两者必填一处
+     *                    , 如果两个地方都填,那么此处优先级更高
+     */
+    public WechatParamEnterpriseAuthorize(HttpServletRequest request
+            , HttpServletResponse response, String redirectUrl) {
+        super(request, response, redirectUrl);
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param redirectUrl 此参数和{@link WechatConfigEnterpriseAuthorize#redirectUrl}两者必填一处
+     *                    , 如果两个地方都填,那么此处优先级更高
+     * @param scope
+     */
+    public WechatParamEnterpriseAuthorize(HttpServletRequest request
+            , HttpServletResponse response, String redirectUrl, WechatScope scope) {
+        super(request, response, redirectUrl);
+        this.scope = scope;
+        AssertUtils.isTrue(scope!=null,"请指定企业微信授权参数：scope", UtilsType.WECHAT);
     }
 
     public WechatScope getScope() {
         return scope;
     }
 
-    public String getRedirectUrl() {
-        return redirectUrl;
+    public WechatParamEnterpriseAuthorize setScope(WechatScope scope) {
+        this.scope = scope;
+        return this;
     }
 
     public WechatParamEnterpriseAuthorize setRedirectUrl(String redirectUrl) {
-        this.redirectUrl = redirectUrl;
+        super.setRedirectUrl(redirectUrl);
         return this;
     }
 

@@ -1,5 +1,8 @@
 package com.iteaj.util.module.wechat.authhorize;
 
+import com.iteaj.util.AssertUtils;
+import com.iteaj.util.core.UtilsType;
+
 /**
  * create time: 2018/4/5
  *
@@ -21,6 +24,11 @@ public class WechatConfigEnterpriseAuthorize extends
 
     private String redirectUrl;
 
+
+    public WechatConfigEnterpriseAuthorize(String corpId, String corpSecret, String agentid) {
+        this(corpId, corpSecret, agentid, null);
+    }
+
     public WechatConfigEnterpriseAuthorize(String corpId, String corpSecret
             , String agentId, String redirectUrl) {
         super(corpId, corpSecret);
@@ -36,6 +44,9 @@ public class WechatConfigEnterpriseAuthorize extends
 
     @Override
     public WechatEnterpriseAuthorizeApi buildApi() {
+        AssertUtils.isNotBlank(getAppId(), "未指定CorpId", UtilsType.WECHAT);
+        AssertUtils.isNotBlank(getAgentid(), "未指定AgentId", UtilsType.WECHAT);
+        AssertUtils.isNotBlank(getAppSecret(), "未指定CorpSecret", UtilsType.WECHAT);
         return new WechatEnterpriseAuthorizeApi(this).build();
     }
 

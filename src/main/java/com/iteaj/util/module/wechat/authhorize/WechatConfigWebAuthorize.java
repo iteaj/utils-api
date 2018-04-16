@@ -39,7 +39,6 @@ public class WechatConfigWebAuthorize extends AbstractWechatOAuth2ApiConfig<Wech
     public WechatWebAuthorizeApi buildApi() {
         AssertUtils.isNotBlank(this.getAppId(), "请指定AppId", UtilsType.WECHAT);
         AssertUtils.isNotBlank(this.getAppSecret(), "请指定AppSecret", UtilsType.WECHAT);
-        AssertUtils.isNotBlank(this.getRedirectUrl(), "请指定RedirectUrl", UtilsType.WECHAT);
         return new WechatWebAuthorizeApi(this).build();
     }
 

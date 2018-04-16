@@ -1,7 +1,10 @@
 package com.iteaj.util.module.wechat.authhorize;
 
+import com.iteaj.util.AssertUtils;
+import com.iteaj.util.CommonUtils;
 import com.iteaj.util.HttpUtils;
 import com.iteaj.util.JsonUtils;
+import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.build.UrlBuilder;
 import com.iteaj.util.module.oauth2.*;
 import com.iteaj.util.module.wechat.AbstractWechatPhase;
@@ -88,10 +91,15 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
         public void doPhase(PhaseChain chain, WechatParamWebAuthorize context) {
             PrintWriter writer = null;
             try {
+                //授权参数的redirectUrl覆盖授权配置里面的redirectUrl
+                String redirectUrl = CommonUtils.isBlank(context.getRedirectUrl())
+                        ?getApiConfig().getRedirectUrl():context.getRedirectUrl();
+                AssertUtils.isNotBlank(redirectUrl, "请指定微信网页授权的RedirectUrl参数", UtilsType.WECHAT);
+
                 StringBuilder sb = new StringBuilder(html_pre);
                 sb.append(getApiConfig().getCodeGateway())
                         .append("?appid=").append(getApiConfig().getAppId())
-                        .append("&redirect_uri=").append(getRedirectUrl(context, getApiConfig().getRedirectUrl()))
+                        .append("&redirect_uri=").append(getRedirectUrl(context, redirectUrl))
                         .append("&response_type=").append(getApiConfig().getResponseType())
                         .append("&scope=").append(context.getScope().val)
                         .append("&state=").append(getApiConfig().getState()).append("#wechat_redirect");
@@ -106,7 +114,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
                 context.getResponse().setContentType("text/html; charset=utf-8");
                 writer.print(html);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("类别：微信Api - 动作：执行网页授权阶段 - 描述：未知异常", e);
             } finally {
                 writer.flush();
                 writer.close();

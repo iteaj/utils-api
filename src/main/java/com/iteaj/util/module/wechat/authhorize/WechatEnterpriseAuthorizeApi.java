@@ -100,10 +100,11 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
         public void doPhase(PhaseChain chain, WechatParamEnterpriseAuthorize context) {
             PrintWriter writer = null;
             try {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder(html_pre);
                 //授权参数的redirectUrl覆盖授权配置里面的redirectUrl
                 String redirectUrl = CommonUtils.isBlank(context.getRedirectUrl())
                         ?getApiConfig().getRedirectUrl():context.getRedirectUrl();
+                AssertUtils.isNotBlank(redirectUrl, "请指定企业微信网页授权的RedirectUrl参数", UtilsType.WECHAT);
 
                 sb.append(getApiConfig().getCodeGateway())
                         .append("?appid=").append(getApiConfig().getAppId())
@@ -113,8 +114,9 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
                         .append("&agentid=").append(getApiConfig().getAgentid())
                         .append("&state=").append(getApiConfig().getState())
                         .append("#wechat_redirect");
+                sb.append(html_suf);
 
-                String html = html_pre + sb.toString() + html_suf;
+                String html = sb.toString();
                 if(logger.isDebugEnabled()) {
                     logger.debug("响应Html：{}", html);
                 }
@@ -122,7 +124,7 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
                 context.getResponse().setContentType("text/html; charset=utf-8");
                 writer.print(html);
             } catch (IOException e) {
-                logger.error("类别：微信网页授权 - 动作：获取Code - 描述：获取失败", e);
+                logger.error("类别：微信Api - 动作：获取Code - 描述：获取失败", e);
             } finally {
                 writer.flush();
                 writer.close();

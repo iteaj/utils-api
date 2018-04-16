@@ -11,7 +11,7 @@ import com.iteaj.util.core.UtilsApi;
  * @version 1.0
  * @since JDK1.7
  */
-public interface UtilsApiManager {
+public interface SpringApiManager {
 
 
     /**

@@ -18,7 +18,7 @@ import java.util.Map;
  * @version 1.0
  * @since JDK1.7
  */
-public abstract class AbstractApiManager implements UtilsApiManager {
+public abstract class AbstractApiManager implements SpringApiManager {
 
     private Map<Class<? extends ApiParam>, UtilsApi> apiMap;
     public Logger logger = LoggerFactory.getLogger(getClass());

@@ -30,7 +30,7 @@ public abstract class AbstractApiManager implements SpringApiManager {
     public void registerApi(UtilsApi api) {
         AssertUtils.isTrue(null != api, "注册api失败", UtilsType.Common);
         apiMap.put(api.getParamType(), api);
-        logger.info("类别：Api工厂 - 动作：注册Api - 描述：{} - Api：{}", api.desc(), api.getClass().getSimpleName());
+        logger.info("类别：Api工厂 - 动作：注册Api - Api：{} - 描述：{}", api.getClass().getSimpleName(), api.desc());
     }
 
     @Override

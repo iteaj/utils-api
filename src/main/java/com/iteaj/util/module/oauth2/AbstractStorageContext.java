@@ -2,6 +2,7 @@ package com.iteaj.util.module.oauth2;
 
 import com.iteaj.util.AssertUtils;
 import com.iteaj.util.CommonUtils;
+import com.iteaj.util.core.UtilsGlobalDefaultFactory;
 import com.iteaj.util.core.UtilsType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
     private AuthorizePhase nextPhase;
     private Map<String, Object> storage;
     private transient HttpServletRequest request;
+    private AuthorizeStorageManager storageManager;
     private transient HttpServletResponse response;
     private AbstractAuthorizeAction authorizeAction;
     private transient static Object lock = new Object();
@@ -57,6 +59,8 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
     protected void initContext(AuthorizationType type) throws Exception {
         this.type = type;
         this.nextPhase = type.getAuthorizePhase(type.getPhaseEntry());
+        if(storageManager == null) storageManager =
+                UtilsGlobalDefaultFactory.getDefaultStorageManager();
 
         AssertUtils.isTrue(nextPhase != null
                 , "OAuth2 - 找不到要执行的入口阶段：phaseEntry 在类型 "
@@ -69,7 +73,7 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
                 .authorizeResult().getConstructor(AbstractStorageContext.class);
         this.authorizeResult = constructor.newInstance(this);
 
-        ContextManagerFactory.getDefaultManager().putContext(getContextKey(), this);
+        this.storageManager.putContext(getContextKey(), this);
     }
 
     @Override
@@ -106,7 +110,9 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
          * 如果执行动作的阶段等于tempPhase, 那么下一个阶段就不执行,所以 nextPhase = null
          * 如果执行动作的阶段不等于tempPhase, 那么继续执行
          */
-        if(null != getAuthorizeAction()) {
+        if(null != getAuthorizeAction() && CommonUtils
+                .isNotBlank(getAuthorizeAction().invokePhase)) {
+
             String invokePhase = getAuthorizeAction().getInvokePhase();
             if(tempPhase.phaseAlias().equals(invokePhase))
                 nextPhase = null;

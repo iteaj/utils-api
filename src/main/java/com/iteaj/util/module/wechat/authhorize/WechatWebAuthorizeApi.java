@@ -89,12 +89,19 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
 
         @Override
         public void doPhase(PhaseChain chain, WechatParamWebAuthorize context) {
-            PrintWriter writer = null;
             try {
                 //授权参数的redirectUrl覆盖授权配置里面的redirectUrl
                 String redirectUrl = CommonUtils.isBlank(context.getRedirectUrl())
                         ?getApiConfig().getRedirectUrl():context.getRedirectUrl();
                 AssertUtils.isNotBlank(redirectUrl, "请指定微信网页授权的RedirectUrl参数", UtilsType.WECHAT);
+                boolean scheme = redirectUrl.startsWith("http://") || redirectUrl.startsWith("https://");
+                AssertUtils.isTrue(scheme, "微信网页授权RedirectUrl必须以：http://或https:// 开头", UtilsType.WECHAT);
+
+                String domain = context.getRequest().getServerName();
+                if(!redirectUrl.contains(domain)) {
+                    logger.warn("类别：微信Api - 动作：获取code - 描述：{} - Domain：{} - redirectUrl：{}"
+                            ,"redirectUrl的域名和访问域名不一致, 可能导致微信返回【redirect_uri参数错误】" ,domain, redirectUrl);
+                }
 
                 StringBuilder sb = new StringBuilder(html_pre);
                 sb.append(getApiConfig().getCodeGateway())
@@ -110,14 +117,13 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
                     logger.debug("类别：微信Api - 动作：获取code - 描述：写html参数到微信客户端 [{}]", html);
                 }
 
-                writer = context.getResponse().getWriter();
+                PrintWriter writer = context.getResponse().getWriter();
                 context.getResponse().setContentType("text/html; charset=utf-8");
                 writer.print(html);
-            } catch (IOException e) {
-                logger.error("类别：微信Api - 动作：执行网页授权阶段 - 描述：未知异常", e);
-            } finally {
                 writer.flush();
                 writer.close();
+            } catch (IOException e) {
+                logger.error("类别：微信Api - 动作：执行网页授权阶段 - 描述：未知异常", e);
             }
         }
 

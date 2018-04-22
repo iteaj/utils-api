@@ -47,6 +47,8 @@ public class UtilsGlobalDefaultFactory {
             return defaultHttpAdapter;
 
         synchronized (lock) {
+            if(null != defaultHttpAdapter)
+                return defaultHttpAdapter;
             try {
                 defaultHttpAdapter = HttpClientAdapter.instance();
             } catch (Throwable e) {

@@ -5,7 +5,7 @@ import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.TokenManager;
 import com.iteaj.util.module.wechat.basictoken.BasicToken;
-import com.iteaj.util.module.wechat.basictoken.EnterpriseConfigBasicToken;
+import com.iteaj.util.module.wechat.basictoken.WechatConfigEnterpriseBasicToken;
 import com.iteaj.util.module.wechat.basictoken.WechatConfigBasicToken;
 
 /**
@@ -22,8 +22,8 @@ public abstract class WechatTokenManager implements TokenManager<WechatConfigBas
         AssertUtils.isTrue(null != config, "未指定获取Token的配置参数", UtilsType.WECHAT);
         if(config instanceof WechatConfigBasicToken) {
             return getBasicToken(config, false);
-        } else if(config instanceof EnterpriseConfigBasicToken) {
-            return getBasicToken((EnterpriseConfigBasicToken)config, false);
+        } else if(config instanceof WechatConfigEnterpriseBasicToken) {
+            return getBasicToken((WechatConfigEnterpriseBasicToken)config, false);
         } else {
             throw new UtilsException("未知的Token配置", UtilsType.WECHAT);
         }
@@ -40,8 +40,8 @@ public abstract class WechatTokenManager implements TokenManager<WechatConfigBas
         AssertUtils.isTrue(null != config, "未指定获取Token的配置参数", UtilsType.WECHAT);
         if(config instanceof WechatConfigBasicToken) {
             return getBasicToken(config, true);
-        } else if(config instanceof EnterpriseConfigBasicToken) {
-            return getBasicToken((EnterpriseConfigBasicToken)config, true);
+        } else if(config instanceof WechatConfigEnterpriseBasicToken) {
+            return getBasicToken((WechatConfigEnterpriseBasicToken)config, true);
         } else {
             throw new UtilsException("未知的Token配置", UtilsType.WECHAT);
         }
@@ -59,5 +59,5 @@ public abstract class WechatTokenManager implements TokenManager<WechatConfigBas
      * @param config
      * @return
      */
-    protected abstract BasicToken getBasicToken(EnterpriseConfigBasicToken config, boolean refresh);
+    protected abstract BasicToken getBasicToken(WechatConfigEnterpriseBasicToken config, boolean refresh);
 }

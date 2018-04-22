@@ -82,7 +82,7 @@ public class LocationWechatTokenManager extends WechatTokenManager {
      * @return
      */
     @Override
-    protected BasicToken getBasicToken(EnterpriseConfigBasicToken config, boolean refresh) {
+    protected BasicToken getBasicToken(WechatConfigEnterpriseBasicToken config, boolean refresh) {
         Map<String, BasicToken> tokenMap = this.tokenMap.get(config.getAppId());
         if(CommonUtils.isNotEmpty(tokenMap)) {
             BasicToken basicToken = tokenMap.get(config.getAppSecret());

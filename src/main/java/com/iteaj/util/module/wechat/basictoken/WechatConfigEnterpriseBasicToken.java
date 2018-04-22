@@ -14,11 +14,11 @@ import com.iteaj.util.module.wechat.WechatApiType;
  * @version 1.0
  * @since JDK1.7
  */
-public class EnterpriseConfigBasicToken extends WechatConfigBasicToken {
+public class WechatConfigEnterpriseBasicToken extends WechatConfigBasicToken {
 
     private String apiGateway = "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
 
-    public EnterpriseConfigBasicToken(String appId, String appSecret) {
+    public WechatConfigEnterpriseBasicToken(String appId, String appSecret) {
         super(appId, appSecret);
     }
 
@@ -39,7 +39,7 @@ public class EnterpriseConfigBasicToken extends WechatConfigBasicToken {
 
     public class EnterpriseBasicTokenApi extends WechatBasicTokenApi {
 
-        protected EnterpriseBasicTokenApi(EnterpriseConfigBasicToken config) {
+        protected EnterpriseBasicTokenApi(WechatConfigEnterpriseBasicToken config) {
             super(config);
         }
 

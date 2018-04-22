@@ -1,8 +1,16 @@
 package com.iteaj.util.spring;
 
+import com.iteaj.util.AssertUtils;
 import com.iteaj.util.core.ApiInvokeReturn;
 import com.iteaj.util.core.ApiParam;
 import com.iteaj.util.core.UtilsApi;
+import com.iteaj.util.core.UtilsType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * create time: 2018/4/14
@@ -11,21 +19,36 @@ import com.iteaj.util.core.UtilsApi;
  * @version 1.0
  * @since JDK1.7
  */
-public interface SpringApiManager {
+public abstract class SpringApiManager implements InitializingBean {
 
+    private static Map<Class<? extends ApiParam>, UtilsApi> apiMap;
+    public Logger logger = LoggerFactory.getLogger(getClass());
 
-    /**
-     * 通过api所需的调用参数获取api
-     * @param clazz
-     * @return
-     */
-    <P extends ApiParam> UtilsApi getApi(Class<P> clazz);
+    static {
+        apiMap = new ConcurrentHashMap<>(64);
+    }
 
-    /**
-     * 根据调用api所需的参数直接调用api
-     * @param param
-     * @param <T>
-     * @return
-     */
-    <T extends ApiInvokeReturn> T invoke(ApiParam<T> param);
+    protected SpringApiManager() {
+
+    }
+
+    protected void registerApi(UtilsApi api) {
+        AssertUtils.isTrue(null != api, "注册api失败", UtilsType.Common);
+        apiMap.put(api.getParamType(), api);
+        logger.info("类别：Api工厂 - 动作：注册Api - Api：{} - 描述：{}", api.getClass().getSimpleName(), api.desc());
+    }
+
+    public static  <P extends ApiParam> UtilsApi getApi(Class<P> clazz) {
+        return apiMap.get(clazz);
+    }
+
+    public static  <T extends ApiInvokeReturn> T invoke(ApiParam<T> param) {
+        AssertUtils.isTrue(null != param, "未指定调用api所需参数", UtilsType.Common);
+        UtilsApi api = getApi(param.getClass());
+
+        AssertUtils.isTrue(null != api, "未找到对应的Api："
+                +param.getClass().getName(), UtilsType.Common);
+
+        return (T) api.invoke(param);
+    }
 }

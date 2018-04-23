@@ -12,9 +12,9 @@
     <name>utils</name>
     <groupId>com.iteaj</groupId>
     <packaging>bundle</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>iteaj-utils</artifactId>
+    <artifactId>api-utils</artifactId>
 
     <licenses>
         <license>
@@ -26,7 +26,7 @@
 
     <scm>
         <url>https://github.com/iteaj/iteaj-utils</url>
-        <connection>https://github.com/iteaj/iteaj-utils.git</connection>
+        <connection>https://github.com/iteaj/api-utils.git</connection>
         <developerConnection>https://www.iteblog.com</developerConnection>
     </scm>
 

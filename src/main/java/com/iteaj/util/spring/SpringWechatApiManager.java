@@ -1,8 +1,9 @@
-package com.iteaj.util.module.wechat;
+package com.iteaj.util.spring;
 
 import com.iteaj.util.AssertUtils;
 import com.iteaj.util.core.UtilsGlobalDefaultFactory;
 import com.iteaj.util.core.UtilsType;
+import com.iteaj.util.module.wechat.WechatTokenManager;
 import com.iteaj.util.module.wechat.authhorize.WechatConfigEnterpriseAuthorize;
 import com.iteaj.util.module.wechat.authhorize.WechatConfigWebAuthorize;
 import com.iteaj.util.module.wechat.basictoken.BasicToken;

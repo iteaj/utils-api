@@ -19,7 +19,8 @@ public abstract class WechatTokenManager implements TokenManager<WechatConfigBas
 
     @Override
     public final BasicToken getToken(WechatConfigBasicToken config){
-        AssertUtils.isTrue(null != config, "未指定获取Token的配置参数", UtilsType.WECHAT);
+        AssertUtils.isTrue(null != config, "未设置配置信息", UtilsType.WECHAT);
+
         if(config instanceof WechatConfigBasicToken) {
             return getBasicToken(config, false);
         } else if(config instanceof WechatConfigEnterpriseBasicToken) {

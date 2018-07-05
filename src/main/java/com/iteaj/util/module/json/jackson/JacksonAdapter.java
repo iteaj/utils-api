@@ -11,11 +11,10 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.json.JsonAdapter;
-import com.iteaj.util.module.json.JsonWrapper;
-import com.iteaj.util.module.json.NodeWrapper;
+import com.iteaj.util.module.json.Json;
+import com.iteaj.util.module.json.Node;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -151,16 +150,16 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
     }
 
     @Override
-    public JsonWrapper build() {
-        return new JacksonWrapper();
+    public Json build() {
+        return new Jackson();
     }
 
     @Override
-    public JsonWrapper build(String json) {
+    public Json build(String json) {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
 
-            JacksonWrapper jsonNodes = new JacksonWrapper();
+            Jackson jsonNodes = new Jackson();
             jsonNodes.setAll((ObjectNode) jsonNode);
 
             return jsonNodes;
@@ -170,7 +169,7 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
     }
 
     @Override
-    public NodeWrapper buildNode(String name, Object val) {
+    public Node buildNode(String name, Object val) {
         return new JacksonNode(name, getNodeFactory().pojoNode(val));
     }
 

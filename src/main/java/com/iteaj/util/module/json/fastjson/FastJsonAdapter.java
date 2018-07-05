@@ -7,10 +7,9 @@ import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.json.JsonAdapter;
-import com.iteaj.util.module.json.JsonWrapper;
-import com.iteaj.util.module.json.NodeWrapper;
+import com.iteaj.util.module.json.Json;
+import com.iteaj.util.module.json.Node;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -78,21 +77,21 @@ public class FastJsonAdapter implements JsonAdapter<JSON> {
     }
 
     @Override
-    public JsonWrapper build() {
-        return new FastjsonWrapper();
+    public Json build() {
+        return new Fastjson();
     }
 
     @Override
-    public JsonWrapper build(String json) {
+    public Json build(String json) {
         JSONObject jsonObject = JSONObject.parseObject(json);
-        FastjsonWrapper build = (FastjsonWrapper)build();
+        Fastjson build = (Fastjson)build();
         jsonObject.putAll(jsonObject);
 
         return build;
     }
 
     @Override
-    public NodeWrapper buildNode(String name, Object val) {
+    public Node buildNode(String name, Object val) {
         return new FastjsonNode(name, val);
     }
 }

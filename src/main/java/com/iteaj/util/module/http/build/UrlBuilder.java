@@ -1,6 +1,7 @@
 package com.iteaj.util.module.http.build;
 
 import com.iteaj.util.CommonUtils;
+import com.iteaj.util.Const;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.AbstractBuilder;
@@ -19,20 +20,32 @@ import com.iteaj.util.module.http.ContentType;
  */
 public class UrlBuilder extends AbstractBuilder {
 
-    private UrlBuilder(String url) {
-        super(url, ContentType.UrlEncoded);
+    public UrlBuilder(String url, String charset) {
+        super(url, charset);
     }
 
     /**
-     * 构建一个实例对象
+     * 构建一个实例对象通过默认的编码(UTF-8)
      * @param url   必填
      * @return
      */
     public static UrlBuilder build(String url) throws UtilsException {
         if(!CommonUtils.isNotBlank(url))
-            throw new UtilsException("http Url错误", UtilsType.HTTP);
+            throw new UtilsException("未指定请求URL", UtilsType.HTTP);
 
-        return new UrlBuilder(url);
+        return new UrlBuilder(url, Const.UTF_8.name());
+    }
+
+    /**
+     * 构建一个实例对象通过指定的编码
+     * @param url   必填
+     * @return
+     */
+    public static UrlBuilder build(String url, String charset) throws UtilsException {
+        if(!CommonUtils.isNotBlank(url))
+            throw new UtilsException("未指定请求URL", UtilsType.HTTP);
+
+        return new UrlBuilder(url, charset);
     }
 
     @Override

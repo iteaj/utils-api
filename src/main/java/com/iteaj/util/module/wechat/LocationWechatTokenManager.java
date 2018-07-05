@@ -1,6 +1,8 @@
 package com.iteaj.util.module.wechat;
 
 import com.iteaj.util.CommonUtils;
+import com.iteaj.util.core.UtilsException;
+import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.core.task.TimeoutTask;
 import com.iteaj.util.core.task.TimeoutTaskManager;
 import com.iteaj.util.module.wechat.basictoken.*;
@@ -14,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Create Date By 2018-04-13
  *  单应用Token管理实现, 后续会增加分布式应用的Token管理
+ *  可以管理多个服务号或者管理多个企业号
  * @author iteaj
  * @since 1.7
  */
@@ -62,6 +65,8 @@ public class LocationWechatTokenManager extends WechatTokenManager {
             long pass = System.currentTimeMillis() - lastedCreateTime;
             if(pass >= TimeUnit.SECONDS.toMillis(basicToken.getExpires_in()) * getRefreshRate()) {
                 BasicToken invoke = config.buildApi().invoke(WechatParamBasicToken.instance());
+                if(null == invoke) throw new UtilsException("强制刷新Token失败", UtilsType.WECHAT);
+
                 tokenMap.put(config.getAppSecret(), invoke);
 
                 //重置最新的更新时间为当前

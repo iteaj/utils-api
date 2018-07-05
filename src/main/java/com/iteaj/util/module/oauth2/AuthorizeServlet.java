@@ -2,6 +2,7 @@ package com.iteaj.util.module.oauth2;
 
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.Const;
+import com.iteaj.util.core.UtilsGlobalDefaultFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,13 +34,13 @@ public class AuthorizeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String key = req.getParameter(Const.CONTEXT_PARAM_KEY);
         if(!CommonUtils.isNotBlank(key))
-            throw new ServletException("Utils-OAuth2 - 未找到参数："+ Const.CONTEXT_PARAM_KEY);
+            throw new ServletException("OAuth2 - 未找到参数："+ Const.CONTEXT_PARAM_KEY);
 
         AbstractStorageContext storageContext = storageManager.getContext(key);
         try {
 
             if(null == storageContext)
-                throw new ServletException("Utils-OAuth2 - 未找到上下文：可能是以释放或过期 - key：" +key);
+                throw new ServletException("OAuth2 - 授权上下文释放或过期 - key：" +key);
 
             //重新设置HttpServletRequest和HttpServletResponse对象
             storageContext.setRequest(req);
@@ -74,10 +75,11 @@ public class AuthorizeServlet extends HttpServlet {
             if(CommonUtils.isNotBlank(storageManager)) {
                 Class<?> forName = Class.forName(storageManager, true, getClass().getClassLoader());
                 this.storageManager = (AuthorizeStorageManager)forName.newInstance();
-                ContextManagerFactory.setStorageManager(this.storageManager);
+                UtilsGlobalDefaultFactory.setDefaultStorageManager(this.storageManager);
             } else {
-                this.storageManager = ContextManagerFactory.getDefaultManager();
+                this.storageManager = UtilsGlobalDefaultFactory.getDefaultStorageManager();
             }
+
             getServletContext().setAttribute(AuthorizeStorageManager.STORAGE_MANAGER, this.storageManager);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

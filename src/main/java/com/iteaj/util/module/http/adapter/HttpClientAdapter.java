@@ -9,8 +9,8 @@ import com.iteaj.util.module.http.AbstractBuilder;
 import com.iteaj.util.module.http.HttpAdapter;
 import com.iteaj.util.module.http.HttpHead;
 import com.iteaj.util.module.http.HttpRequestConfig;
-import com.iteaj.util.module.http.build.EntityBuilder;
-import com.iteaj.util.module.http.build.TextBuilder;
+import com.iteaj.util.module.http.build.MultipartBuilder;
+import com.iteaj.util.module.http.build.StreamBuilder;
 import com.iteaj.util.module.http.build.UrlBuilder;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -19,6 +19,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -103,7 +104,33 @@ public class HttpClientAdapter implements HttpAdapter<HttpClientResponse> {
     }
 
     @Override
-    public HttpClientResponse post(TextBuilder builder) throws UtilsException {
+    public HttpClientResponse post(UrlBuilder builder) throws UtilsException {
+        AssertUtils.isTrue(null != builder, "未指定参数构建器", UtilsType.HTTP);
+        try {
+            HttpPost post = new HttpPost(builder.getUrl().toString());
+            setHeader(builder, post);
+            setRequestConfig(post, builder.getRequestConfig());
+
+            List<AbstractBuilder.UrlParam> params = builder.getParams();
+
+            if(CommonUtils.isNotEmpty(params)) {
+                List<NameValuePair> urlParam = new ArrayList<>();
+                for (AbstractBuilder.UrlParam body : params) {
+                    urlParam.add(new BasicNameValuePair(body.getName(), body.getValue()));
+                }
+
+                HttpEntity entity = new UrlEncodedFormEntity(urlParam, builder.getCharset());
+                post.setEntity(entity);
+            }
+
+            return new HttpClientResponse(httpClient.execute(post));
+        } catch (IOException e){
+            throw new UtilsException("发送请求失败", e, UtilsType.HTTP);
+        }
+    }
+
+    @Override
+    public HttpClientResponse post(StreamBuilder builder) throws UtilsException {
         AssertUtils.isTrue(null != builder, "未指定参数构建器", UtilsType.HTTP);
         try {
             HttpPost post = new HttpPost(builder.parseUrl());
@@ -111,7 +138,7 @@ public class HttpClientAdapter implements HttpAdapter<HttpClientResponse> {
             setHeader(builder, post);
             setRequestConfig(post, builder.getRequestConfig());
 
-            post.setEntity(new StringEntity(builder.getTestString(), builder.getCharset()));
+            post.setEntity(new ByteArrayEntity(builder.getStream(), convertType(builder.getType())));
             return new HttpClientResponse(httpClient.execute(post));
         } catch (IOException e) {
             throw new UtilsException("发送请求失败", e, UtilsType.HTTP);
@@ -125,36 +152,24 @@ public class HttpClientAdapter implements HttpAdapter<HttpClientResponse> {
     }
 
     @Override
-    public HttpClientResponse post(EntityBuilder builder) throws UtilsException {
+    public HttpClientResponse post(MultipartBuilder builder) throws UtilsException {
         AssertUtils.isTrue(null != builder, "未指定参数构建器", UtilsType.HTTP);
         try {
             HttpPost post = new HttpPost(builder.parseUrl());
             setHeader(builder, post);
             setRequestConfig(post, builder.getRequestConfig());
 
-            HttpEntity entity;
-            List<EntityBuilder.EntityParam> entitys = builder.getEntitys();
+            List<MultipartBuilder.EntityParam> entitys = builder.getEntitys();
             if(CommonUtils.isNotEmpty(entitys)) {
-                if (builder.getType() == com.iteaj.util.module.http.ContentType.Multipart) {
-                    MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-                    for (EntityBuilder.EntityParam body : entitys) {
-                        if (body.isFile()) entityBuilder.addBinaryBody(body.getName()
-                                , body.getContent(), convertType(body.getType()), body.getValue());
-                        else entityBuilder.addBinaryBody(body.getName(), body.getContent());
+                MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+                for (MultipartBuilder.EntityParam body : entitys) {
+                    if (body.isFile()) entityBuilder.addBinaryBody(body.getName()
+                            , body.getContent(), convertType(body.getType()), body.getValue());
+                    else entityBuilder.addBinaryBody(body.getName(), body.getContent());
 
-                    }
-
-                    entity = entityBuilder.build();
-                } else if (builder.getType() == com.iteaj.util.module.http.ContentType.UrlEncoded) {
-                    List<NameValuePair> urlParam = new ArrayList<>();
-                    for (EntityBuilder.EntityParam body : entitys) {
-                        urlParam.add(new BasicNameValuePair(body.getName(), body.getValue()));
-                    }
-                    entity = new UrlEncodedFormEntity(urlParam, builder.getCharset());
-                } else {
-                    entity = null;
                 }
 
+                HttpEntity entity = entityBuilder.build();
                 post.setEntity(entity);
             }
             return new HttpClientResponse(httpClient.execute(post));

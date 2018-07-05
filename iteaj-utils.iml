@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Osmorc" name="OSGi">
-      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="iteaj-utils-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="com.iteaj.iteaj-utils" bundleVersion="1.0-SNAPSHOT" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="utils-api-1.0.1.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="com.iteaj.utils-api" bundleVersion="1.0.1" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
           <property key="Bundle-Description" value="1. 常用工具集模块,支持诸如 微信支付、授权、公众号开发、支付宝、aop扩展支持、excel等...2. 会不断更新维护和新增工具3. 打包成osgi支持的bundle" />
           <property key="Bundle-Name" value="utils" />
           <property key="Bundle-ManifestVersion" value="2" />
           <property key="Import-Package" value="*;resolution:=optional" />
-          <property key="Include-Resource" value="config/core/aop-extend.properties=$MODULE_DIR$/src/main/resources/config/core/aop-extend.properties,config/core/aop-extend.xml=$MODULE_DIR$/src/main/resources/config/core/aop-extend.xml" />
+          <property key="Include-Resource" value="config/aop-extend.properties=$MODULE_DIR$/src/main/resources/config/aop-extend.properties,config/aop-extend.xml=$MODULE_DIR$/src/main/resources/config/aop-extend.xml" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
-import com.iteaj.util.module.json.JsonWrapper;
-import com.iteaj.util.module.json.NodeWrapper;
+import com.iteaj.util.module.json.Json;
+import com.iteaj.util.module.json.Node;
 
 /**
  * create time: 2018/3/29
@@ -15,7 +15,7 @@ import com.iteaj.util.module.json.NodeWrapper;
  * @version 1.0
  * @since 1.7
  */
-public class JacksonNode implements NodeWrapper<JsonNode> {
+public class JacksonNode implements Node<JsonNode> {
 
     private String key;
     private JsonNode value;
@@ -45,9 +45,9 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
     }
 
     @Override
-    public JsonWrapper addNode(String key, Object val) {
+    public Json addNode(String key, Object val) {
         if(value instanceof ObjectNode) {
-            if(val instanceof JsonWrapper) {
+            if(val instanceof Json) {
                 ((ObjectNode) value).putObject(key)
                         .putPOJO(((JacksonNode) val).key, ((JacksonNode) val).value);
             } else {
@@ -65,7 +65,7 @@ public class JacksonNode implements NodeWrapper<JsonNode> {
     }
 
     @Override
-    public NodeWrapper getNode(String key) {
+    public Node getNode(String key) {
         if(value instanceof ObjectNode) {
             JsonNode node = value.get(key);
             if(node == null) return null;

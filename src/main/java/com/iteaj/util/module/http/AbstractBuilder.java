@@ -38,6 +38,10 @@ public abstract class AbstractBuilder implements HttpHeaderBuilder{
                 , UtilsGlobalDefaultFactory.getDefaultRequestConfig());
     }
 
+    public AbstractBuilder(String url, String charset, ContentType type) {
+        this(url, charset, type, UtilsGlobalDefaultFactory.getDefaultRequestConfig());
+    }
+
     public AbstractBuilder(String url, ContentType type) {
         this(url, type.charset, type
                 , UtilsGlobalDefaultFactory.getDefaultRequestConfig());
@@ -133,7 +137,15 @@ public abstract class AbstractBuilder implements HttpHeaderBuilder{
         return charset;
     }
 
-    protected class UrlParam {
+    protected void setCharset(String charset) {
+        this.charset = charset;
+    }
+
+    protected void setType(ContentType type) {
+        this.type = type;
+    }
+
+    public class UrlParam {
         private String name;
         private String value;
         private String charset;

@@ -7,7 +7,7 @@ package com.iteaj.util.module.json;
  * @version 1.0
  * @since 1.7
  */
-public interface JsonWrapper<T> {
+public interface Json<T> {
 
     /**
      * 返回存储Json数据的真正对象
@@ -22,7 +22,7 @@ public interface JsonWrapper<T> {
      * @param key
      * @return
      */
-    NodeWrapper getNode(String key);
+    Node getNode(String key);
 
     /**
      * 往json里面新增一个key-val的键值对
@@ -30,7 +30,7 @@ public interface JsonWrapper<T> {
      * @param val
      * @return
      */
-    JsonWrapper addNode(String key, Object val);
+    Json addNode(String key, Object val);
 
     /**
      * 返回一个json字符串

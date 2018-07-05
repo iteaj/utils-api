@@ -1,6 +1,6 @@
 package com.iteaj.util.module.wechat.authhorize;
 
-import com.iteaj.util.module.json.JsonWrapper;
+import com.iteaj.util.module.json.Json;
 import com.iteaj.util.module.oauth2.AbstractStorageContext;
 import com.iteaj.util.module.oauth2.AbstractAuthorizeResult;
 import com.iteaj.util.module.wechat.WechatApiResponse;
@@ -16,7 +16,7 @@ public class WechatEnterpriseResult extends AbstractAuthorizeResult {
     private String code;
     private UserInfo userInfo;
     private UserDetail userDetail;
-    private JsonWrapper accessToken;
+    private Json accessToken;
 
     public WechatEnterpriseResult(AbstractStorageContext context) {
         super(context);
@@ -27,7 +27,7 @@ public class WechatEnterpriseResult extends AbstractAuthorizeResult {
         this.code = (String)context.getContextParam("code");
         this.userInfo = (UserInfo)context.getContextParam("user");
         this.userDetail = (UserDetail) context.getContextParam("detail");
-        this.accessToken = (JsonWrapper) context.getContextParam("token");
+        this.accessToken = (Json) context.getContextParam("token");
     }
 
     public static class UserInfo extends WechatApiResponse{
@@ -168,11 +168,11 @@ public class WechatEnterpriseResult extends AbstractAuthorizeResult {
         this.userDetail = userDetail;
     }
 
-    public JsonWrapper getAccessToken() {
+    public Json getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(JsonWrapper accessToken) {
+    public void setAccessToken(Json accessToken) {
         this.accessToken = accessToken;
     }
 }

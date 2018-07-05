@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.iteaj.util.module.json.JsonWrapper;
-import com.iteaj.util.module.json.NodeWrapper;
+import com.iteaj.util.module.json.Json;
+import com.iteaj.util.module.json.Node;
 
 import java.util.Map;
 
@@ -16,27 +16,27 @@ import java.util.Map;
  * @version 1.0
  * @since 1.7
  */
-public class JacksonWrapper extends ObjectNode implements JsonWrapper<JsonNode> {
+public class Jackson extends ObjectNode implements Json<JsonNode> {
 
-    protected JacksonWrapper() {
+    protected Jackson() {
         super(JacksonAdapter.getNodeFactory());
     }
 
-    protected JacksonWrapper(JsonNodeFactory nc) {
+    protected Jackson(JsonNodeFactory nc) {
         super(nc);
     }
 
-    protected JacksonWrapper(JsonNodeFactory nc, Map<String, JsonNode> kids) {
+    protected Jackson(JsonNodeFactory nc, Map<String, JsonNode> kids) {
         super(nc, kids);
     }
 
     @Override
-    public JsonWrapper addNode(String key, Object val) {
+    public Json addNode(String key, Object val) {
         if(val instanceof JacksonNode) {
             ObjectNode node = this.putObject(key);
             node.set(((JacksonNode) val).getKey()
                     , ((JacksonNode) val).<JsonNode>getVal());
-        } else if(val instanceof JacksonWrapper) {
+        } else if(val instanceof Jackson) {
             this.set(key, (ObjectNode)val);
         } else {
             this.putPOJO(key, val);
@@ -51,7 +51,7 @@ public class JacksonWrapper extends ObjectNode implements JsonWrapper<JsonNode> 
     }
 
     @Override
-    public NodeWrapper getNode(String key) {
+    public Node getNode(String key) {
         JsonNode node = this.get(key);
         if(null == node) return null;
         return new JacksonNode(key, node);

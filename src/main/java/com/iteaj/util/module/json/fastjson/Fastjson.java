@@ -1,8 +1,8 @@
 package com.iteaj.util.module.json.fastjson;
 
 import com.alibaba.fastjson.JSONObject;
-import com.iteaj.util.module.json.JsonWrapper;
-import com.iteaj.util.module.json.NodeWrapper;
+import com.iteaj.util.module.json.Json;
+import com.iteaj.util.module.json.Node;
 
 /**
  * create time: 2018/3/29
@@ -11,10 +11,10 @@ import com.iteaj.util.module.json.NodeWrapper;
  * @version 1.0
  * @since 1.7
  */
-public class FastjsonWrapper extends JSONObject implements JsonWrapper<JSONObject> {
+public class Fastjson extends JSONObject implements Json<JSONObject> {
 
 
-    public FastjsonWrapper() {
+    public Fastjson() {
 
     }
 
@@ -24,7 +24,7 @@ public class FastjsonWrapper extends JSONObject implements JsonWrapper<JSONObjec
     }
 
     @Override
-    public NodeWrapper getNode(String key) {
+    public Node getNode(String key) {
         Object o = get(key);
         if(null == o) return null;
 
@@ -33,8 +33,8 @@ public class FastjsonWrapper extends JSONObject implements JsonWrapper<JSONObjec
 
 
     @Override
-    public JsonWrapper addNode(String key, Object val) {
-        if(val instanceof FastjsonWrapper) {
+    public Json addNode(String key, Object val) {
+        if(val instanceof Fastjson) {
             this.put(key, val);
         } else if(val instanceof FastjsonNode) {
             JSONObject object = new JSONObject();

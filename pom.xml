@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <description>
-        1. 常用工具集模块,支持诸如 微信支付、授权、公众号开发、支付宝、aop扩展支持、excel等...
+        1. 常用工具集模块,支持诸如 微信授权、微信JsApi开发、公众号开发、aop扩展支持、excel等...
         2. 会不断更新维护和新增工具
         3. 打包成osgi支持的bundle
     </description>
@@ -12,10 +12,10 @@
     <name>utils</name>
     <groupId>com.iteaj</groupId>
     <packaging>bundle</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>api-utils</artifactId>
-
+    <artifactId>utils-api</artifactId>
+    <url>https://github.com/iteaj/utils-api</url>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -25,8 +25,8 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/iteaj/iteaj-utils</url>
-        <connection>https://github.com/iteaj/api-utils.git</connection>
+        <url>https://github.com/iteaj/utils-api</url>
+        <connection>https://github.com/iteaj/utils-api.git</connection>
         <developerConnection>https://www.iteblog.com</developerConnection>
     </scm>
 
@@ -34,7 +34,7 @@
         <developer>
             <name>iteaj</name>
             <email>iteaj@outlook.com</email>
-            <url>https://www.iteaj.com</url>
+            <url>http://www.iteaj.com</url>
         </developer>
     </developers>
     <distributionManagement>

@@ -5,9 +5,9 @@ import com.iteaj.util.CommonUtils;
 import com.iteaj.util.HttpUtils;
 import com.iteaj.util.JsonUtils;
 import com.iteaj.util.core.UtilsType;
-import com.iteaj.util.module.http.build.EntityBuilder;
+import com.iteaj.util.module.http.build.MultipartBuilder;
 import com.iteaj.util.module.http.build.UrlBuilder;
-import com.iteaj.util.module.json.JsonWrapper;
+import com.iteaj.util.module.json.Json;
 import com.iteaj.util.module.oauth2.AbstractAuthorizeResult;
 import com.iteaj.util.module.oauth2.AuthorizePhase;
 import com.iteaj.util.module.oauth2.PhaseChain;
@@ -191,7 +191,7 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
             if(!isSuccess(context, result, phaseAlias())) return;
 
             //存储AccessToken信息到上下文
-            JsonWrapper json = JsonUtils.buildJson(result);
+            Json json = JsonUtils.buildJson(result);
             context.addContextParam(phaseAlias(), json);
 
             //执行下一阶段
@@ -222,7 +222,7 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
 
         @Override
         protected void doPhase(PhaseChain chain, WechatParamEnterpriseAuthorize context) {
-            JsonWrapper token = (JsonWrapper) context.getContextParam("token");
+            Json token = (Json) context.getContextParam("token");
             StringBuilder sb = new StringBuilder(getApiConfig().getUserInfoGateway()).append("?")
                     .append("access_token=").append(token.getNode("access_token").getValString())
                     .append("&code=").append(context.getContextParam("code"));
@@ -265,12 +265,12 @@ public class WechatEnterpriseAuthorizeApi extends AbstractWechatOAuth2Api
 
         @Override
         protected void doPhase(PhaseChain chain, WechatParamEnterpriseAuthorize context) {
-            JsonWrapper token = (JsonWrapper) context.getContextParam("token");
+            Json token = (Json) context.getContextParam("token");
             WechatEnterpriseResult.UserInfo userInfo =
                     (WechatEnterpriseResult.UserInfo)context.getContextParam("user");
 
             String accessToken = token.getNode("access_token").getValString();
-            EntityBuilder builder = EntityBuilder.build(getApiConfig().getUserDetailGateway())
+            MultipartBuilder builder = MultipartBuilder.build(getApiConfig().getUserDetailGateway())
                     .addParam("access_token", accessToken)
                     .addBody(null, "{\"user_ticket\":\""+userInfo.getUser_ticket()+"\"}");
 

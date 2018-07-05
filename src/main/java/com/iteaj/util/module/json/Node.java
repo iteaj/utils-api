@@ -7,7 +7,7 @@ package com.iteaj.util.module.json;
  * @version 1.0
  * @since 1.7
  */
-public interface NodeWrapper<T> extends JsonWrapper<T> {
+public interface Node<T> extends Json<T> {
 
     /**
      * 返回节点Key

@@ -68,7 +68,8 @@ public class TimeoutTaskManager {
             } else {
                 /**
                  * 将新增任务和任务队列的第一个任务进行比较, 看谁离超时的时间更长<br>
-                 *     如果新增任务离超时时间比第一个任务更长,则直接放入有序任务队列进行排序,找到自己的队列位置
+                 *     如果新增任务离
+                 *     超时时间比第一个任务更长,则直接放入有序任务队列进行排序,找到自己的队列位置
                  *     如果队列的第一个任务离超时时间比新增的更长,则新增任务, 并且唤醒定时器线程,修改等待时间为新增任务离超时的时间
                  */
 
@@ -135,7 +136,7 @@ public class TimeoutTaskManager {
                         try {
                             firstTask.run();
                         } catch (Throwable e) {
-                            e.printStackTrace();
+                            logger.error("类别：定时管理 - 动作：执行任务失败 - 描述：{}", e.getMessage(), e);
                         }
                         //移除任务, 必须同步 即在同步的时候不能新增任务
                         synchronized (lock) {

@@ -6,8 +6,8 @@ import com.iteaj.util.HttpUtils;
 import com.iteaj.util.JsonUtils;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
-import com.iteaj.util.module.http.build.TextBuilder;
-import com.iteaj.util.module.json.JsonWrapper;
+import com.iteaj.util.module.http.build.StreamBuilder;
+import com.iteaj.util.module.json.Json;
 import com.iteaj.util.module.wechat.AbstractWechatApi;
 import com.iteaj.util.module.wechat.WechatApiResponse;
 import com.iteaj.util.module.wechat.WechatApiType;
@@ -45,19 +45,19 @@ public class TemplateMessageApi extends AbstractWechatApi
             BasicToken invoke = getApiConfig().getTokenManager().getToken(tokenConfig);
             if(!invoke.success()) throw new IllegalStateException("获取微信AccessToken失败："+invoke.getErrmsg());
 
-            JsonWrapper json = JsonUtils.buildJson();
+            Json json = JsonUtils.buildJson();
             if(CommonUtils.isNotBlank(param.getUrl()))json.addNode("url", param.getUrl());
             if(CommonUtils.isNotBlank(param.getMiniprogram())
                     && CommonUtils.isNotBlank(param.getPagepath())){
 
-                JsonWrapper build = JsonUtils.buildJson();
+                Json build = JsonUtils.buildJson();
                 build.addNode("appid", getApiConfig().getAppId())
                         .addNode("pagepath", param.getPagepath());
 
                 json.addNode("miniprogram", build);
             }
 
-            JsonWrapper data = JsonUtils.buildJson();
+            Json data = JsonUtils.buildJson();
             for(WechatParamTemplateMessage.Item item : param.getItems()){
                 data.addNode(item.getKey(), item);
             }
@@ -71,8 +71,8 @@ public class TemplateMessageApi extends AbstractWechatApi
                 logger.debug("类别：微信接口 - 动作：发送模版消息 - 描述：发送报文 {} - token：{}"
                         , message, invoke.getAccess_token());
 
-            TextBuilder builder = TextBuilder.build(getApiConfig().getApiGateway());
-            builder.addParam("access_token", invoke.getAccess_token()).addText(message);
+            StreamBuilder builder = StreamBuilder.build(getApiConfig().getApiGateway());
+            builder.addParam("access_token", invoke.getAccess_token()).setForPlain(message);
 
             String result = HttpUtils.doPost(builder, "utf-8");
             MessageResponse response = JsonUtils.toBean(result, MessageResponse.class);

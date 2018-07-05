@@ -1,10 +1,9 @@
 package com.iteaj.util;
 
 import com.iteaj.util.core.UtilsGlobalDefaultFactory;
-import com.iteaj.util.module.json.JsonWrapper;
-import com.iteaj.util.module.json.NodeWrapper;
+import com.iteaj.util.module.json.Json;
+import com.iteaj.util.module.json.Node;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -37,15 +36,15 @@ public final class JsonUtils{
 				.toMap(json, mapType, keyType, valueType);
 	}
 
-	public static JsonWrapper buildJson() {
+	public static Json buildJson() {
 		return UtilsGlobalDefaultFactory.getDefaultJsonAdapter().build();
 	}
 
-	public static JsonWrapper buildJson(String json) {
+	public static Json buildJson(String json) {
 		return UtilsGlobalDefaultFactory.getDefaultJsonAdapter().build(json);
 	}
 
-	public static NodeWrapper buildNode(String name, Object val) {
+	public static Node buildNode(String name, Object val) {
 		return UtilsGlobalDefaultFactory.getDefaultJsonAdapter().buildNode(name, val);
 	}
 

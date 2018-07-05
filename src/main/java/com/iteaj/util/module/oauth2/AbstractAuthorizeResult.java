@@ -10,16 +10,12 @@ public abstract class AbstractAuthorizeResult {
 
     private String errMsg;
     private boolean success;
-    private transient HttpServletRequest request;
-    private transient HttpServletResponse response;
     protected AbstractStorageContext context;
 
     public AbstractAuthorizeResult(AbstractStorageContext context) {
         this.errMsg = "Ok";
         this.success = true;
         this.context = context;
-        this.request = context.getRequest();
-        this.response = context.getResponse();
     }
 
     public abstract void build();
@@ -55,10 +51,10 @@ public abstract class AbstractAuthorizeResult {
     }
 
     public HttpServletRequest getRequest(){
-        return request;
+        return context.getRequest();
     }
 
     public HttpServletResponse getResponse(){
-        return response;
+        return context.getResponse();
     }
 }

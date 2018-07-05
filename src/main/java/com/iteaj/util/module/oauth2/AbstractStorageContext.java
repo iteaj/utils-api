@@ -53,7 +53,7 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
 
     @Override
     public void release() {
-        ContextManagerFactory.getDefaultManager().removeContext(getContextKey());
+        storageManager.removeContext(getContextKey());
     }
 
     protected void initContext(AuthorizationType type) throws Exception {

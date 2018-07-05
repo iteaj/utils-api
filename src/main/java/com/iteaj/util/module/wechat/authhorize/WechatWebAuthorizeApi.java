@@ -93,6 +93,7 @@ public class WechatWebAuthorizeApi extends AbstractWechatOAuth2Api
                 //授权参数的redirectUrl覆盖授权配置里面的redirectUrl
                 String redirectUrl = CommonUtils.isBlank(context.getRedirectUrl())
                         ?getApiConfig().getRedirectUrl():context.getRedirectUrl();
+
                 AssertUtils.isNotBlank(redirectUrl, "请指定微信网页授权的RedirectUrl参数", UtilsType.WECHAT);
                 boolean scheme = redirectUrl.startsWith("http://") || redirectUrl.startsWith("https://");
                 AssertUtils.isTrue(scheme, "微信网页授权RedirectUrl必须以：http://或https:// 开头", UtilsType.WECHAT);

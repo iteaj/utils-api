@@ -83,7 +83,7 @@ public class HttpClientResponse implements HttpResponse {
 
     @Override
     public String getContentEncoding() {
-        return response.getHeaders("").toString();
+        return response.getHeaders("Content-Encoding").toString();
     }
 
     @Override

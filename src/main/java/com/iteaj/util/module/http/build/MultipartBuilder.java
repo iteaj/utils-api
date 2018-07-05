@@ -1,6 +1,7 @@
 package com.iteaj.util.module.http.build;
 
 import com.iteaj.util.CommonUtils;
+import com.iteaj.util.Const;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.AbstractBuilder;
@@ -17,30 +18,23 @@ import java.util.UUID;
 
 /**
  * create time: 2018/3/31
- *  实体构建器, 用来构建Post请求需要的参数
+ *  多实体构建器, 用来构建Post请求需要的参数
  * @see #entitys 此集合里面的数据会全部写到 http body里面
  * @see #boundary 当Head的Content-Type为{@link ContentType#Multipart}时,<br>
- *     作为每个参数的分隔符具体看{@link JdkHttpAdapter#writeEntityContent(HttpURLConnection, EntityBuilder)}
+ *     作为每个参数的分隔符具体看{@link JdkHttpAdapter#writeMultipartContent(HttpURLConnection, MultipartBuilder)}
  * @author iteaj
  * @version 1.0
  * @since 1.7
  */
-public class EntityBuilder extends AbstractBuilder {
+public class MultipartBuilder extends AbstractBuilder {
 
     private String boundary; //body字段与字段之间的分隔符
     private List<EntityParam> entitys;
     private static byte[] EMPTY_CONTENT = new byte[0];
 
-    private EntityBuilder(String url) {
-        this(url, ContentType.UrlEncoded.charset, ContentType.UrlEncoded);
-    }
+    private MultipartBuilder(String url, String charset, ContentType type) {
+        super(url, charset, type);
 
-    private EntityBuilder(String url, String charset) {
-        this(url, charset, ContentType.UrlEncoded);
-    }
-
-    private EntityBuilder(String url, String charset, ContentType type) {
-        super(url, type);
         this.entitys = new ArrayList<>();
         this.boundary = UUID.randomUUID().toString();
     }
@@ -51,8 +45,8 @@ public class EntityBuilder extends AbstractBuilder {
      * @param url   必填
      * @return
      */
-    public static EntityBuilder build(String url) throws UtilsException {
-        return build(url, ContentType.UrlEncoded);
+    public static MultipartBuilder build(String url) throws UtilsException {
+        return build(url, Const.UTF_8.name());
     }
 
     /**
@@ -61,27 +55,15 @@ public class EntityBuilder extends AbstractBuilder {
      * @param url   必填
      * @return
      */
-    public static EntityBuilder build(String url, String charset) throws UtilsException {
+    public static MultipartBuilder build(String url, String charset) throws UtilsException {
         if(!CommonUtils.isNotBlank(url))
-            throw new UtilsException("Url错误", UtilsType.HTTP);
-        return new EntityBuilder(url, charset, ContentType.UrlEncoded);
-    }
+            throw new UtilsException("未指定请求URL", UtilsType.HTTP);
 
-    /**
-     *
-     * @param url
-     * @param contentType
-     * @return
-     */
-    public static EntityBuilder build(String url, ContentType contentType) {
-        if(!CommonUtils.isNotBlank(url))
-            throw new UtilsException("Url错误", UtilsType.HTTP);
-
-        return new EntityBuilder(url, contentType.charset, contentType);
+        return new MultipartBuilder(url, charset, ContentType.Multipart);
     }
 
     @Override
-    public EntityBuilder addParam(String name, String value) {
+    public MultipartBuilder addParam(String name, String value) {
         super.addParam(name, value);
         return this;
     }
@@ -94,20 +76,8 @@ public class EntityBuilder extends AbstractBuilder {
      * @param value
      * @return
      */
-    public EntityBuilder addBody(String name, String value) {
-        return this.addBody(name, value, "UTF-8");
-    }
-
-    /**
-     * 往Body里面写入String -> String的参数, 并可以指定写入的编码
-     * @see ContentType#Plain 此参数的Content-Type类型
-     * @param name
-     * @param value
-     * @param charset
-     * @return
-     */
-    public EntityBuilder addBody(String name, String value, String charset) {
-        entitys.add(new EntityParam(name, value, charset));
+    public MultipartBuilder addBody(String name, String value) {
+        entitys.add(new EntityParam(name, value, getCharset()));
         return this;
     }
 
@@ -115,12 +85,11 @@ public class EntityBuilder extends AbstractBuilder {
      * 往Body里面写入String -> String的参数, 并可以指定写入的编码
      * @param name
      * @param value
-     * @param charset
      * @param type 此参数的Content-Type类型
      * @return
      */
-    public EntityBuilder addBody(String name, String value, String charset, ContentType type) {
-        entitys.add(new EntityParam(name, value, charset, type));
+    public MultipartBuilder addBody(String name, String value, ContentType type) {
+        entitys.add(new EntityParam(name, value, getCharset(), type));
         return this;
     }
 
@@ -131,7 +100,7 @@ public class EntityBuilder extends AbstractBuilder {
      * @param bytes
      * @return
      */
-    public EntityBuilder addBody(String name, byte[] bytes, String fileName) {
+    public MultipartBuilder addBody(String name, byte[] bytes, String fileName) {
         entitys.add(new EntityParam(name, fileName, bytes, ContentType.OctetStream));
         return this;
     }
@@ -143,7 +112,7 @@ public class EntityBuilder extends AbstractBuilder {
      * @param file
      * @return
      */
-    public EntityBuilder addBody(String name, File file) {
+    public MultipartBuilder addBody(String name, File file) {
         try {
             if(!CommonUtils.isNotBlank(name) || null == file)
                 throw new UtilsException("增加http实体的所需参数错误", UtilsType.HTTP);

@@ -1,6 +1,5 @@
 package com.iteaj.util.module.json;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -79,14 +78,14 @@ public interface JsonAdapter<R> {
      * 构建一个json对象
      * @return
      */
-    JsonWrapper build();
+    Json build();
 
     /**
      * 通过json字符串构建一个Json对象
      * @param json
      * @return
      */
-    JsonWrapper build(String json);
+    Json build(String json);
 
     /**
      * 构建一个Json节点对象
@@ -94,5 +93,5 @@ public interface JsonAdapter<R> {
      * @param val
      * @return
      */
-    NodeWrapper buildNode(String name, Object val);
+    Node buildNode(String name, Object val);
 }

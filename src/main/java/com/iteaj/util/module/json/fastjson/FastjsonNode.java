@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
-import com.iteaj.util.module.json.JsonWrapper;
-import com.iteaj.util.module.json.NodeWrapper;
+import com.iteaj.util.module.json.Json;
+import com.iteaj.util.module.json.Node;
 
 /**
  * create time: 2018/3/29
@@ -15,7 +15,7 @@ import com.iteaj.util.module.json.NodeWrapper;
  * @version 1.0
  * @since 1.7
  */
-public class FastjsonNode implements NodeWrapper<JSONObject> {
+public class FastjsonNode implements Node<JSONObject> {
 
     private String key;
     private Object value;
@@ -54,7 +54,7 @@ public class FastjsonNode implements NodeWrapper<JSONObject> {
     }
 
     @Override
-    public NodeWrapper getNode(String key) {
+    public Node getNode(String key) {
         if(!CommonUtils.isNotBlank(key))
             throw new UtilsException("Json-节点Key必须存在", UtilsType.JSON);
 
@@ -68,12 +68,12 @@ public class FastjsonNode implements NodeWrapper<JSONObject> {
     }
 
     @Override
-    public JsonWrapper addNode(String key, Object val) {
+    public Json addNode(String key, Object val) {
         if(!CommonUtils.isNotBlank(key))
             throw new UtilsException("Json-节点Key必须存在", UtilsType.JSON);
 
         if(value instanceof JSONObject) {
-            if(val instanceof FastjsonWrapper) {
+            if(val instanceof Fastjson) {
                 ((JSONObject) value).put(key, val);
             } else if(val instanceof FastjsonNode) {
                 JSONObject object = new JSONObject();

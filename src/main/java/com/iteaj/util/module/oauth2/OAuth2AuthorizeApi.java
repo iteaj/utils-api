@@ -1,7 +1,7 @@
 package com.iteaj.util.module.oauth2;
 
 import com.iteaj.util.CommonUtils;
-import com.iteaj.util.core.ApiInvokeReturn;
+import com.iteaj.util.core.ApiReturn;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.http.HttpApi;
 
@@ -23,7 +23,7 @@ public abstract class OAuth2AuthorizeApi<C extends OAuth2ApiParam>
         return new InvokeReturn(param);
     }
 
-    public class InvokeReturn extends CallAction implements ApiInvokeReturn {
+    public class InvokeReturn extends CallAction implements ApiReturn {
 
         public InvokeReturn(AbstractStorageContext context) {
             super(context);

@@ -31,5 +31,5 @@ public interface UtilsApi<P extends ApiParam> {
      * @param param 调用所需的参数
      * @return
      */
-    ApiInvokeReturn invoke(P param) throws UtilsException;
+    ApiReturn invoke(P param) throws UtilsException;
 }

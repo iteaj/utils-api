@@ -2,7 +2,7 @@ package com.iteaj.util.module.wechat.jsapi;
 
 import com.iteaj.util.HttpUtils;
 import com.iteaj.util.JsonUtils;
-import com.iteaj.util.core.ApiInvokeReturn;
+import com.iteaj.util.core.ApiReturn;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsGlobalDefaultFactory;
 import com.iteaj.util.core.UtilsType;
@@ -66,7 +66,7 @@ public class WechatConfigJsApiConfig extends WechatConfig<WechatConfigJsApiConfi
         }
 
         @Override
-        public ApiInvokeReturn invoke(WechatParamJsApi param) throws UtilsException {
+        public ApiReturn invoke(WechatParamJsApi param) throws UtilsException {
             BasicToken token = getApiConfig().tokenManager.getToken(
                     new WechatConfigBasicToken(getAppId(), getAppSecret()));
 

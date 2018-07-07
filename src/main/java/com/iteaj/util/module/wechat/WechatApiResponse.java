@@ -1,6 +1,6 @@
 package com.iteaj.util.module.wechat;
 
-import com.iteaj.util.core.ApiInvokeReturn;
+import com.iteaj.util.core.ApiReturn;
 
 /**
  * create time: 2018/4/15
@@ -9,7 +9,7 @@ import com.iteaj.util.core.ApiInvokeReturn;
  * @version 1.0
  * @since JDK1.7
  */
-public abstract class WechatApiResponse implements ApiInvokeReturn {
+public abstract class WechatApiResponse implements ApiReturn {
 
     private String errmsg;
     private Integer errcode;

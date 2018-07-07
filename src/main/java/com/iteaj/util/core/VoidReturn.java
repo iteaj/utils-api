@@ -8,5 +8,5 @@ package com.iteaj.util.core;
  * @version 1.0
  * @since JDK1.7
  */
-public class VoidInvokeReturn implements ApiInvokeReturn {
+public class VoidReturn implements ApiReturn {
 }

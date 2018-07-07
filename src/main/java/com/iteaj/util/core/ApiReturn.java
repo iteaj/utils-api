@@ -7,6 +7,6 @@ package com.iteaj.util.core;
  * @version 1.0
  * @since JDK1.7
  */
-public interface ApiInvokeReturn {
+public interface ApiReturn {
     
 }

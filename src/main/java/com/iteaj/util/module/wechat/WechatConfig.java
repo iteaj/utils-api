@@ -16,15 +16,16 @@ public abstract class WechatConfig<A extends WechatApi> implements HttpApiConfig
     private String appId;
     /**每个App的安全Key, 由微信提供*/
     private String appSecret;
+    private String apiGateway;
 
-    public WechatConfig(String appId) {
-        this.appId = appId;
-        AssertUtils.isNotBlank(appId, "微信配置 - 未指定appId", UtilsType.WECHAT);
+    public WechatConfig(String appId, String apiGateway) {
+        this(appId, null, apiGateway);
     }
 
-    public WechatConfig(String appId, String appSecret) {
+    public WechatConfig(String appId, String appSecret, String apiGateway) {
         this.appId = appId;
         this.appSecret = appSecret;
+        this.apiGateway = apiGateway;
         AssertUtils.isNotBlank(appId, "微信配置 - 未指定appId", UtilsType.WECHAT);
         AssertUtils.isNotBlank(appSecret, "微信配置 - 未指定appSecret", UtilsType.WECHAT);
     }
@@ -63,5 +64,15 @@ public abstract class WechatConfig<A extends WechatApi> implements HttpApiConfig
 
     public void setAppSecret(String appSecret) {
         this.appSecret = appSecret;
+    }
+
+    @Override
+    public String getApiGateway() {
+        return apiGateway;
+    }
+
+    @Override
+    public void setApiGateway(String gateway) {
+        this.apiGateway = gateway;
     }
 }

@@ -1,6 +1,6 @@
 package com.iteaj.util.module.wechat.basictoken;
 
-import com.iteaj.util.module.wechat.WechatApiResponse;
+import com.iteaj.util.module.wechat.WechatApiReturn;
 
 /**
  * create time: 2018/4/14
@@ -9,7 +9,7 @@ import com.iteaj.util.module.wechat.WechatApiResponse;
  * @version 1.0
  * @since JDK1.7
  */
-public class BasicToken extends WechatApiResponse {
+public class BasicToken extends WechatApiReturn {
 
     private Integer expires_in;
     private String access_token;

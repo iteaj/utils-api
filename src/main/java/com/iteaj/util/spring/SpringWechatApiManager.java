@@ -1,16 +1,16 @@
 package com.iteaj.util.spring;
 
 import com.iteaj.util.AssertUtils;
-import com.iteaj.util.core.UtilsGlobalDefaultFactory;
+import com.iteaj.util.core.UtilsGlobalFactory;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.wechat.WechatTokenManager;
-import com.iteaj.util.module.wechat.authhorize.WechatConfigEnterpriseAuthorize;
-import com.iteaj.util.module.wechat.authhorize.WechatConfigWebAuthorize;
+import com.iteaj.util.module.wechat.authhorize.WxcEnterpriseAuthorize;
+import com.iteaj.util.module.wechat.authhorize.WxcWebAuthorize;
 import com.iteaj.util.module.wechat.basictoken.BasicToken;
-import com.iteaj.util.module.wechat.basictoken.WechatConfigBasicToken;
-import com.iteaj.util.module.wechat.basictoken.WechatConfigEnterpriseBasicToken;
-import com.iteaj.util.module.wechat.message.WechatConfigTemplateMessage;
-import com.iteaj.util.spring.SpringApiManager;
+import com.iteaj.util.module.wechat.basictoken.WxcBasicToken;
+import com.iteaj.util.module.wechat.basictoken.WxcEnterpriseBasicToken;
+import com.iteaj.util.module.wechat.jsapi.WxcJsApi;
+import com.iteaj.util.module.wechat.message.WxcTemplateMessage;
 
 /**
  * create time: 2018/4/14
@@ -32,25 +32,31 @@ public class SpringWechatApiManager extends SpringApiManager {
     private boolean startServiceApi;
     private boolean startEnterpriseApi;
 
-    private WechatTokenManager tokenManager;
     @Override
     public void afterPropertiesSet() throws Exception {
 
+        WechatTokenManager tokenManager = UtilsGlobalFactory.getWechatTokenManager();
         if(startServiceApi) {
             AssertUtils.isNotBlank(getAppId(), "未指定AppId", UtilsType.WECHAT);
             AssertUtils.isNotBlank(getAppSecret(), "未指定AppSecret", UtilsType.WECHAT);
 
-            if(null == getTokenManager()) {
-                //如果没有指定则用默认的本地token管理
-                tokenManager = UtilsGlobalDefaultFactory.getTokenManager();
-            }
 
-            registerApi(new WechatConfigBasicToken(getAppId(), getAppSecret()).buildApi());
-            registerApi(new WechatConfigTemplateMessage(getAppId(), getAppSecret(), tokenManager).buildApi());
-            registerApi(new WechatConfigWebAuthorize(getAppId(), getAppSecret(), getRedirectUrl()).buildApi());
+            registerApi(new WxcBasicToken(getAppId(), getAppSecret()).buildApi());
+            registerApi(new WxcTemplateMessage(getAppId(), getAppSecret(), tokenManager).buildApi());
+            registerApi(new WxcWebAuthorize(getAppId(), getAppSecret(), getRedirectUrl()).buildApi());
+
+            registerApi(new WxcJsApi(getAppId(), getAppSecret()).buildApi());
 
             //测试微信配置信息, 通过尝试获取token
-            tokenManager.getToken(new WechatConfigBasicToken(getAppId(), getAppSecret()));
+            BasicToken basicToken = tokenManager.getToken(new WxcBasicToken(getAppId(), getAppSecret()));
+
+            if(logger.isInfoEnabled()) {
+                if(basicToken == null || !basicToken.success())
+                    logger.warn("类别：微信服务号Api管理 - 动作：获取Token - 失败信息：{}", basicToken == null?null:basicToken.toString());
+                else
+                    logger.info("类别：微信服务号Api管理 - 动作：获取Token - Token信息：{}", basicToken.toString());
+            }
+
         }
 
         if(startEnterpriseApi) {
@@ -58,10 +64,17 @@ public class SpringWechatApiManager extends SpringApiManager {
             AssertUtils.isNotBlank(getAgentId(), "未指定AgentId", UtilsType.WECHAT);
             AssertUtils.isNotBlank(getCorpSecret(), "未指定CorpSecret", UtilsType.WECHAT);
 
-            registerApi(new WechatConfigEnterpriseAuthorize(getCorpId(), getCorpSecret(), getAgentId(), getRedirectUrl()).buildApi());
+            registerApi(new WxcEnterpriseAuthorize(getCorpId(), getCorpSecret(), getAgentId(), getRedirectUrl()).buildApi());
 
             //测试微信配置信息, 通过尝试获取token
-            tokenManager.getToken(new WechatConfigEnterpriseBasicToken(getCorpId(), getCorpSecret()));
+            BasicToken basicToken = tokenManager.getToken(new WxcEnterpriseBasicToken(getCorpId(), getCorpSecret()));
+
+            if(logger.isInfoEnabled()) {
+                if(basicToken == null || !basicToken.success())
+                    logger.warn("类别：微信企业号Api管理 - 动作：获取Token - 失败信息：{}", basicToken == null?null:basicToken.toString());
+                else
+                    logger.info("类别：微信企业号Api管理 - 动作：获取Token - Token信息：{}", basicToken.toString());
+            }
         }
 
 
@@ -121,14 +134,6 @@ public class SpringWechatApiManager extends SpringApiManager {
 
     public boolean isStartEnterpriseApi() {
         return startEnterpriseApi;
-    }
-
-    public WechatTokenManager getTokenManager() {
-        return tokenManager;
-    }
-
-    public void setTokenManager(WechatTokenManager tokenManager) {
-        this.tokenManager = tokenManager;
     }
 
     /**

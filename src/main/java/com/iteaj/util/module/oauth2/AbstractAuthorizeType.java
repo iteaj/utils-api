@@ -72,16 +72,16 @@ public abstract class AbstractAuthorizeType<C extends AbstractStorageContext>
     @Override
     public void registerAuthorizePhase(AuthorizePhase phase) {
         if(phase == null || !CommonUtils.isNotBlank(phase.phaseAlias()))
-            throw new UtilsException("授权类型在注册阶段的时候错误,必须指定阶段", UtilsType.OAuth2);
+            throw new UtilsException("参数错误:Oauth2", UtilsType.OAuth2);
 
         if(phases.containsKey(phase.phaseAlias())){
-            logger.warn("动作：OAuth2 - 动作：注册阶段 - 类型：[{}] 里面的 [{}] 阶段将被覆写", getClass().getSimpleName()
+            logger.warn("类别：OAuth2 - 动作：注册阶段 - 类型：[{}] 里面的 [{}] 阶段将被覆写", getClass().getSimpleName()
                     , phase.getClass().getSimpleName());
             phases.put(phase.phaseAlias(), phase);
             return;
         }
 
-        logger.info("动作：OAuth2 - 动作：注册阶段[{}]到类型[{}] - 阶段别名：[{}]", phase.getClass().getSimpleName(),
+        logger.info("类别：OAuth2 - 动作：注册阶段[{}]到类型[{}] - 阶段别名：[{}]", phase.getClass().getSimpleName(),
                 getClass().getSimpleName(), phase.phaseAlias());
 
         phases.put(phase.phaseAlias(), phase);

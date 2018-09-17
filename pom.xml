@@ -27,7 +27,7 @@
     <scm>
         <url>https://github.com/iteaj/utils-api</url>
         <connection>https://github.com/iteaj/utils-api.git</connection>
-        <developerConnection>https://www.iteblog.com</developerConnection>
+        <developerConnection>https://github.com/iteaj/utils-api</developerConnection>
     </scm>
 
     <developers>
@@ -56,6 +56,7 @@
         <spring.version>3.2.18.RELEASE</spring.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+        <mybatis.plus.version>3.0-beta</mybatis.plus.version>
     </properties>
 
     <dependencies>
@@ -90,7 +91,7 @@
 
         <!-- logger -->
         <dependency>
-            <scope>compile</scope>
+            <scope>${scope}</scope>
             <version>1.7.25</version>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -152,6 +153,21 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+        </dependency>
+
+        <dependency>
+            <scope>${scope}</scope>
+            <groupId>com.baomidou</groupId>
+            <version>${mybatis.plus.version}</version>
+            <artifactId>mybatis-plus</artifactId>
+        </dependency>
+
+        <dependency>
+            <scope>system</scope>
+            <version>1.8</version>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
         </dependency>
     </dependencies>
     <build>
@@ -223,22 +239,22 @@
             </properties>
             <build>
                 <plugins>
-                    <!--<plugin>-->
-                        <!--<groupId>org.apache.maven.plugins</groupId>-->
-                        <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-                        <!--<version>2.9.1</version>-->
-                        <!--<executions>-->
-                            <!--<execution>-->
-                                <!--<id>attach-javadocs</id>-->
-                                <!--<goals>-->
-                                    <!--<goal>jar</goal>-->
-                                <!--</goals>-->
-                            <!--</execution>-->
-                        <!--</executions>-->
-                        <!--<configuration>-->
-                            <!--<failOnError>false</failOnError>-->
-                        <!--</configuration>-->
-                    <!--</plugin>-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>

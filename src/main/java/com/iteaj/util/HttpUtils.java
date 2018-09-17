@@ -1,6 +1,6 @@
 package com.iteaj.util;
 
-import com.iteaj.util.core.UtilsGlobalDefaultFactory;
+import com.iteaj.util.core.UtilsGlobalFactory;
 import com.iteaj.util.module.http.ContentType;
 import com.iteaj.util.module.http.HttpResponse;
 import com.iteaj.util.module.http.adapter.JdkHttpAdapter;
@@ -25,7 +25,7 @@ public abstract class HttpUtils {
      * @return
      */
     public static HttpResponse doGet(UrlBuilder builder) {
-        return UtilsGlobalDefaultFactory
+        return UtilsGlobalFactory
                 .getDefaultHttpAdapter().get(builder);
     }
 
@@ -36,7 +36,7 @@ public abstract class HttpUtils {
      * @return
      */
     public static String doGet(UrlBuilder builder, String charset) {
-        HttpResponse response = UtilsGlobalDefaultFactory
+        HttpResponse response = UtilsGlobalFactory
                 .getDefaultHttpAdapter().get(builder);
         return response.getContent(charset);
     }
@@ -47,7 +47,7 @@ public abstract class HttpUtils {
      * @return
      */
     public static HttpResponse doPost(UrlBuilder builder) {
-        return UtilsGlobalDefaultFactory
+        return UtilsGlobalFactory
                 .getDefaultHttpAdapter().post(builder);
     }
 
@@ -57,7 +57,7 @@ public abstract class HttpUtils {
      * @return
      */
     public static String doPost(UrlBuilder builder, String charset) {
-        HttpResponse post = UtilsGlobalDefaultFactory
+        HttpResponse post = UtilsGlobalFactory
                 .getDefaultHttpAdapter().post(builder);
 
         return post.getContent(charset);
@@ -69,7 +69,7 @@ public abstract class HttpUtils {
      * @return
      */
     public static HttpResponse doPost(MultipartBuilder builder) {
-        return UtilsGlobalDefaultFactory
+        return UtilsGlobalFactory
                 .getDefaultHttpAdapter().post(builder);
     }
 
@@ -84,18 +84,18 @@ public abstract class HttpUtils {
      * @return
      */
     public static String doPost(MultipartBuilder builder, String charset) {
-        HttpResponse post = UtilsGlobalDefaultFactory
+        HttpResponse post = UtilsGlobalFactory
                 .getDefaultHttpAdapter().post(builder);
         return post.getContent(charset);
     }
 
     public static HttpResponse doPost(StreamBuilder builder) {
-        return UtilsGlobalDefaultFactory
+        return UtilsGlobalFactory
                 .getDefaultHttpAdapter().post(builder);
     }
 
     public static String doPost(StreamBuilder builder, String charset) {
-        HttpResponse post = UtilsGlobalDefaultFactory
+        HttpResponse post = UtilsGlobalFactory
                 .getDefaultHttpAdapter().post(builder);
         return post.getContent(charset);
     }

@@ -3,7 +3,7 @@ package com.iteaj.util.module.http;
 import com.iteaj.util.AssertUtils;
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
-import com.iteaj.util.core.UtilsGlobalDefaultFactory;
+import com.iteaj.util.core.UtilsGlobalFactory;
 import com.iteaj.util.core.UtilsType;
 
 import java.util.*;
@@ -35,16 +35,16 @@ public abstract class AbstractBuilder implements HttpHeaderBuilder{
 
     public AbstractBuilder(String url, String charset) {
         this(url, charset, ContentType.UrlEncoded
-                , UtilsGlobalDefaultFactory.getDefaultRequestConfig());
+                , UtilsGlobalFactory.getDefaultRequestConfig());
     }
 
     public AbstractBuilder(String url, String charset, ContentType type) {
-        this(url, charset, type, UtilsGlobalDefaultFactory.getDefaultRequestConfig());
+        this(url, charset, type, UtilsGlobalFactory.getDefaultRequestConfig());
     }
 
     public AbstractBuilder(String url, ContentType type) {
         this(url, type.charset, type
-                , UtilsGlobalDefaultFactory.getDefaultRequestConfig());
+                , UtilsGlobalFactory.getDefaultRequestConfig());
     }
 
     public AbstractBuilder(String url, String charset

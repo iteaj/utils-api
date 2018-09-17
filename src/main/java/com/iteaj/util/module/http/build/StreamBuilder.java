@@ -3,7 +3,6 @@ package com.iteaj.util.module.http.build;
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.Const;
 import com.iteaj.util.core.UtilsException;
-import com.iteaj.util.core.UtilsGlobalDefaultFactory;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.AbstractBuilder;
 import com.iteaj.util.module.http.ContentType;

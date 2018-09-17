@@ -13,9 +13,9 @@ import com.iteaj.util.module.wechat.WechatApiType;
  * @since 1.7
  */
 public class WechatBasicTokenApi extends AbstractWechatApi
-        <WechatConfigBasicToken, WechatParamBasicToken> {
+        <WxcBasicToken, WxpBasicToken> {
 
-    protected WechatBasicTokenApi(WechatConfigBasicToken config) {
+    protected WechatBasicTokenApi(WxcBasicToken config) {
         super(config);
     }
 
@@ -26,7 +26,7 @@ public class WechatBasicTokenApi extends AbstractWechatApi
      * @return
      */
     @Override
-    public BasicToken invoke(WechatParamBasicToken param) {
+    public BasicToken invoke(WxpBasicToken param) {
         //调用微信接口并且获取调用结果
         UrlBuilder builder = UrlBuilder.build(getApiConfig().getApiGateway())
                 .addParam("appid", getApiConfig().getAppId())

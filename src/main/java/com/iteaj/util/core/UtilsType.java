@@ -8,6 +8,7 @@ package com.iteaj.util.core;
  */
 public enum UtilsType {
 
+    WEB("javaee相关"),
     AOP(" - 扩展SpringAop"),
     HTTP(" - Http-Api"),
     JSON(" - Json-Api"),
@@ -15,7 +16,8 @@ public enum UtilsType {
     OAuth2(" - OAuth2.0支持"),
     ASSERT(" - 断言"),
     TimeoutTask(" - 定时任务管理"),
-    Common(" - 常用工具类支持");
+    Common(" - 常用工具类支持"),
+    Digest("签名算法摘要");
 
     public String desc;
 

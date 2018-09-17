@@ -3,7 +3,7 @@ package com.iteaj.util.module.http.adapter;
 import com.iteaj.util.AssertUtils;
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
-import com.iteaj.util.core.UtilsGlobalDefaultFactory;
+import com.iteaj.util.core.UtilsGlobalFactory;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.AbstractBuilder;
 import com.iteaj.util.module.http.HttpAdapter;
@@ -21,7 +21,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -60,7 +59,7 @@ public class HttpClientAdapter implements HttpAdapter<HttpClientResponse> {
             if(null != httpClientAdapter)
                 return httpClientAdapter;
 
-            HttpRequestConfig config = UtilsGlobalDefaultFactory.getDefaultRequestConfig();
+            HttpRequestConfig config = UtilsGlobalFactory.getDefaultRequestConfig();
             connectionManager = new PoolingHttpClientConnectionManager();
             /*连接池容纳的最大连接数*/
             connectionManager.setMaxTotal(config.getMaxTotal());
@@ -146,7 +145,7 @@ public class HttpClientAdapter implements HttpAdapter<HttpClientResponse> {
     }
 
     private void setRequestConfig(HttpRequestBase post, HttpRequestConfig requestConfig) {
-        HttpRequestConfig defaultRequestConfig = UtilsGlobalDefaultFactory.getDefaultRequestConfig();
+        HttpRequestConfig defaultRequestConfig = UtilsGlobalFactory.getDefaultRequestConfig();
         if (requestConfig != null && requestConfig != defaultRequestConfig)
             post.setConfig(convertConfig(requestConfig));
     }

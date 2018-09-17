@@ -9,6 +9,6 @@ import com.iteaj.util.core.ApiParam;
  * @version 1.0
  * @since JDK1.7
  */
-public interface WechatApiParam<T extends WechatApiResponse> extends ApiParam<T> {
+public interface WechatApiParam<T extends WechatApiReturn> extends ApiParam<T> {
 
 }

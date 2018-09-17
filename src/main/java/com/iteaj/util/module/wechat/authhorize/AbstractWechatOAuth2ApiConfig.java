@@ -14,11 +14,11 @@ import com.iteaj.util.module.wechat.WechatConfig;
 public abstract class AbstractWechatOAuth2ApiConfig<A extends WechatApi>
         extends WechatConfig<A> implements OAuth2ApiConfig {
 
-    public AbstractWechatOAuth2ApiConfig(String appId) {
-        super(appId);
+    public AbstractWechatOAuth2ApiConfig(String appId, String apiGateway) {
+        super(appId, apiGateway);
     }
 
-    public AbstractWechatOAuth2ApiConfig(String appId, String appSecret) {
-        super(appId, appSecret);
+    public AbstractWechatOAuth2ApiConfig(String appId, String appSecret, String apiGateway) {
+        super(appId, appSecret, apiGateway);
     }
 }

@@ -5,8 +5,8 @@ import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.TokenManager;
 import com.iteaj.util.module.wechat.basictoken.BasicToken;
-import com.iteaj.util.module.wechat.basictoken.WechatConfigEnterpriseBasicToken;
-import com.iteaj.util.module.wechat.basictoken.WechatConfigBasicToken;
+import com.iteaj.util.module.wechat.basictoken.WxcEnterpriseBasicToken;
+import com.iteaj.util.module.wechat.basictoken.WxcBasicToken;
 
 /**
  * create time: 2018/4/14
@@ -15,16 +15,16 @@ import com.iteaj.util.module.wechat.basictoken.WechatConfigBasicToken;
  * @version 1.0
  * @since JDK1.7
  */
-public abstract class WechatTokenManager implements TokenManager<WechatConfigBasicToken> {
+public abstract class WechatTokenManager implements TokenManager<WxcBasicToken> {
 
     @Override
-    public final BasicToken getToken(WechatConfigBasicToken config){
+    public final BasicToken getToken(WxcBasicToken config){
         AssertUtils.isTrue(null != config, "未设置配置信息", UtilsType.WECHAT);
 
-        if(config instanceof WechatConfigBasicToken) {
+        if(config instanceof WxcBasicToken) {
             return getBasicToken(config, false);
-        } else if(config instanceof WechatConfigEnterpriseBasicToken) {
-            return getBasicToken((WechatConfigEnterpriseBasicToken)config, false);
+        } else if(config instanceof WxcEnterpriseBasicToken) {
+            return getBasicToken((WxcEnterpriseBasicToken)config, false);
         } else {
             throw new UtilsException("未知的Token配置", UtilsType.WECHAT);
         }
@@ -32,17 +32,17 @@ public abstract class WechatTokenManager implements TokenManager<WechatConfigBas
 
     /**
      * 手动从微信方强制刷新返回一个Token  请注意：此方法只能在微信的任何Api接口返回40001的时候再调用<br>
-     *     其他时候请使用{@link #getToken(WechatConfigBasicToken)}
+     *     其他时候请使用{@link #getToken(WxcBasicToken)}
      * @param config
      * @return
      */
     @Override
-    public BasicToken refresh(WechatConfigBasicToken config) {
+    public BasicToken refresh(WxcBasicToken config) {
         AssertUtils.isTrue(null != config, "未指定获取Token的配置参数", UtilsType.WECHAT);
-        if(config instanceof WechatConfigBasicToken) {
+        if(config instanceof WxcBasicToken) {
             return getBasicToken(config, true);
-        } else if(config instanceof WechatConfigEnterpriseBasicToken) {
-            return getBasicToken((WechatConfigEnterpriseBasicToken)config, true);
+        } else if(config instanceof WxcEnterpriseBasicToken) {
+            return getBasicToken((WxcEnterpriseBasicToken)config, true);
         } else {
             throw new UtilsException("未知的Token配置", UtilsType.WECHAT);
         }
@@ -53,12 +53,12 @@ public abstract class WechatTokenManager implements TokenManager<WechatConfigBas
      * @param config
      * @return
      */
-    protected abstract BasicToken getBasicToken(WechatConfigBasicToken config, boolean refresh);
+    protected abstract BasicToken getBasicToken(WxcBasicToken config, boolean refresh);
 
     /**
      * 获取企业号的token
      * @param config
      * @return
      */
-    protected abstract BasicToken getBasicToken(WechatConfigEnterpriseBasicToken config, boolean refresh);
+    protected abstract BasicToken getBasicToken(WxcEnterpriseBasicToken config, boolean refresh);
 }

@@ -43,7 +43,7 @@ public class LocationWechatTokenManager extends WechatTokenManager {
 
 
     @Override
-    protected BasicToken getBasicToken(WechatConfigBasicToken config, boolean refresh) {
+    protected BasicToken getBasicToken(WxcBasicToken config, boolean refresh) {
         Map<String, BasicToken> tokenMap = this.tokenMap.get(config.getAppId());
         if(CommonUtils.isNotEmpty(tokenMap)) {
             BasicToken basicToken = tokenMap.get(config.getAppSecret());
@@ -64,7 +64,7 @@ public class LocationWechatTokenManager extends WechatTokenManager {
             //否则直接重新调用Api接口, 然后覆盖掉原来的Token
             long pass = System.currentTimeMillis() - lastedCreateTime;
             if(pass >= TimeUnit.SECONDS.toMillis(basicToken.getExpires_in()) * getRefreshRate()) {
-                BasicToken invoke = config.buildApi().invoke(WechatParamBasicToken.instance());
+                BasicToken invoke = config.buildApi().invoke(WxpBasicToken.instance());
                 if(null == invoke) throw new UtilsException("强制刷新Token失败", UtilsType.WECHAT);
 
                 tokenMap.put(config.getAppSecret(), invoke);
@@ -87,7 +87,7 @@ public class LocationWechatTokenManager extends WechatTokenManager {
      * @return
      */
     @Override
-    protected BasicToken getBasicToken(WechatConfigEnterpriseBasicToken config, boolean refresh) {
+    protected BasicToken getBasicToken(WxcEnterpriseBasicToken config, boolean refresh) {
         Map<String, BasicToken> tokenMap = this.tokenMap.get(config.getAppId());
         if(CommonUtils.isNotEmpty(tokenMap)) {
             BasicToken basicToken = tokenMap.get(config.getAppSecret());
@@ -99,7 +99,7 @@ public class LocationWechatTokenManager extends WechatTokenManager {
             if(!refresh) return basicToken;
 
             //如果是强制刷新则直接重新调用Api接口, 然后覆盖掉原来的Token
-            basicToken = config.buildApi().invoke(WechatParamBasicToken.instance());
+            basicToken = config.buildApi().invoke(WxpBasicToken.instance());
             tokenMap.put(config.getAppSecret(), basicToken);
 
             return basicToken;
@@ -134,7 +134,7 @@ public class LocationWechatTokenManager extends WechatTokenManager {
         //计算超时时间
         int cycleTime = new Double(expires * cycleRate()).intValue();
 
-        WechatConfigBasicToken config = basicTokenApi.getApiConfig();
+        WxcBasicToken config = basicTokenApi.getApiConfig();
         Map<String, BasicToken> tokenMap = this.tokenMap.get(config.getAppId());
         if(CommonUtils.isNotEmpty(tokenMap)) {
             tokenMap.put(config.getAppSecret(), basicToken);

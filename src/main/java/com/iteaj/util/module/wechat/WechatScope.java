@@ -8,7 +8,7 @@ package com.iteaj.util.module.wechat;
  * @since JDK1.7
  */
 public enum WechatScope {
-    /**必须有用户进行授权(可用于服务号和企业号)*/
+    /**必须由用户进行手动授权(可用于服务号和企业号)*/
     UserInfo("snsapi_userinfo")
     /**静默授权(可用于服务号和企业号)*/
     ,Base("snsapi_base")

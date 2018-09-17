@@ -7,8 +7,8 @@ import com.iteaj.util.module.wechat.WechatApi;
 /**
  * create time: 2018/4/6
  *  微信基于OAuth2实现的授权接口Api 主要包括以下两种：<br>
- *      1.微信服务号或认证订阅号的网页授权{@link WechatWebAuthorizeApi}
- *      2.微信企业号的网页授权{@link WechatEnterpriseAuthorizeApi}
+ *      1.微信服务号或认证订阅号的网页授权{@link WxaWebAuthorize}
+ *      2.微信企业号的网页授权{@link WxaEnterpriseAuthorize}
  * @author iteaj
  * @version 1.0
  * @since JDK1.7

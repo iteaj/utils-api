@@ -13,7 +13,8 @@ public enum WechatApiType {
     TemplateMessage("发送模板消息 - 详情：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433751277"),
     WebAuthorize("服务号网页授权 - 详情：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842"),
     EnterpriseAuthorize("企业号网页授权 - 详情：https://work.weixin.qq.com/api/doc#10028"),
-    JsApiConfig("使用微信jsApi的所需的配置 - 详情：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115");
+    JsApiConfig("使用微信jsApi的所需的配置 - 详情：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115"),
+    JsApiTicket("微信签名算法需要的jsapi_ticket - 详情：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115#附录1-JS-SDK使用权限签名算法");
     public String desc;
 
     WechatApiType(String desc) {

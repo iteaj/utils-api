@@ -2,7 +2,7 @@ package com.iteaj.util.module.oauth2;
 
 import com.iteaj.util.CommonUtils;
 import com.iteaj.util.Const;
-import com.iteaj.util.core.UtilsGlobalDefaultFactory;
+import com.iteaj.util.core.UtilsGlobalFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,9 +75,9 @@ public class AuthorizeServlet extends HttpServlet {
             if(CommonUtils.isNotBlank(storageManager)) {
                 Class<?> forName = Class.forName(storageManager, true, getClass().getClassLoader());
                 this.storageManager = (AuthorizeStorageManager)forName.newInstance();
-                UtilsGlobalDefaultFactory.setDefaultStorageManager(this.storageManager);
+                UtilsGlobalFactory.setDefaultStorageManager(this.storageManager);
             } else {
-                this.storageManager = UtilsGlobalDefaultFactory.getDefaultStorageManager();
+                this.storageManager = UtilsGlobalFactory.getDefaultStorageManager();
             }
 
             getServletContext().setAttribute(AuthorizeStorageManager.STORAGE_MANAGER, this.storageManager);

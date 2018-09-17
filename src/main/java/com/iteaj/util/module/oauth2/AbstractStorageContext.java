@@ -2,7 +2,7 @@ package com.iteaj.util.module.oauth2;
 
 import com.iteaj.util.AssertUtils;
 import com.iteaj.util.CommonUtils;
-import com.iteaj.util.core.UtilsGlobalDefaultFactory;
+import com.iteaj.util.core.UtilsGlobalFactory;
 import com.iteaj.util.core.UtilsType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +60,7 @@ public abstract class AbstractStorageContext implements AuthorizeContext{
         this.type = type;
         this.nextPhase = type.getAuthorizePhase(type.getPhaseEntry());
         if(storageManager == null) storageManager =
-                UtilsGlobalDefaultFactory.getDefaultStorageManager();
+                UtilsGlobalFactory.getDefaultStorageManager();
 
         AssertUtils.isTrue(nextPhase != null
                 , "OAuth2 - 找不到要执行的入口阶段：phaseEntry 在类型 "

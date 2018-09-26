@@ -1,6 +1,7 @@
-package com.iteaj.util.module.mvc;
+package com.iteaj.util.module;
 
 import com.iteaj.util.Response;
+import com.iteaj.util.module.mvc.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since JDK1.7
  */
-public abstract class AbstractBaseController<R extends Response, T> {
+public abstract class AbstractBaseController<T> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -24,20 +25,31 @@ public abstract class AbstractBaseController<R extends Response, T> {
     }
 
     /**
+     * 返回当前应用的运行环境
+     * @return 如果返回{@code null}则什么都不做
+     */
+    protected Profile getProfile() {
+        return null;
+    }
+
+    /**
      * 响应失败信息到客户端 指定消息
      * @return
      */
-    protected abstract R fail(T msg);
+    protected abstract Response fail(T msg);
 
     /**
      * 响应成功信息到客户端 指定消息
      * @return
      */
-    protected abstract R success(T msg);
+    protected abstract Response success(T msg);
 
     /**
-     * 全局异常处理
+     * 异常处理
      * @return
      */
-    protected abstract R globalExceptionHandle(Throwable throwable);
+    protected Response throwableHandle(Throwable e) {
+        logger.error("类别：控制器 - 动作：统一异常处理 - 描述：{}", e.getMessage(), e);
+        return null;
+    }
 }

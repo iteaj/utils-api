@@ -49,10 +49,10 @@ public interface JsonAdapter<R> {
     /**
      * json转数组对象
      * @param json
-     * @param elementType   数组的类型
+     * @param arrayType   数组的类型
      * @return
      */
-    Object[] toArray(String json, Class elementType);
+    <T> T toArray(String json, Class<T> arrayType);
 
     /**
      * json转成map
@@ -78,20 +78,13 @@ public interface JsonAdapter<R> {
      * 构建一个json对象
      * @return
      */
-    Json build();
+    Json builder();
 
     /**
      * 通过json字符串构建一个Json对象
      * @param json
      * @return
      */
-    Json build(String json);
+    Json builder(String json);
 
-    /**
-     * 构建一个Json节点对象
-     * @param name
-     * @param val
-     * @return
-     */
-    Node buildNode(String name, Object val);
 }

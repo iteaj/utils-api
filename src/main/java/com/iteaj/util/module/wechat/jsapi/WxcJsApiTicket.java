@@ -7,7 +7,10 @@ import com.iteaj.util.core.UtilsGlobalFactory;
 import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.http.HttpResponse;
 import com.iteaj.util.module.http.build.UrlBuilder;
-import com.iteaj.util.module.wechat.*;
+import com.iteaj.util.module.wechat.AbstractWechatApi;
+import com.iteaj.util.module.wechat.WechatApiType;
+import com.iteaj.util.module.wechat.WechatConfig;
+import com.iteaj.util.module.wechat.WechatExpires;
 import com.iteaj.util.module.wechat.basictoken.BasicToken;
 import com.iteaj.util.module.wechat.basictoken.WxcBasicToken;
 
@@ -53,8 +56,8 @@ public class WxcJsApiTicket extends WechatConfig<WxcJsApiTicket.WxaJsApiTicket> 
 
             BasicToken token = UtilsGlobalFactory.getWechatTokenManager().getToken(basicToken);
 
-            if(token == null || !token.success())
-                throw new UtilsException("获取AccessToken失败", UtilsType.WECHAT);
+            if(!token.success())
+                return WxrJsApiTicket.ERR_TICKET;
 
             UrlBuilder urlBuilder = UrlBuilder.build(getApiConfig().getApiGateway())
                     .addParam("access_token", token.getAccess_token())
@@ -66,12 +69,33 @@ public class WxcJsApiTicket extends WechatConfig<WxcJsApiTicket.WxaJsApiTicket> 
         }
     }
 
+
+    @Override
+    public String warn() {
+        return "详情见：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115 (jsapi_ticket)";
+    }
+
     /**
      * 作为{@link com.iteaj.util.module.wechat.jsapi.WxcJsApiTicket.WxaJsApiTicket#invoke(WxpJsApiTicket)} 的返回值
      */
-    public static class WxrJsApiTicket extends WechatApiReturn {
+    public static class WxrJsApiTicket extends WechatExpires {
         private String ticket;
-        private int expires_in;
+        private static WxrJsApiTicket ERR_TICKET = new WxrJsApiTicket() {
+            @Override
+            public boolean success() {
+                return false;
+            }
+
+            @Override
+            public String getErrmsg() {
+                return "获取JsApiTicket失败, 未知原因";
+            }
+
+            @Override
+            public Integer getErrcode() {
+                return -999999;
+            }
+        };
 
         public String getTicket() {
             return ticket;
@@ -81,12 +105,14 @@ public class WxcJsApiTicket extends WechatConfig<WxcJsApiTicket.WxaJsApiTicket> 
             this.ticket = ticket;
         }
 
-        public int getExpires_in() {
-            return expires_in;
+        @Override
+        protected boolean isExpires(int salt) {
+            return super.isExpires(salt);
         }
 
-        public void setExpires_in(int expires_in) {
-            this.expires_in = expires_in;
+        @Override
+        protected void setInvokeTime(long invokeTime) {
+            super.setInvokeTime(invokeTime);
         }
     }
 }

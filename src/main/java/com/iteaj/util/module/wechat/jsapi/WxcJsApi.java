@@ -7,6 +7,7 @@ import com.iteaj.util.core.UtilsType;
 import com.iteaj.util.module.wechat.WechatApiReturn;
 import com.iteaj.util.module.wechat.WechatConfig;
 
+import java.beans.Transient;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -27,6 +28,11 @@ public class WxcJsApi extends WechatConfig<WxaJsApi> {
         return new WxaJsApi(this);
     }
 
+    @Override
+    public String warn() {
+        return "详情见：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115 (JSSDK)";
+    }
+
     public class WxrJsApi extends WechatApiReturn {
         private String appId;
         private long timestamp;
@@ -39,7 +45,7 @@ public class WxcJsApi extends WechatConfig<WxaJsApi> {
             this.nonceStr = RandomUtils.create(16, RandomUtils.Type.L26);
         }
 
-        public WxrJsApi build(String url, String ticket) {
+        protected WxrJsApi build(String url, String ticket) {
             try {
                 WxrJsApi wxrJsApi = new WxrJsApi();
 
@@ -88,6 +94,23 @@ public class WxcJsApi extends WechatConfig<WxaJsApi> {
 
         public void setSignature(String signature) {
             this.signature = signature;
+        }
+
+        @Override
+        public boolean success() {
+            return true;
+        }
+
+        @Override
+        @Transient
+        public String getErrmsg() {
+            return super.getErrmsg();
+        }
+
+        @Override
+        @Transient
+        public Integer getErrcode() {
+            return super.getErrcode();
         }
     }
 }

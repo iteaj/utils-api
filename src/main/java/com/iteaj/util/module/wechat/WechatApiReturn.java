@@ -1,5 +1,6 @@
 package com.iteaj.util.module.wechat;
 
+import com.iteaj.util.JsonUtils;
 import com.iteaj.util.core.ApiReturn;
 
 /**
@@ -35,5 +36,10 @@ public abstract class WechatApiReturn implements ApiReturn {
 
     public void setErrcode(Integer errcode) {
         this.errcode = errcode;
+    }
+
+    @Override
+    public String toString() {
+        return JsonUtils.toJson(this);
     }
 }

@@ -3,12 +3,10 @@ package com.iteaj.util.module.json.fastjson;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.iteaj.util.CommonUtils;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
-import com.iteaj.util.module.json.JsonAdapter;
 import com.iteaj.util.module.json.Json;
-import com.iteaj.util.module.json.Node;
+import com.iteaj.util.module.json.JsonAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,13 +45,11 @@ public class FastJsonAdapter implements JsonAdapter<JSON> {
     }
 
     @Override
-    public Object[] toArray(String json, Class elementType) {
-        List list = toList(json, elementType);
-        if(CommonUtils.isNotEmpty(list)) {
-            return list.toArray();
-        }
+    public <T> T toArray(String json, Class<T> arrayType) {
+        if(!arrayType.isArray())
+            throw new UtilsException("反序列化JsonArray, 参数类型必须是数组类型eg：Integer[].class", UtilsType.JSON);
 
-        return null;
+        return JSONObject.parseObject(json, arrayType);
     }
 
     @Override
@@ -77,21 +73,13 @@ public class FastJsonAdapter implements JsonAdapter<JSON> {
     }
 
     @Override
-    public Json build() {
-        return new Fastjson();
+    public Json builder() {
+        return new Fastjson(new JSONObject());
     }
 
     @Override
-    public Json build(String json) {
+    public Json builder(String json) {
         JSONObject jsonObject = JSONObject.parseObject(json);
-        Fastjson build = (Fastjson)build();
-        jsonObject.putAll(jsonObject);
-
-        return build;
-    }
-
-    @Override
-    public Node buildNode(String name, Object val) {
-        return new FastjsonNode(name, val);
+        return new Fastjson(jsonObject);
     }
 }

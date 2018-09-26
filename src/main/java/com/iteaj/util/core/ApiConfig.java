@@ -15,4 +15,9 @@ public interface ApiConfig {
      */
     UtilsType getUtilsType();
 
+    /**
+     * api的警告信息
+     * @return
+     */
+    String warn();
 }

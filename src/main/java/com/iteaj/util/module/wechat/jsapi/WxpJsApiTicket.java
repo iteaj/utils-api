@@ -10,6 +10,5 @@ import com.iteaj.util.module.wechat.WechatApiParam;
  * @since JDK1.7
  */
 public class WxpJsApiTicket implements WechatApiParam<WxcJsApiTicket.WxrJsApiTicket> {
-
-
+    public static WxpJsApiTicket instance = new WxpJsApiTicket();
 }

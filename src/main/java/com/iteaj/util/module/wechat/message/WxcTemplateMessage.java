@@ -36,4 +36,9 @@ public class WxcTemplateMessage extends WechatConfig<WxaTemplateMessage> {
         this.tokenManager = tokenManager;
         return this;
     }
+
+    @Override
+    public String warn() {
+        return "详情见：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433751277";
+    }
 }

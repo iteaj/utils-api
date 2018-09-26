@@ -16,11 +16,13 @@ public interface IErrorCode {
      */
     String getErrMsg();
 
+    IErrorCode setErrMsg(String errMsg);
+
     /**
      * 返回错误码
      * @return
      */
-    String getErrCode();
+    <T> T getErrCode();
 
     /**
      * 默认的错误码
@@ -28,9 +30,9 @@ public interface IErrorCode {
     class DefaultErrorCode implements IErrorCode {
 
         private String errMsg;
-        private String errCode;
+        private Object errCode;
 
-        public DefaultErrorCode(String errMsg, String errCode) {
+        public DefaultErrorCode(String errMsg, Object errCode) {
             this.errMsg = errMsg;
             this.errCode = errCode;
         }
@@ -41,8 +43,14 @@ public interface IErrorCode {
         }
 
         @Override
-        public String getErrCode() {
-            return errCode;
+        public IErrorCode setErrMsg(String errMsg) {
+            this.errCode = errMsg;
+            return this;
+        }
+
+        @Override
+        public <T> T getErrCode() {
+            return (T) errCode;
         }
     }
 }

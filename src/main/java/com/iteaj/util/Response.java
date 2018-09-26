@@ -1,50 +1,65 @@
 package com.iteaj.util;
 
-import com.iteaj.util.module.mvc.Page;
+import com.iteaj.util.module.mvc.IPage;
 import com.iteaj.util.module.mvc.orm.Entity;
 
+import java.beans.Transient;
 import java.util.Collection;
 
 /**
  * create time: 2018/7/19
- * @see T 数据的具体呈现对象, 比如Json{@link com.iteaj.util.module.json.Json}、xml、string数据
- * @see S 相应给客户端的状态, 比如：true/false、{@link IErrorCode}
  * @author iteaj
  * @version 1.0
  * @since JDK1.7
  */
-public interface Response<T, S> {
+public abstract class Response<This extends Response> {
 
-    S getStatus();
+    private String errMsg;
 
-    Response setStatus(S status);
+    public Response(String errMsg) {
+        this.errMsg = errMsg;
+    }
 
-    String getErrMsg();
+    public String getErrMsg() {
+        return errMsg;
+    }
 
-    Response setErrMsg(String errMsg);
-
-    Response add(String key, Object val);
+    public This setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
+        return (This) this;
+    }
 
     /**
-     * 增加分页对象到数据集{@code T}
+     * 增加分页对象到数据集
      * @param page
      * @return
      */
-    Response add(Page page);
-
-    /**
-     * 增加记录列表到数据集{@code T}
-     * @param records
-     * @return
-     */
-    Response add(Collection records);
+    public This add(IPage page) {
+        this.add("page", page);
+        return (This) this;
+    }
 
     /**
      * 增加单条实体记录到数据集{@code T}
      * @param detail
      * @return
      */
-    Response add(Entity detail);
+    public This add(Entity detail) {
+        this.add("detail", detail);
+        return (This) this;
+    }
 
-    T getData();
+    /**
+     * 增加记录列表到数据集
+     * @param records
+     * @return
+     */
+    public This add(Collection records) {
+        this.add("records", records);
+        return (This) this;
+    }
+
+    public abstract Object getData();
+
+    public abstract This add(String key, Object val);
 }

@@ -34,6 +34,9 @@ public class WxaJsApi extends AbstractWechatApi<WxcJsApi, WxpJsApi> {
         WxcJsApiTicket.WxrJsApiTicket ticket = (WxcJsApiTicket.WxrJsApiTicket)UtilsGlobalFactory
                 .getWechatJsTicketManager().getToken(wxcJsApiTicket);
 
+        if(!ticket.success())
+            throw new UtilsException("获取微信JsApiTicket失败："+ticket.toString(), UtilsType.WECHAT);
+
         WxcJsApi.WxrJsApi wxrJsApi = getApiConfig().new WxrJsApi();
         return wxrJsApi.build(param.getUrl(), ticket.getTicket());
     }

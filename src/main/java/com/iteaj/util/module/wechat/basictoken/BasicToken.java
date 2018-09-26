@@ -1,6 +1,6 @@
 package com.iteaj.util.module.wechat.basictoken;
 
-import com.iteaj.util.module.wechat.WechatApiReturn;
+import com.iteaj.util.module.wechat.WechatExpires;
 
 /**
  * create time: 2018/4/14
@@ -9,10 +9,26 @@ import com.iteaj.util.module.wechat.WechatApiReturn;
  * @version 1.0
  * @since JDK1.7
  */
-public class BasicToken extends WechatApiReturn {
+public class BasicToken extends WechatExpires {
 
-    private Integer expires_in;
     private String access_token;
+
+    public static BasicToken ErrBasicToken = new BasicToken() {
+        @Override
+        public boolean success() {
+            return false;
+        }
+
+        @Override
+        public String getErrmsg() {
+            return "未知的失败原因";
+        }
+
+        @Override
+        public Integer getErrcode() {
+            return -999999;
+        }
+    };
 
     public BasicToken() {
 
@@ -21,18 +37,6 @@ public class BasicToken extends WechatApiReturn {
     public BasicToken(String errmsg, Integer errcode) {
         this.setErrmsg(errmsg);
         this.setErrcode(errcode);
-    }
-
-    /**
-     * access_token过期时间
-     * @return
-     */
-    public Integer getExpires_in() {
-        return expires_in;
-    }
-
-    public void setExpires_in(Integer expires_in) {
-        this.expires_in = expires_in;
     }
 
     /**
@@ -48,12 +52,12 @@ public class BasicToken extends WechatApiReturn {
     }
 
     @Override
-    public String toString() {
-        return "BasicToken{" +
-                "errcode='" + getErrcode() + '\'' +
-                ", errmsg='" + getErrmsg() + '\'' +
-                ", expires_in='" + expires_in + '\'' +
-                ", access_token='" + access_token + '\'' +
-                '}';
+    protected void setInvokeTime(long invokeTime) {
+        super.setInvokeTime(invokeTime);
+    }
+
+    @Override
+    protected boolean isExpires(int salt) {
+        return super.isExpires(salt);
     }
 }

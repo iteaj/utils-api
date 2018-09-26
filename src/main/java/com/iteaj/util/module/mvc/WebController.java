@@ -1,6 +1,9 @@
 package com.iteaj.util.module.mvc;
 
-import com.iteaj.util.JsonResponse;
+import com.iteaj.util.WebResponse;
+import com.iteaj.util.module.AbstractBaseController;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -11,35 +14,41 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @version 1.0
  * @since JDK1.7
  */
-public abstract class WebController extends AbstractBaseController<JsonResponse, String> {
+public abstract class WebController extends
+        AbstractBaseController<String> {
 
-    protected JsonResponse fail() {
+    protected WebResponse fail() {
         return this.fail(msgForFail());
     }
 
     @Override
-    protected JsonResponse fail(String msg) {
-        return new JsonResponse(false, msg);
+    protected WebResponse fail(String msg) {
+        return new WebResponse(false, msg);
     }
 
-    protected JsonResponse success() {
+    protected WebResponse success() {
         return this.success(msgForSuccess());
     }
 
     @Override
-    protected JsonResponse success(String msg) {
-        return new JsonResponse(true, msg);
+    protected WebResponse success(String msg) {
+        return new WebResponse(true, msg);
     }
 
     @Override
-    @ResponseBody
     @ExceptionHandler
-    protected JsonResponse globalExceptionHandle(Throwable e) {
-        logger.error("类别：控制器异常 - 动作：全局异常处理 - 描述：{}", e.getMessage(), e);
+    protected WebResponse throwableHandle(Throwable e) {
+        logger.error("类别：MVC控制器 - 动作：统一异常处理 - 描述：{}", e.getMessage(), e);
+
         //如果是调试说明处于开发状态, 返回异常信息
-        if(logger.isDebugEnabled())
-            return this.fail(e.getMessage());
-        else // 开发环境返回文明语
+        if(getProfile() == null)
             return this.fail();
+        else if(getProfile() == Profile.Prod)
+            return this.fail();
+        else if(getProfile() == Profile.Dev)
+            return this.fail(e.getMessage());
+        else if(getProfile() == Profile.Test)
+            return this.fail(e.getMessage());
+        else return this.fail();
     }
 }

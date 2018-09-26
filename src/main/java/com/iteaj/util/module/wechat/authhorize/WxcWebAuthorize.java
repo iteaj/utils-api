@@ -107,4 +107,9 @@ public class WxcWebAuthorize extends AbstractWechatOAuth2ApiConfig<WxaWebAuthori
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
+
+    @Override
+    public String warn() {
+        return "详情见：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842";
+    }
 }

@@ -179,4 +179,8 @@ public abstract class CommonUtils {
 
         return null;
     }
+
+    public static boolean isNotEmpty(boolean[] booleans) {
+        return booleans != null && booleans.length > 0;
+    }
 }

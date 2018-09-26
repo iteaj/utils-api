@@ -1,6 +1,8 @@
 package com.iteaj.util.module.wechat;
 
 import com.iteaj.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 
@@ -15,7 +17,7 @@ public abstract class AbstractWechatApi<C extends WechatConfig
         , P extends WechatApiParam> implements WechatApi<C, P> {
 
     private C config;
-
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     public AbstractWechatApi(C config) {
         this.config = config;
     }

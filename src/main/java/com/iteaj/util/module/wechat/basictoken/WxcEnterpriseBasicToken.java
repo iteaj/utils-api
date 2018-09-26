@@ -21,13 +21,13 @@ public class WxcEnterpriseBasicToken extends WxcBasicToken {
     }
 
     @Override
-    public EnterpriseBasicTokenApi buildApi() {
-        return new EnterpriseBasicTokenApi(this);
+    public WxaEnterpriseBasicToken buildApi() {
+        return new WxaEnterpriseBasicToken(this);
     }
 
-    public class EnterpriseBasicTokenApi extends WechatBasicTokenApi {
+    public class WxaEnterpriseBasicToken extends WxaBasicToken {
 
-        protected EnterpriseBasicTokenApi(WxcEnterpriseBasicToken config) {
+        protected WxaEnterpriseBasicToken(WxcEnterpriseBasicToken config) {
             super(config);
         }
 
@@ -36,8 +36,14 @@ public class WxcEnterpriseBasicToken extends WxcBasicToken {
             UrlBuilder urlBuilder = UrlBuilder.build(getApiGateway())
                     .addParam("corpid", getAppId())
                     .addParam("corpsecret", getAppSecret());
+
             String result = HttpUtils.doGet(urlBuilder, "UTF-8");
-            if(CommonUtils.isBlank(result)) return null;
+            if(CommonUtils.isBlank(result)) {
+                logger.warn("类别：微信Api - 动作：获取企业号Token - 信息：获取失败, {}"
+                        , getApiConfig().warn());
+
+                return BasicToken.ErrBasicToken;
+            }
 
             return JsonUtils.toBean(result, BasicToken.class);
         }
@@ -48,4 +54,8 @@ public class WxcEnterpriseBasicToken extends WxcBasicToken {
         }
     }
 
+    @Override
+    public String warn() {
+        return "详情见：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183";
+    }
 }

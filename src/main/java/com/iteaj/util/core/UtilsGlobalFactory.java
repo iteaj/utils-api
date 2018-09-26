@@ -1,5 +1,6 @@
 package com.iteaj.util.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iteaj.util.module.TokenManager;
 import com.iteaj.util.module.http.HttpAdapter;
 import com.iteaj.util.module.http.HttpRequestConfig;
@@ -11,7 +12,7 @@ import com.iteaj.util.module.json.fastjson.FastJsonAdapter;
 import com.iteaj.util.module.json.jackson.JacksonAdapter;
 import com.iteaj.util.module.oauth2.AuthorizeStorageManager;
 import com.iteaj.util.module.oauth2.MapStorageManager;
-import com.iteaj.util.module.wechat.LocationWechatTokenManager;
+import com.iteaj.util.module.wechat.basictoken.LocationWechatTokenManager;
 import com.iteaj.util.module.wechat.WechatTokenManager;
 import com.iteaj.util.module.wechat.jsapi.JsApiTicketLocationManager;
 
@@ -86,7 +87,7 @@ public class UtilsGlobalFactory {
             if(defaultJsonAdapter!=null)
                 return defaultJsonAdapter;
             try {
-                defaultJsonAdapter = new JacksonAdapter();
+                defaultJsonAdapter = new JacksonAdapter(new ObjectMapper());
             } catch (Throwable e) {
                 defaultJsonAdapter = new FastJsonAdapter();
             }

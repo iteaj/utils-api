@@ -191,7 +191,7 @@ public class WxaEnterpriseAuthorize extends AbstractWechatOAuth2Api
             if(!isSuccess(context, result, phaseAlias())) return;
 
             //存储AccessToken信息到上下文
-            Json json = JsonUtils.buildJson(result);
+            Json json = JsonUtils.builder(result);
             context.addContextParam(phaseAlias(), json);
 
             //执行下一阶段
@@ -224,7 +224,7 @@ public class WxaEnterpriseAuthorize extends AbstractWechatOAuth2Api
         protected void doPhase(PhaseChain chain, WxpEnterpriseAuthorize context) {
             Json token = (Json) context.getContextParam("token");
             StringBuilder sb = new StringBuilder(getApiConfig().getUserInfoGateway()).append("?")
-                    .append("access_token=").append(token.getNode("access_token").getValString())
+                    .append("access_token=").append(token.getString("access_token"))
                     .append("&code=").append(context.getContextParam("code"));
             String result = HttpUtils.doGet(UrlBuilder.build(sb.toString()), "UTF-8");
 
@@ -269,7 +269,7 @@ public class WxaEnterpriseAuthorize extends AbstractWechatOAuth2Api
             WechatEnterpriseResult.UserInfo userInfo =
                     (WechatEnterpriseResult.UserInfo)context.getContextParam("user");
 
-            String accessToken = token.getNode("access_token").getValString();
+            String accessToken = token.getString("access_token");
             MultipartBuilder builder = MultipartBuilder.build(getApiConfig().getUserDetailGateway())
                     .addParam("access_token", accessToken)
                     .addBody(null, "{\"user_ticket\":\""+userInfo.getUser_ticket()+"\"}");

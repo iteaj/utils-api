@@ -45,26 +45,26 @@ public class WxaTemplateMessage extends AbstractWechatApi
             BasicToken invoke = getApiConfig().getTokenManager().getToken(tokenConfig);
             if(!invoke.success()) throw new IllegalStateException("获取微信AccessToken失败："+invoke.getErrmsg());
 
-            Json json = JsonUtils.buildJson();
-            if(CommonUtils.isNotBlank(param.getUrl()))json.addNode("url", param.getUrl());
+            Json json = JsonUtils.builder();
+            if(CommonUtils.isNotBlank(param.getUrl()))json.add("url", param.getUrl());
             if(CommonUtils.isNotBlank(param.getMiniprogram())
                     && CommonUtils.isNotBlank(param.getPagepath())){
 
-                Json build = JsonUtils.buildJson();
-                build.addNode("appid", getApiConfig().getAppId())
-                        .addNode("pagepath", param.getPagepath());
+                Json build = JsonUtils.builder();
+                build.add("appid", getApiConfig().getAppId())
+                        .add("pagepath", param.getPagepath());
 
-                json.addNode("miniprogram", build);
+                json.add("miniprogram", build);
             }
 
-            Json data = JsonUtils.buildJson();
+            Json data = JsonUtils.builder();
             for(WxpTemplateMessage.Item item : param.getItems()){
-                data.addNode(item.getKey(), item);
+                data.add(item.getKey(), item);
             }
 
-            json.addNode("data", data);
-            json.addNode("touser", param.getOpenId());
-            json.addNode("template_id", param.getTemplateId());
+            json.add("data", data);
+            json.add("touser", param.getOpenId());
+            json.add("template_id", param.getTemplateId());
 
             String message = json.toJsonString();
             if(logger.isDebugEnabled())

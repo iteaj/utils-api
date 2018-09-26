@@ -12,7 +12,7 @@ import java.util.List;
  * @version 1.0
  * @since JDK1.7
  */
-public class Page<T extends Entity> {
+public class Page<T extends Entity> implements IPage<T>{
 
     private List<T> records;
     private Long total;
@@ -20,10 +20,10 @@ public class Page<T extends Entity> {
     private long current;
 
     public Page() {
-        this.records = Collections.emptyList();
         this.total = 0L;
         this.size = 10L;
         this.current = 1L;
+        this.records = Collections.emptyList();
     }
 
     public Page(long current, long size) {

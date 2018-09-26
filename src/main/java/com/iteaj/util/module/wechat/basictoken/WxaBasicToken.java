@@ -1,5 +1,6 @@
 package com.iteaj.util.module.wechat.basictoken;
 
+import com.iteaj.util.CommonUtils;
 import com.iteaj.util.HttpUtils;
 import com.iteaj.util.JsonUtils;
 import com.iteaj.util.module.http.build.UrlBuilder;
@@ -12,10 +13,10 @@ import com.iteaj.util.module.wechat.WechatApiType;
  * @author iteaj
  * @since 1.7
  */
-public class WechatBasicTokenApi extends AbstractWechatApi
+public class WxaBasicToken extends AbstractWechatApi
         <WxcBasicToken, WxpBasicToken> {
 
-    protected WechatBasicTokenApi(WxcBasicToken config) {
+    protected WxaBasicToken(WxcBasicToken config) {
         super(config);
     }
 
@@ -34,6 +35,13 @@ public class WechatBasicTokenApi extends AbstractWechatApi
                 .addParam("grant_type", getApiConfig().getGrantType());
 
         String result = HttpUtils.doGet(builder, "utf-8");
+        if(CommonUtils.isBlank(result)) {
+            logger.warn("类别：微信Api - 动作：获取Token - 信息：获取失败, {}"
+                    , getApiConfig().warn());
+
+            return BasicToken.ErrBasicToken;
+        }
+
         return JsonUtils.toBean(result, BasicToken.class);
     }
 

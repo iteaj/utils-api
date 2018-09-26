@@ -23,14 +23,9 @@ public interface IBaseService<T extends Entity, D extends IBaseDao<T>> {
      * @param entity
      * @return
      */
-    boolean insert(T entity);
-
-    /**
-     * 通过指定条件删除记录
-     * @param entity
-     * @return
-     */
-    boolean delete(T entity);
+    default boolean insert(T entity){
+        return getBaseDao().insert(entity) > 0;
+    }
 
     /**
      * 删除通过id
@@ -38,48 +33,43 @@ public interface IBaseService<T extends Entity, D extends IBaseDao<T>> {
      * @param id
      * @return
      */
-    boolean deleteById(Serializable id);
+    default boolean deleteById(Serializable id) {
+        return getBaseDao().deleteById(id) > 0;
+    }
 
     /**
      * 批量删除
      * @param ids
      * @return
      */
-    boolean deleteByBatch(Collection<Serializable> ids);
-
-    /**
-     * 更新, 通过指定的参数
-     * @param entity
-     * @return
-     */
-    boolean update(T entity);
+    default boolean deleteByBatch(Collection<Serializable> ids) {
+        return getBaseDao().deleteByBatch(ids) > 0;
+    }
 
     /**
      * 通过Id更新所有列
      * @param entity
      * @return
      */
-    boolean updateById(T entity);
+    default boolean updateById(T entity) {
+       return getBaseDao().updateById(entity) > 0;
+    }
 
     /**
      * 通过Id获取一条记录
      * @param id
      * @return
      */
-    T getById(Serializable id);
+    default T selectById(Serializable id) {
+        return getBaseDao().selectById(id);
+    }
 
     /**
-     * 查询并返回符合条件的数据集
-     * @param entity
+     * 批量查询, 通过批量的Id
+     * @param ids
      * @return
      */
-    List<T> find(T entity);
-
-    /**
-     * 查询通过分页
-     * @param page
-     * @param entity
-     * @return
-     */
-    Page<T> findByPage(Page<T> page, T entity);
+    default List<T> selectByBatch(Collection<? extends Serializable> ids) {
+        return getBaseDao().selectByBatch(ids);
+    }
 }

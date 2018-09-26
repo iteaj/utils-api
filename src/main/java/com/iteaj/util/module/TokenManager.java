@@ -13,18 +13,12 @@ public interface TokenManager<T> {
      *  返回一个Token
      * @return
      */
-    Object getToken(T param);
+    Object getToken(T config);
 
     /**
      * 强制刷新 并返回刷新后的token
-     * @param param
+     * @param config
      * @return
      */
-    Object refresh(T param);
-
-    /**
-     * token循环周期, 一个比率值
-     * @return
-     */
-    double cycleRate();
+    Object refresh(T config);
 }

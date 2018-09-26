@@ -75,4 +75,9 @@ public abstract class WechatConfig<A extends WechatApi> implements HttpApiConfig
     public void setApiGateway(String gateway) {
         this.apiGateway = gateway;
     }
+
+    @Override
+    public String warn() {
+        return "请查看微信开发文档：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1445241432";
+    }
 }

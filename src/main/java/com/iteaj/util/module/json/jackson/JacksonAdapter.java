@@ -2,17 +2,16 @@ package com.iteaj.util.module.json.jackson;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.iteaj.util.AssertUtils;
 import com.iteaj.util.core.UtilsException;
 import com.iteaj.util.core.UtilsType;
-import com.iteaj.util.module.json.JsonAdapter;
 import com.iteaj.util.module.json.Json;
-import com.iteaj.util.module.json.Node;
+import com.iteaj.util.module.json.JsonAdapter;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -28,10 +27,12 @@ import java.util.Map;
  */
 public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
 
-    protected static ObjectMapper objectMapper;
+    protected ObjectMapper objectMapper;
 
-    static {
-        objectMapper = new ObjectMapper();
+    public JacksonAdapter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+        AssertUtils.isTrue(objectMapper != null
+                , "实例化JacksonAdapter必须传入ObjectMapper对象作为构造参数", UtilsType.JSON);
     }
 
     /**
@@ -57,10 +58,10 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
     public String toJson(Object obj, SimpleDateFormat format){
         try {
             if(null == obj) return null;
-            if(null != format)
-                return objectMapper.writer(format).writeValueAsString(obj);
+            if(null == format)
+                throw new UtilsException("写出Json字符串时必须指定时间格式对象：SimpleDateFormat", UtilsType.JSON);
 
-            return objectMapper.writeValueAsString(obj);
+            return objectMapper.writer(format).writeValueAsString(obj);
         } catch (IOException e) {
             throw new UtilsException(e.getMessage(), e, UtilsType.JSON);
         }
@@ -105,18 +106,13 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
     /**
      * json转数组对象
      * @param json
-     * @param elementType   数组的类型
+     * @param arrayType   数组的类型
      * @return
      */
-    public Object[] toArray(String json, Class elementType){
-        try {
-            if(null == json || null == elementType) return null;
-            ArrayType arrayType = getTypeFactory(objectMapper).constructArrayType(elementType);
-            return objectMapper.readValue(json, arrayType);
-        } catch (IOException e) {
-            throw new UtilsException(e.getMessage(), e, UtilsType.JSON);
-        }
-
+    public <T> T toArray(String json, Class<T> arrayType){
+        if(!arrayType.isArray())
+            throw new UtilsException("反序列化JsonArray, 参数类型必须是数组类型eg：Integer[].class", UtilsType.JSON);
+        return toBean(json, arrayType);
     }
 
     /**
@@ -150,34 +146,32 @@ public class JacksonAdapter implements JsonAdapter<ObjectMapper> {
     }
 
     @Override
-    public Json build() {
-        return new Jackson();
+    public Json builder() {
+        return new Jackson(getNodeFactory().objectNode(), objectMapper);
     }
 
     @Override
-    public Json build(String json) {
+    public Json builder(String json) {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
+            if(jsonNode.isContainerNode())
+                return new Jackson((ContainerNode) jsonNode, objectMapper);
 
-            Jackson jsonNodes = new Jackson();
-            jsonNodes.setAll((ObjectNode) jsonNode);
-
-            return jsonNodes;
-        } catch (Exception e) {
-            throw new UtilsException("Json - 错误的json字符串："+json, UtilsType.JSON);
+            throw new UtilsException("错误的json字符串："+json, UtilsType.JSON);
+        } catch (IOException e) {
+            throw new UtilsException("错误的json字符串："+json, UtilsType.JSON);
         }
     }
 
-    @Override
-    public Node buildNode(String name, Object val) {
-        return new JacksonNode(name, getNodeFactory().pojoNode(val));
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 
-    public static JsonNodeFactory getNodeFactory() {
-        return objectMapper.getNodeFactory();
+    protected JsonNodeFactory getNodeFactory() {
+        return getObjectMapper().getNodeFactory();
     }
 
-    public static TypeFactory getTypeFactory(ObjectMapper objectMapper){
+    protected TypeFactory getTypeFactory(ObjectMapper objectMapper){
         return objectMapper.getTypeFactory();
     }
 

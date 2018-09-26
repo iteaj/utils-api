@@ -2,7 +2,6 @@ package com.iteaj.util;
 
 import com.iteaj.util.core.UtilsGlobalFactory;
 import com.iteaj.util.module.json.Json;
-import com.iteaj.util.module.json.Node;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -27,25 +26,21 @@ public final class JsonUtils{
 		return UtilsGlobalFactory.getDefaultJsonAdapter().toList(json, elementType);
 	}
 
-	public <T> T[] toArray(String json, Class<T> elementType) {
-		return (T[]) UtilsGlobalFactory.getDefaultJsonAdapter().toArray(json, elementType);
+	public static <T> T toArray(String json, Class<T> arrayType) {
+		return (T)UtilsGlobalFactory.getDefaultJsonAdapter().toArray(json, arrayType);
 	}
 
-	public <K, V> Map<K, V> toMap(String json, Class<? extends Map<K, V>> mapType, Class<K> keyType, Class<V> valueType) {
+	public static  <K, V> Map<K, V> toMap(String json, Class<? extends Map> mapType, Class<K> keyType, Class<V> valueType) {
 		return UtilsGlobalFactory.getDefaultJsonAdapter()
 				.toMap(json, mapType, keyType, valueType);
 	}
 
-	public static Json buildJson() {
-		return UtilsGlobalFactory.getDefaultJsonAdapter().build();
+	public static Json builder() {
+		return UtilsGlobalFactory.getDefaultJsonAdapter().builder();
 	}
 
-	public static Json buildJson(String json) {
-		return UtilsGlobalFactory.getDefaultJsonAdapter().build(json);
-	}
-
-	public static Node buildNode(String name, Object val) {
-		return UtilsGlobalFactory.getDefaultJsonAdapter().buildNode(name, val);
+	public static Json builder(String json) {
+		return UtilsGlobalFactory.getDefaultJsonAdapter().builder(json);
 	}
 
 }
